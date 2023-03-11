@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheckBox
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_radius_12"
+    android:id="@+id/checkBox"
+    android:text="Ahmed"
+    android:textSize="16sp"
+    android:drawablePadding="8dp"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
+    android:buttonTint="@color/main2"
+    android:layout_marginTop="4dp"
+    android:textColor="@color/white"
+    android:outlineSpotShadowColor="@color/statesBar"
+    android:shadowColor="@color/statesBar"
+    android:outlineAmbientShadowColor="@color/statesBar"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp">
+</CheckBox>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="StyleInputText" parent="ThemeOverlay.Material3.TextInputEditText.OutlinedBox">
+    </style >
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:dialogCornerRadius">16dp</item>
+        <item name="android:popupElevation">4dp</item>
+        <item name="android:background">@color/main_bar</item>
+        <item name="android:layoutDirection">rtl</item>
+        <item name="colorAccent">#cccccc</item>
+        <item name="android:textSize">18sp</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Negative</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Positive</item>
+    </style>
+    <style name="Negative" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor" >@color/main2</item>
+        <item name="android:textSize" >16sp</item>
+
+    </style>
+    <style name="Positive" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor" >@color/main2</item>
+        <item name="android:textSize" >16sp</item>
+    </style>
+    <style name="BottomSheetDialog" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="android:layout_marginLeft">50dp</item>
+        <item name="android:layout_marginRight">50dp</item>
+    </style>
+    <style name="BaseAppTheme" parent="android:Theme.Material">
+        <item name="android:windowActivityTransitions">true</item>
+    </style>
+    <style name="SpinnerStyle" parent="Widget.AppCompat.Spinner">
+        <item name="android:backgroundTint">#007EF4</item>
+    </style>
+    <style name="SpinnerStyleFragments" parent="Widget.AppCompat.Spinner">
+        <item name="android:backgroundTint">#007EF4</item>
+        <item name="android:mode">twoLine</item>
+    </style>
+    <style name="fab" parent="Widget.MaterialComponents.FloatingActionButton">
+    <item name="background">@drawable/background_gradient</item>
+</style>
+</resources>

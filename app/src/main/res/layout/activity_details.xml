@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bar2"
+    tools:context=".activities.DetailsActivity">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_four"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        app:cardCornerRadius="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_three">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#2B2B2B"
+            android:gravity="right"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp">
+
+            <TextView
+                android:id="@+id/rateing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:text="تقييم التجربة "
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:drawableRightCompat="@drawable/ic_star_rate" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_three"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        app:cardCornerRadius="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_two">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#2B2B2B"
+            android:gravity="right"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp">
+
+            <TextView
+                android:id="@+id/textView33"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:text="@string/grade"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:drawableRightCompat="@drawable/ic_level" />
+
+            <TextView
+                android:id="@+id/textView34"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:text="@string/department"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:drawableRightCompat="@drawable/ic_department" />
+
+            <TextView
+                android:id="@+id/textView35"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:text="@string/state"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:drawableRightCompat="@drawable/ic_state" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!--    <androidx.cardview.widget.CardView-->
+    <!--        android:id="@+id/card_one"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="16dp"-->
+    <!--        android:layout_marginTop="24dp"-->
+    <!--        android:layout_marginEnd="16dp"-->
+    <!--        android:padding="0dp"-->
+    <!--        app:cardCornerRadius="16dp"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/imageView16">-->
+
+    <!--        <LinearLayout-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:background="#2B2B2B"-->
+    <!--            android:gravity="right"-->
+    <!--            android:orientation="horizontal"-->
+    <!--            android:paddingStart="8dp"-->
+    <!--            android:paddingTop="16dp"-->
+    <!--            android:paddingEnd="8dp"-->
+    <!--            android:paddingBottom="16dp">-->
+
+    <!--            <LinearLayout-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_weight="1"-->
+    <!--                android:orientation="vertical"-->
+    <!--                android:padding="8dp">-->
+
+    <!--                <ImageView-->
+    <!--                    android:id="@+id/imageView10"-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_gravity="center"-->
+    <!--                    android:background="@drawable/circle_background_blue"-->
+    <!--                    android:padding="6dp"-->
+    <!--                    app:srcCompat="@drawable/ic_camera" />-->
+
+    <!--                <TextView-->
+    <!--                    android:id="@+id/textView2"-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_gravity="center"-->
+    <!--                    android:layout_marginTop="8dp"-->
+    <!--                    android:text="Camera"-->
+    <!--                    android:textColor="@color/white" />-->
+    <!--            </LinearLayout>-->
+
+    <!--            <LinearLayout-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_weight="1"-->
+    <!--                android:orientation="vertical"-->
+    <!--                android:padding="8dp">-->
+
+    <!--                <ImageView-->
+    <!--                    android:id="@+id/imageView6"-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_gravity="center"-->
+    <!--                    android:background="@drawable/circle_background_blue"-->
+    <!--                    android:padding="6dp"-->
+    <!--                    app:srcCompat="@drawable/ic_camera" />-->
+
+    <!--                <TextView-->
+    <!--                    android:id="@+id/textView18"-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_gravity="center"-->
+    <!--                    android:layout_marginTop="8dp"-->
+    <!--                    android:text="Camera"-->
+    <!--                    android:textColor="@color/white" />-->
+    <!--            </LinearLayout>-->
+
+    <!--            <LinearLayout-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_weight="1"-->
+    <!--                android:orientation="vertical"-->
+    <!--                android:padding="8dp">-->
+
+    <!--                <ImageView-->
+    <!--                    android:id="@+id/imageView5"-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_gravity="center"-->
+    <!--                    android:background="@drawable/circle_background_blue"-->
+    <!--                    android:padding="6dp"-->
+    <!--                    app:srcCompat="@drawable/ic_camera" />-->
+
+    <!--                <TextView-->
+    <!--                    android:id="@+id/textView19"-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_gravity="center"-->
+    <!--                    android:layout_marginTop="8dp"-->
+    <!--                    android:text="Camera"-->
+    <!--                    android:textColor="@color/white" />-->
+    <!--            </LinearLayout>-->
+
+    <!--            <LinearLayout-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_weight="1"-->
+    <!--                android:orientation="vertical"-->
+    <!--                android:padding="8dp">-->
+
+    <!--                <ImageView-->
+    <!--                    android:id="@+id/imageView2"-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_gravity="center"-->
+    <!--                    android:background="@drawable/circle_background_blue"-->
+    <!--                    android:padding="6dp"-->
+    <!--                    app:srcCompat="@drawable/ic_camera" />-->
+
+    <!--                <TextView-->
+    <!--                    android:id="@+id/textView21"-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_gravity="center"-->
+    <!--                    android:layout_marginTop="8dp"-->
+    <!--                    android:text="Camera"-->
+    <!--                    android:textColor="@color/white" />-->
+    <!--            </LinearLayout>-->
+
+    <!--        </LinearLayout>-->
+    <!--    </androidx.cardview.widget.CardView>-->
+
+    <androidx.cardview.widget.CardView
+
+        android:id="@+id/card_two"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        app:cardCornerRadius="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profile_details_pic">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#2B2B2B"
+            android:gravity="right"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:text="@string/name"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:text="@string/collage"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:drawableRightCompat="@drawable/ic_college" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:text="@string/email"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:drawableRightCompat="@drawable/ic_email"
+                app:drawableTint="@color/white" />
+
+            <TextView
+                android:id="@+id/textView36"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:drawablePadding="12dp"
+                 android:gravity="right"
+                android:text="01032432988"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:drawableRightCompat="@drawable/ic_phone"
+                app:drawableTint="@color/white" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_details_pic"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/layout_rateing"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_four">
+
+        <EditText
+            android:id="@+id/editTextTextPersonName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/background_raduis_16"
+            android:ems="10"
+            android:gravity="right|top"
+            android:hint="تجربتك"
+            android:inputType="textMultiLine"
+            android:padding="8dp"
+            android:maxWidth="300dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="16sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/send_rate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/background_squire_blue"
+            android:text="ارسال"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

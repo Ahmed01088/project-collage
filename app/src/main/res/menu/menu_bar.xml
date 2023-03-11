@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.projectcollage.activities.ScrollingActivity">
+    <item
+        android:id="@+id/notification"
+        android:icon="@drawable/ic_notifications"
+        app:showAsAction="always"
+       app:actionLayout="@layout/notification_icon"
+
+    android:title="" />
+    <item
+        android:id="@+id/search"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="always"
+        android:title="" />
+
+</menu>

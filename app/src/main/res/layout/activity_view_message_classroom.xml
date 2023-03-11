@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_color"
+
+    tools:context=".activities.ViewMessageClassroomActivity">
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/bar2"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/start_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="4dp"
+            android:padding="8dp"
+            app:srcCompat="@drawable/ic_videocam" />
+
+        <ImageView
+            android:id="@+id/addQuiz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="4dp"
+            android:padding="8dp"
+            app:srcCompat="@drawable/ic_edit" />
+
+        <TextView
+            android:id="@+id/nameOfCourse"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center|end"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:text="@string/name_of_course" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/viewAllStudentsInClass"
+            android:layout_width="45dp"
+            android:paddingStart="6dp"
+            android:paddingEnd="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_group" />
+
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:padding="8dp"
+            app:srcCompat="@drawable/ic_arrow_forward" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvMessageClassroom"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/layout_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <LinearLayout
+        android:id="@+id/layout_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/background_radius_12"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/iconSend"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:layout_gravity="bottom"
+            android:layout_margin="4dp"
+            android:background="@drawable/circle_background_blue"
+            android:src="@drawable/ic_mic" />
+
+        <ImageView
+            android:id="@+id/icon_select_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:layout_margin="4dp"
+            android:layout_gravity="top"
+            android:background="@drawable/circle_background_blue"
+            app:srcCompat="@drawable/ic_camera" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/senderMessage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:ems="10"
+                android:padding="8dp"
+                android:background="@android:color/transparent"
+                android:hint="@string/hint_message"
+                android:inputType="textMultiLine"
+                android:maxLines="6"
+                android:textColor="#EFEFEF"
+                android:scrollbars="vertical"
+                android:textColorHint="@color/white" />
+        <ImageView
+            android:id="@+id/btnEmoji"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="top"
+            android:layout_margin="4dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_sentiment_satisfied" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

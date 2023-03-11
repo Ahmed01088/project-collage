@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+     <item >
+         <shape android:shape="oval" >
+             <gradient
+                 android:centerColor="@color/statesBar"
+                 android:startColor="@color/main2"
+                 android:type="linear"
+                 android:angle="0"
+                 android:endColor="@color/main2"/>
+         </shape>
+     </item>
+    <item android:gravity="center" >
+
+        <bitmap android:src="@drawable/atom"
+            android:gravity="fill_horizontal"/>
+    </item>
+</layer-list>

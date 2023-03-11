@@ -1,0 +1,22 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+//        maven {setUrl("https://jitpack.io")}
+        maven {url 'https://www.jitpack.io'}
+        maven {url('https://jcenter.bintray.com')}
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven {setUrl("https://jitpack.io")}
+        maven {url('https://jcenter.bintray.com')}
+
+    }
+}
+rootProject.name = "Project Collage"
+include ':app'

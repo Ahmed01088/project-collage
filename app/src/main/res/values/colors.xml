@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#1F1F1F</color>
+<!--    <color name="purple_700">#6672ff</color>-->
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="bar">#ced2ff</color>
+<!--    <color name="main_bar">#6672ff</color>-->
+<!--    <color name="main_color">#ced2ff</color>-->
+    <color name="main_bar">#252525</color>
+    <color name="bar2">#1F1F1F</color>
+    <color name="statesBar">#007EF4</color>
+    FF3832C5
+    <color name="main2">#FF4C47C9</color>
+    <color name="dark_blue">#FF3832C5</color>
+    <color name="main_color">#1C1B1B</color>
+    <color name="textColor">#FBFBFB</color>
+    <color name="statesOnBoarding">#FF242086</color>
+<!--    <color name="textColor">#1F2373</color>-->
+    <color name="red">#FF0034</color>
+    <color name="chatGPT">#FF0034</color>
+</resources>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.OnBoardActivity">
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </androidx.viewpager.widget.ViewPager>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:paddingBottom="10dp"
+    android:layout_alignParentBottom="true"
+    android:layout_height="wrap_content">
+   <LinearLayout
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:id="@+id/dotsLayout"
+       android:gravity="center"
+       android:orientation="horizontal"
+       android:layout_centerInParent="true"
+       android:layout_alignParentTop="true">
+
+   </LinearLayout>
+
+    <Button
+        android:id="@+id/btnNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="التالي"
+        android:textSize="18sp"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/btnSkip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:background="@android:color/transparent"
+        android:text="تخطي"
+        android:textSize="18sp"
+
+        android:textColor="@color/white" />
+</RelativeLayout>
+</RelativeLayout>

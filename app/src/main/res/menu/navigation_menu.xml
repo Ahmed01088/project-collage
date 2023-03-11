@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/quiz"
+        android:icon="@drawable/ic_menu_book"
+        android:title="@string/quiz" />
+    <item
+        android:icon="@drawable/ic_table_chart"
+        android:id="@+id/study_table"
+        android:title="@string/study_table" >
+      </item>
+
+    <item
+        android:id="@+id/logout"
+        android:icon="@drawable/ic_login"
+
+        android:title="@string/logout" />
+    <item
+        android:id="@+id/about"
+        android:icon="@drawable/ic_about"
+
+        android:title="معلومات المطورين" />
+
+</menu>
