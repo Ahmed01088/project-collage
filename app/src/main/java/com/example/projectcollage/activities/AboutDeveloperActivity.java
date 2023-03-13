@@ -9,7 +9,6 @@ import com.example.projectcollage.databinding.ActivityAboutDeveloperBinding;
 
 public class AboutDeveloperActivity extends AppCompatActivity {
     ActivityAboutDeveloperBinding binding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

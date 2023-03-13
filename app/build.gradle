@@ -39,6 +39,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.firebase:firebase-messaging:23.1.2'
+    implementation 'com.google.firebase:firebase-firestore:24.4.4'
     testImplementation 'junit:junit:4.13.2'
     implementation 'io.agora.rtc:full-sdk:4.0.1'
     implementation 'de.hdodenhof:circleimageview:3.1.0'

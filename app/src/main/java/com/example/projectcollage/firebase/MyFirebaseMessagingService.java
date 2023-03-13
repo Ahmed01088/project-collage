@@ -1,4 +1,4 @@
-package com.example.projectcollage.activities;
+package com.example.projectcollage.firebase;
 
 import android.Manifest;
 import android.app.PendingIntent;
@@ -15,6 +15,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.projectcollage.R;
+import com.example.projectcollage.activities.NotificationActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -48,19 +49,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentIntent(pendingIntent);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         notificationManager.notify(0, notificationBuilder.build());
     }
     @Override
     public void onNewToken(@NonNull String token) {
-        Toast.makeText(this, ""+token, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "token ===> "+token, Toast.LENGTH_SHORT).show();
     }
 }
