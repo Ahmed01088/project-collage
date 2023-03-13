@@ -51,6 +51,8 @@ dependencies {
     implementation 'com.github.agoraio-community.videouikit-android:final:4.0.1'
     implementation 'androidx.room:room-runtime:2.5.0'
     implementation 'com.github.alxrm:audiowave-progressbar:0.9.2'
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+    implementation 'com.intuit.ssp:ssp-android:1.0.6'
     implementation 'com.scwang.wave:MultiWaveHeader:1.0.0-andx'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.15.0'
     annotationProcessor 'androidx.room:room-compiler:2.5.0'
