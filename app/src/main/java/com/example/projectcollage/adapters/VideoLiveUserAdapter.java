@@ -1,5 +1,6 @@
 package com.example.projectcollage.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
@@ -62,5 +63,15 @@ public class VideoLiveUserAdapter extends RecyclerView.Adapter<VideoLiveUserAdap
             local_video_view_container=itemView.findViewById(R.id.local_video_view_container);
             localVideo=itemView.findViewById(R.id.local_video);
         }
+    }
+    public void addVideoUser(VideoUser user){
+        users.add(user);
+        notifyDataSetChanged();
+        agoraEngine.joinChannel(user.getToken(), "channelName", "", user.getUid());
+    }
+    public void removeVideoUser(VideoUser user){
+        users.remove(user);
+        notifyDataSetChanged();
+        agoraEngine.leaveChannel();
     }
 }

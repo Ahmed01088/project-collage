@@ -6,8 +6,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.Toast;
 import com.example.projectcollage.R;
 import com.example.projectcollage.adapters.VideoLiveUserAdapter;
@@ -39,9 +41,12 @@ public class LiveStreamActivity extends AppCompatActivity{
     private RtcEngine agoraEngine;
     private SurfaceView localSurfaceView;
     private SurfaceView remoteSurfaceView;
-    private boolean isUserHide=false;
+    private boolean isUsersHide =false;
+    private boolean isJoinChannel=false;
     ArrayList<VideoUser>users;
     VideoLiveUserAdapter adapter;
+    private Switch audienceRole;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,14 +61,14 @@ public class LiveStreamActivity extends AppCompatActivity{
         LinearLayoutManager manager=new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
         binding.rvAllUserVideo.setLayoutManager(manager);
         binding.btnCross.setOnClickListener(view -> {
-            if (isUserHide){
+            if (isUsersHide){
                 binding.rvAllUserVideo.setVisibility(View.VISIBLE);
                 binding.btnCross.setImageResource(R.drawable.ic_close);
-                isUserHide=false;
+                isUsersHide =false;
            }else {
                 binding.rvAllUserVideo.setVisibility(View.GONE);
                 binding.btnCross.setImageResource(R.drawable.ic_settings_backup_restore);
-                isUserHide=true;
+                isUsersHide =true;
             }
         });
         if (!checkSelfPermission()){
@@ -71,7 +76,7 @@ public class LiveStreamActivity extends AppCompatActivity{
         }
         binding.joinButton.setOnClickListener(view -> {
         binding.labelStudentCounter.setText(String.format(Locale.ENGLISH," %d طالب حاضر",adapter.getItemCount()+1));
-            joinChannel();
+            joinLeaveChannel();
     });
 
 
@@ -93,26 +98,32 @@ public class LiveStreamActivity extends AppCompatActivity{
 
     }
     private final IRtcEngineEventHandler mEventHandler=new IRtcEngineEventHandler() {
-        @Override
-        public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
-            showMessage("joined channel "+channel);
+        private final IRtcEngineEventHandler mRtcEventHandler = new IRtcEngineEventHandler() {
+            @Override
+            // Listen for the remote host joining the channel to get the uid of the host.
+            public void onUserJoined(int uid, int elapsed) {
+                showMessage("Remote user joined " + uid);
+                if (!audienceRole.isChecked()) return;
+                // Set the remote video view
+                runOnUiThread(() -> setupRemoteVideo(uid));
+            }
 
-        }
+            @Override
+            public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
+                isJoinChannel = true;
+                showMessage("Joined Channel " + channel);
+            }
 
-        @Override
-        public void onUserJoined(int uid, int elapsed) {
-            showMessage("Remote user joined "+uid);
-            runOnUiThread(() -> setupRemoteVideo(uid));
-        }
+            @Override
+            public void onUserOffline(int uid, int reason) {
+                showMessage("Remote user offline " + uid + " " + reason);
+                runOnUiThread(() -> remoteSurfaceView.setVisibility(View.GONE));
+            }
+        };
 
-        @Override
-        public void onUserOffline(int uid, int reason) {
-            showMessage("Remote user offline " +uid + " "+ reason);
-            runOnUiThread(() -> remoteSurfaceView.setVisibility(View.GONE));
-
-        }
 
     };
+    //done
     private void setupVideoSDKEngine(){
         try{
             RtcEngineConfig config=new RtcEngineConfig();
@@ -124,37 +135,62 @@ public class LiveStreamActivity extends AppCompatActivity{
         }catch (Exception e){
             showMessage(e.toString());
         }
+
     }
 
     private void setupRemoteVideo(int uid) {
-        remoteSurfaceView=new SurfaceView(this);
+        remoteSurfaceView=new SurfaceView(getBaseContext());
         remoteSurfaceView.setZOrderMediaOverlay(true);
         binding.remoteVideoViewContainer.addView(remoteSurfaceView);
         agoraEngine.setupRemoteVideo(new VideoCanvas(remoteSurfaceView,VideoCanvas.RENDER_MODE_FIT,uid));
         remoteSurfaceView.setVisibility(View.VISIBLE);
-    }
+           }
     private void setupLocalVideo() {
         localSurfaceView=new SurfaceView(this);
-        users.add(new VideoUser(localSurfaceView));
-        adapter.notifyItemInserted(users.size());
+        VideoUser user=new VideoUser(localSurfaceView);
         agoraEngine.setupLocalVideo(new VideoCanvas(localSurfaceView,VideoCanvas.RENDER_MODE_HIDDEN,0));
         agoraEngine.enableVideo();
-    }
-    public void joinChannel(){
-        if (checkSelfPermission()){
-            ChannelMediaOptions options=new ChannelMediaOptions();
-            options.channelProfile= Constants.CHANNEL_PROFILE_COMMUNICATION;
-            options.clientRoleType=Constants.CLIENT_ROLE_BROADCASTER;
-            setupLocalVideo();
-            showMessage("تم الدخول ");
-            localSurfaceView.setVisibility(View.VISIBLE);
-            agoraEngine.startPreview();
-            agoraEngine.joinChannel(token, channelName,uid, options);
-
+        if (!isJoinChannel){
+            adapter.addVideoUser(user);
         }else {
-            Toast.makeText(this, "الوصول ممنوع", Toast.LENGTH_SHORT).show();
+            adapter.removeVideoUser(user);
+
         }
+        // Pass the SurfaceView object to Agora so that it renders the local video.
+
     }
+    public void joinLeaveChannel() {
+        if (!isJoinChannel) {
+            if (checkSelfPermission()) {
+                ChannelMediaOptions options = new ChannelMediaOptions();
+                options.channelProfile = Constants.CHANNEL_PROFILE_COMMUNICATION;
+                options.clientRoleType = Constants.CLIENT_ROLE_BROADCASTER;
+                setupLocalVideo();
+                showMessage("تم الدخول ");
+                binding.joinButton.setText("خروج");
+                localSurfaceView.setVisibility(View.VISIBLE);
+                agoraEngine.startPreview();
+                agoraEngine.joinChannel(token, channelName, uid, options);
+
+            } else {
+                Toast.makeText(this, "الوصول ممنوع", Toast.LENGTH_SHORT).show();
+            }
+            isJoinChannel = true;
+        } else {
+            agoraEngine.leaveChannel();
+            localSurfaceView.setVisibility(View.GONE);
+            binding.remoteVideoViewContainer.removeAllViews();
+            binding.rvAllUserVideo.removeAllViews();
+            binding.joinButton.setText("دخول");
+            showMessage("تم الخروج");
+            isJoinChannel = false;
+            showMessage("Join a channel first");
+        }
+        audienceRole.setEnabled(true); // Enable the switch
+
+    }
+
+
 
 }
 
