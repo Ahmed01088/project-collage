@@ -28,6 +28,7 @@ public class OnBoardActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().setNavigationBarColor(getColor(R.color.statesOnBoarding));
         getWindow().setStatusBarColor(getColor(R.color.statesOnBoarding));
+        isFirstTime();
   /*      Window window=this.getWindow();
 //        isFirstTime();
 //        Drawable drawable= AppCompatResources.getDrawable(this,R.drawable.background_gradient);

@@ -5,7 +5,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
@@ -91,6 +94,16 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
 
         });
         binding.startVideo.setOnClickListener(view -> {
+            AppCompatEditText videoId=new AppCompatEditText(this);
+            videoId.setHint("ادخل رابط الفيديو");
+            videoId.setHintTextColor(Color.GRAY);
+            videoId.setTextSize(16);
+            videoId.setTextColor(Color.WHITE);
+            videoId.setBackground(getDrawable(R.drawable.background_raduis_16));
+            videoId.setSingleLine();
+
+            videoId.setPadding(10,10,10,10);
+            videoId.setImeOptions(EditorInfo.IME_ACTION_DONE);
             AlertDialog.Builder builder=new AlertDialog.Builder(ViewMessageClassroomActivity.this,R.style.AlertDialogStyle)
                     .setPositiveButton("نعم", (dialogInterface, i) -> {
                         Intent intent=new Intent(ViewMessageClassroomActivity.this,LiveStreamActivity.class);
@@ -101,6 +114,7 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
 
                     })
                     .setMessage("هل تريد بداء فيديو لايف ؟");
+            builder.setView(videoId);
             builder.show();
           });
         ChatClassroomAdapter adapter=new ChatClassroomAdapter(this,chats,nameOfCourse);

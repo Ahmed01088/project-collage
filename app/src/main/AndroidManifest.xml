@@ -38,9 +38,6 @@
         android:theme="@style/Theme.ProjectCollage"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity
-            android:name=".activities.LiveActivity"
-            android:exported="false" />
 
         <service
             android:name=".firebase.MyFirebaseMessagingService"
@@ -106,7 +103,18 @@
             android:exported="false" />
         <activity
             android:name=".activities.LiveStreamActivity"
-            android:exported="false" />
+            android:label=" Join Live Stream"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="www.example.com"
+                    android:scheme="http" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activities.StudentOfCourseActivity"
             android:exported="false" />
@@ -125,7 +133,6 @@
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -1,6 +1,5 @@
 package com.example.projectcollage.adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
@@ -41,7 +40,7 @@ public class VideoLiveUserAdapter extends RecyclerView.Adapter<VideoLiveUserAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int i) {
-//        holder.local_video_view_container.addView(users.get(i).getSurfaceView());
+//   holder.local_video_view_container.addView(users.get(i).getSurfaceView());
         holder.localVideo.setZOrderMediaOverlay(true);
         holder.localVideo.setVisibility(View.VISIBLE);
         agoraEngine.setupLocalVideo(new VideoCanvas(holder.localVideo,VideoCanvas.RENDER_MODE_HIDDEN,0));
@@ -60,8 +59,8 @@ public class VideoLiveUserAdapter extends RecyclerView.Adapter<VideoLiveUserAdap
         SurfaceView localVideo;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            local_video_view_container=itemView.findViewById(R.id.local_video_view_container);
-            localVideo=itemView.findViewById(R.id.local_video);
+            local_video_view_container =itemView.findViewById(R.id.local_video_view_container);
+            localVideo =itemView.findViewById(R.id.local_video);
         }
     }
     public void addVideoUser(VideoUser user){
@@ -69,8 +68,8 @@ public class VideoLiveUserAdapter extends RecyclerView.Adapter<VideoLiveUserAdap
         notifyDataSetChanged();
         agoraEngine.joinChannel(user.getToken(), "channelName", "", user.getUid());
     }
-    public void removeVideoUser(VideoUser user){
-        users.remove(user);
+    public void removeVideoUser(int uid){
+        users.remove(uid);
         notifyDataSetChanged();
         agoraEngine.leaveChannel();
     }

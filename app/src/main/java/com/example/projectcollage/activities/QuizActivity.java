@@ -2,11 +2,15 @@ package com.example.projectcollage.activities;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.InputFilter;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
 import com.example.projectcollage.R;
@@ -42,7 +46,18 @@ public class QuizActivity extends AppCompatActivity {
         binding.recVQuestions.setAdapter(adapter);
         binding.recVQuestions.setLayoutManager(manager);
         binding.submit.setOnClickListener(view -> {
-        AlertDialog.Builder builder=new AlertDialog.Builder(QuizActivity.this,R.style.AlertDialogStyle)
+            AppCompatEditText uid=new AppCompatEditText(this);
+            uid.setHint("ادخل الرقم القومي للتاكيد");
+            uid.setHintTextColor(Color.GRAY);
+            uid.setTextSize(16);
+            uid.setTextColor(Color.WHITE);
+            uid.setBackground(AppCompatResources.getDrawable(this,R.drawable.background_raduis_16));
+            uid.setSingleLine();
+            uid.setPadding(10,10,10,10);
+            uid.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
+            uid.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            uid.setFilters(new InputFilter[] { new InputFilter.LengthFilter(16) });
+            AlertDialog.Builder builder=new AlertDialog.Builder(QuizActivity.this,R.style.AlertDialogStyle)
                     .setMessage("درجتك في هذا الكويز هي 15")
                     .setPositiveButton("ارسال", (dialogInterface, i) -> {
                         timer.cancel();
@@ -50,7 +65,9 @@ public class QuizActivity extends AppCompatActivity {
                     })
                     .setNegativeButton("الغاء", (dialogInterface, i) -> {
                     });
-            builder.show();
+        builder.setView(uid);
+        builder.show();
+
         });
     }
     private void timer(){
@@ -84,13 +101,6 @@ public class QuizActivity extends AppCompatActivity {
        timer.start();
 
     }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        finish();
-    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();

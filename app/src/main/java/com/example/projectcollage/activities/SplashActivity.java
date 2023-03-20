@@ -39,7 +39,7 @@ public class SplashActivity extends AppCompatActivity {
             ActivityOptions options= ActivityOptions.makeClipRevealAnimation(binding.imageView,binding.imageView.getWidth()/2,
                     binding.imageView.getHeight()/2,300,300);
             startActivity(intent,options.toBundle());
-        }, 4000);
+        }, 2000);
 
 
 

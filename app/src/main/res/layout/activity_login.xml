@@ -72,9 +72,10 @@
             android:drawableStart="@drawable/ic_id_24"
             android:drawableTint="@color/main2"
             android:hint="@string/username"
+            android:maxLength="16"
             android:textCursorDrawable="@drawable/ic_edit"
             android:imeOptions="actionNext"
-            android:inputType="text"
+            android:inputType="number"
             android:lines="1"
             android:maxLines="1"
             android:textColor="@color/white" />
@@ -113,8 +114,7 @@
             android:drawableStart="@drawable/ic_rename"
             android:maxLines="1"
             android:imeOptions="actionSend"
-            android:maxLength="16"
-            android:inputType="number"
+            android:inputType="textPassword"
             android:textColor="@color/white"
             />
 
