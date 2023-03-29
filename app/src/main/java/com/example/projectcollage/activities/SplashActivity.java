@@ -34,11 +34,11 @@ public class SplashActivity extends AppCompatActivity {
         Animation animation= AnimationUtils.loadAnimation(this, R.anim.rotate);
         binding.imageView.startAnimation(animation);
         new Handler().postDelayed(() -> {
-
             Intent intent=new Intent(SplashActivity.this,LoginActivity.class);
             ActivityOptions options= ActivityOptions.makeClipRevealAnimation(binding.imageView,binding.imageView.getWidth()/2,
                     binding.imageView.getHeight()/2,300,300);
             startActivity(intent,options.toBundle());
+            finish();
         }, 2000);
 
 

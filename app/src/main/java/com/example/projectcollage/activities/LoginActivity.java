@@ -1,25 +1,23 @@
 package com.example.projectcollage.activities;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
-
 import com.example.projectcollage.R;
 import com.example.projectcollage.databinding.ActivityLoginBinding;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.example.projectcollage.model.Data;
+import com.example.projectcollage.model.User;
+import com.example.projectcollage.retrofit.RetrofitClientUser;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
-
-import io.agora.common.annotation.NonNull;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
     ActivityLoginBinding binding;
@@ -56,59 +54,71 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
         binding.login.setOnClickListener(view -> {
-
-            if (Objects.requireNonNull(binding.userIdLogin.getText()).toString().isEmpty()){
-                binding.textInputLayout.setError("ادخل الاسم");
-            }else if (Objects.requireNonNull(binding.userIdLogin.getText()).toString().equals(STUDENT_AFFAIRS)){
-                AlertDialog.Builder builder=new AlertDialog.Builder(LoginActivity.this,R.style.AlertDialogStyle)
-                        .setPositiveButton("شئون طلاب ", (dialogInterface, i) -> {
-                            Intent intent=new Intent(LoginActivity.this,ManagementDataOnAppActivity.class);
-                            ActivityOptions options= ActivityOptions.makeClipRevealAnimation(binding.login,binding.login.getWidth()/2,
-                                    binding.login.getHeight()/2,100,100);
-                            startActivity(intent,options.toBundle());
-                        }).setNegativeButton("دخول عادي", (dialogInterface, i) -> {
-
-                            Intent intent=new Intent(LoginActivity.this,MainActivity.class);
-                            intent.putExtra(STUDENT_AFFAIRS, STUDENT_AFFAIRS);
-                            finish();
-                            ActivityOptions options= ActivityOptions.makeClipRevealAnimation(binding.userIdLogin,
-                                    binding.userIdLogin.getWidth()/2,binding.userIdLogin.getHeight()/2,
-                                    100,100);
-                            startActivity(intent,options.toBundle());
-                        }).setMessage("اختار طريقة الدخول ");
-                builder.show();
-            }else if (binding.userIdLogin.getText().toString().equals(ADMIN)){
-                Intent intent=new Intent(LoginActivity.this,AddAdminStudentAffairsActivity.class);
-                ActivityOptions options= ActivityOptions.makeClipRevealAnimation(binding.login,binding.login.getWidth()/2,binding.login.getHeight()/2,300,300);
-                startActivity(intent,options.toBundle());
-                finish();
-            }else {
-                drCode= binding.userIdLogin.getText().toString().startsWith("dr");
-                Intent intent=new Intent(LoginActivity.this,MainActivity.class);
-                intent.putExtra("name",binding.userIdLogin.getText().toString());
-                intent.putExtra("drCodeCheck",drCode);
-                intent.putExtra("userId", Objects.requireNonNull(binding.passwordLogin.getText()).toString());
-                editor.putString("name",binding.userIdLogin.getText().toString());
-                editor.putBoolean("drCodeCheck",drCode);
-                editor.putString("userId",binding.passwordLogin.getText().toString());
-                editor.apply();
-                finish();
-                ActivityOptions options= ActivityOptions.makeClipRevealAnimation(binding.userIdLogin,binding.userIdLogin.getWidth()/2,binding.userIdLogin.getHeight()/2,300,300);
-                startActivity(intent,options.toBundle());
-            }
+//            boolean checkPass=binding.passwordLogin.getText().toString().matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$\n");
+//            if (checkPass){
+                login(binding.userIdLogin.getText().toString(),binding.passwordLogin.getText().toString());
+//            }else {
+//                binding.passwordLogin.setError("حرف واحد على الأقل\n" +
+//                        "رقم واحد على الأقل\n" +
+//                        "رمز خاص واحد على الأقل\n" +
+//                        "طول الكلمة يجب أن يكون على الأقل 8 أحرف");
+//            }
         });
     }
-    private void addDataToFireBase(){
-        FirebaseFirestore db=FirebaseFirestore.getInstance();
-        Map<String, Object> user = new HashMap<>();
-        user.put("userId", binding.userIdLogin.getText().toString());
-        user.put("password", binding.passwordLogin.getText().toString());
-        db.collection("users")
-                .add(user)
-                .addOnSuccessListener(documentReference -> Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> {
-                    Toast.makeText(LoginActivity.this, "Failed"+e, Toast.LENGTH_SHORT).show();
-                    Log.d("TAG", e.toString());
-                });
-        }
+    private void login(final String nationalId,final String password){
+        binding.progress.setVisibility(View.VISIBLE);
+        binding.login.setVisibility(View.INVISIBLE);
+        Call<Data> login=RetrofitClientUser.getInstance().getApiInterfaceUser()
+                .login(new User(nationalId,password));
+        login.enqueue(new Callback<Data>() {
+            @Override
+            public void onResponse(@NonNull Call<Data> call, @NonNull Response<Data> response) {
+                if (response.isSuccessful()){
+                    if (nationalId.startsWith("2060")){
+                        AlertDialog.Builder builder=new AlertDialog.Builder(LoginActivity.this,R.style.AlertDialogStyle)
+                                .setPositiveButton("شئون طلاب ", (dialogInterface, i) -> {
+                                    Intent intent=new Intent(LoginActivity.this,ManagementDataOnAppActivity.class);
+                                    ActivityOptions options= ActivityOptions.makeClipRevealAnimation(binding.login,binding.login.getWidth()/2,
+                                            binding.login.getHeight()/2,100,100);
+                                    startActivity(intent,options.toBundle());
+                                }).setNegativeButton("دخول عادي", (dialogInterface, i) -> {
+
+                                    Intent intent=new Intent(LoginActivity.this,MainActivity.class);
+                                    intent.putExtra(STUDENT_AFFAIRS, STUDENT_AFFAIRS);
+                                    finish();
+                                    ActivityOptions options= ActivityOptions.makeClipRevealAnimation(binding.userIdLogin,
+                                            binding.userIdLogin.getWidth()/2,binding.userIdLogin.getHeight()/2,
+                                            100,100);
+                                    startActivity(intent,options.toBundle());
+                                }).setMessage("اختار طريقة الدخول ");
+                        builder.show();
+                        binding.login.setVisibility(View.VISIBLE);
+                        binding.progress.setVisibility(View.GONE);
+
+                    }else {
+                        Toast.makeText(LoginActivity.this, "Successful", Toast.LENGTH_SHORT).show();
+                        Intent intent=new Intent(LoginActivity.this,MainActivity.class);
+                        intent.putExtra(STUDENT_AFFAIRS, STUDENT_AFFAIRS);
+                        ActivityOptions options= ActivityOptions.makeClipRevealAnimation(binding.userIdLogin,
+                                binding.userIdLogin.getWidth()/2,binding.userIdLogin.getHeight()/2,
+                                100,100);
+                        startActivity(intent,options.toBundle());
+                        finish();
+                    }
+
+                }
+                else {
+                    Toast.makeText(LoginActivity.this, "الطالب غير موجود", Toast.LENGTH_SHORT).show();
+                    binding.login.setVisibility(View.VISIBLE);
+                    binding.progress.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Data> call, @NonNull Throwable t) {
+                binding.passwordLogin.setText(t.toString());
+            }
+        });
+
+    }
 }

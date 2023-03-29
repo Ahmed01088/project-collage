@@ -2,15 +2,25 @@ package com.example.projectcollage.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.example.projectcollage.R;
+import com.example.projectcollage.activities.LoginActivity;
 import com.example.projectcollage.databinding.FragmentAddDataStudentBinding;
+import com.example.projectcollage.model.Data;
+import com.example.projectcollage.model.User;
+import com.example.projectcollage.retrofit.RetrofitClientUser;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddDataStudentFragment extends Fragment {
     FragmentAddDataStudentBinding binding;
@@ -50,5 +60,25 @@ public class AddDataStudentFragment extends Fragment {
         binding.studentDepartment.setAdapter(adapterDepartment);
         binding.studentLevel.setAdapter(adapterLevels);
     }
+    private void addUser(User user){
+        Call<Data> call= RetrofitClientUser.getInstance().getApiInterfaceUser().addUser(user);
+        call.enqueue(new Callback<Data>() {
+            @Override
+            public void onResponse(@NonNull Call<Data> call, @NonNull Response<Data> response) {
+                if (response.isSuccessful()){
+                    Toast.makeText(getActivity(), ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(getActivity(), "Failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Data> call, @NonNull Throwable t) {
+                Toast.makeText(getActivity(), "onFailure"+t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
 
 }

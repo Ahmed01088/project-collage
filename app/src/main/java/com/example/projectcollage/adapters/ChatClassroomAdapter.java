@@ -24,8 +24,6 @@ import com.example.projectcollage.models.Message;
 
 import java.util.ArrayList;
 
-import rm.com.audiowave.AudioWaveView;
-
 public class ChatClassroomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public static final int MESSAGE_TYPE_SENDER=0;
     public static final int MESSAGE_TYPE_SENDER_VOICE=1;

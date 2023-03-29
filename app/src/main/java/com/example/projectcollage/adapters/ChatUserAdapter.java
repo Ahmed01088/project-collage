@@ -17,9 +17,6 @@ import com.example.projectcollage.activities.ShowImageActivity;
 import com.example.projectcollage.database.Database;
 import com.example.projectcollage.models.MessageUser;
 import java.util.ArrayList;
-
-import rm.com.audiowave.AudioWaveView;
-
 public class ChatUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final int MESSAGE_TYPE_SENDER=0;
     public static final int MESSAGE_TYPE_SENDER_VOICE=1;
@@ -33,9 +30,7 @@ public class ChatUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.context = context;
         this.messageUsers = messageUsers;
         this.uid=uid;
-
     }
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -52,9 +47,7 @@ public class ChatUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }else {
             view= LayoutInflater.from(context).inflate(R.layout.item_voice_sender,parent,false);
             return new VoiceSenderHolder(view);
-
         }
-
     }
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder,int position) {
@@ -69,7 +62,6 @@ public class ChatUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,
                         view.getWidth()/2,view.getHeight()/2,100,100);
                 context.startActivity(intent,options.toBundle());
-
             });
             if (messageUsers.get(position).getMessage().isEmpty()){
                 senderHolder.message.setVisibility(View.GONE);
@@ -80,15 +72,12 @@ public class ChatUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 senderHolder.image.setImageURI(messageUsers.get(position).getImageUri());
                 senderHolder.image.setVisibility(View.VISIBLE);
                 senderHolder.image.setImageBitmap(messageUsers.get(position).getMessageImage());
-
             }else {
                 senderHolder.image.setVisibility(View.GONE);
-
             }
          }else if (holder.getClass()==VoiceReceiverHolder.class){
 
         }else if (holder.getClass()==VoiceSenderHolder.class){
-
         }
         else {
             ReceiverHolder receiverHolder= (ReceiverHolder) holder;
@@ -100,19 +89,15 @@ public class ChatUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,
                         view.getWidth()/2,view.getHeight()/2,100,100);
                 context.startActivity(intent,options.toBundle());
-
             });
             if (!(messageUsers.get(position).getMessageImage()==null)) {
                 receiverHolder.image.setImageURI(messageUsers.get(position).getImageUri());
                 receiverHolder.image.setVisibility(View.VISIBLE);
                 receiverHolder.image.setImageBitmap(messageUsers.get(position).getMessageImage());
-
             }else {
                 receiverHolder.image.setVisibility(View.GONE);
-
             }
       }
-
         holder.itemView.setOnLongClickListener(view -> {
             AlertDialog.Builder builder=new AlertDialog.Builder(context,R.style.AlertDialogStyle)
                     .setPositiveButton("مسح", (dialogInterface, i) -> {
@@ -123,10 +108,8 @@ public class ChatUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         removeItem(position);
                         notifyItemRemoved(position);
                         notifyDataSetChanged();
-
                     })
                     .setNegativeButton("الغاء", (dialogInterface, i) -> {
-
                     })
                     .setMessage("هل تريد مسح الرساله ؟");
             builder.show();
@@ -134,7 +117,6 @@ public class ChatUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return false;
         });
     }
-
     @Override
     public int getItemCount() {
         return messageUsers.size();
@@ -147,8 +129,6 @@ public class ChatUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                time=itemView.findViewById(R.id.date_item_sender_user);
                message=itemView.findViewById(R.id.senderMessageUser);
                image=itemView.findViewById(R.id.image_user_sender);
-
-
            }
     }
     public static class ReceiverHolder extends RecyclerView.ViewHolder{
@@ -159,13 +139,10 @@ public class ChatUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             time=itemView.findViewById(R.id.date_item_reciver_user);
             message=itemView.findViewById(R.id.reciverMessageUser);
             image=itemView.findViewById(R.id.image_user_reciver);
-
         }
     }
     public static class VoiceSenderHolder extends RecyclerView.ViewHolder{
-        AudioWaveView audioWaveView;
         ImageView play;
-
         public VoiceSenderHolder(@NonNull View itemView) {
             super(itemView);
 //            audioWaveView=itemView.findViewById(R.id.seekBarSender);
@@ -173,9 +150,7 @@ public class ChatUserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
     public static class VoiceReceiverHolder extends RecyclerView.ViewHolder{
-        AudioWaveView audioWaveView;
         ImageView play;
-
         public VoiceReceiverHolder(@NonNull View itemView) {
             super(itemView);
 //            audioWaveView=itemView.findViewById(R.id.seekBarRight);
