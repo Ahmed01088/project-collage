@@ -180,5 +180,12 @@
     <string name="default_notification_channel_id">message firebase</string>
     <string name="_11_34_am">11:34 am</string>
     <string name="_0_08">0.08</string>
+    <string name="student_affairs">Student Affairs</string>
+    <string name="title">العنوان</string>
+    <string name="a">(A)</string>
+    <string name="b">(B)</string>
+    <string name="c">(C)</string>
+    <string name="d">(D)</string>
+    <string name="correct_ansore">الاجابة الصحيحة</string>
 
 </resources>

@@ -37,10 +37,7 @@ public class TestApiAdapter extends RecyclerView.Adapter<TestApiAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.team.setText(heroes.get(position).getTitle());
-        holder.name.setText(heroes.get(position).getBody());
-        holder.realname.setText(position+"");
-        Picasso.get().load(heroes.get(position).getUrl()).into(holder.imageView);
+
 
     }
 

@@ -1,23 +1,24 @@
 package com.example.projectcollage.activities;
+import static java.lang.Thread.sleep;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -27,13 +28,17 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.projectcollage.R;
 import com.example.projectcollage.adapters.ChatClassroomAdapter;
 import com.example.projectcollage.database.Database;
 import com.example.projectcollage.databinding.ActivityViewMessageClassroomBinding;
+import com.example.projectcollage.model.Data;
+import com.example.projectcollage.model.Quiz;
 import com.example.projectcollage.models.Message;
+import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
@@ -42,6 +47,10 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ViewMessageClassroomActivity extends AppCompatActivity {
     ActivityViewMessageClassroomBinding binding;
     Database database;
@@ -49,7 +58,12 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
     public static final String NAME_OF_COURSE="nameOfCourse";
     Bitmap bitmap;
     Uri uriImage;
+    View dialog;
+    Integer uid;
+    int quizId;
+    private Call<Data<Quiz>> call;
     SharedPreferences preferences;
+    private Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +75,8 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
         SQLiteDatabase db=database.getWritableDatabase();
         database.createDB(db,"chat_classroom_"+nameOfCourse);
         binding.nameOfCourse.setText(nameOfCourse);
-        if (preferences.getBoolean("drCodeCheck", false)){
+        uid=preferences.getInt("uid",0);
+        if (preferences.getString("email","").startsWith("dr")){
             binding.addQuiz.setVisibility(View.VISIBLE);
             binding.startVideo.setVisibility(View.VISIBLE);
         }else {
@@ -80,16 +95,20 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
           startActivity(intent,options.toBundle());
         });
         binding.addQuiz.setOnClickListener(view -> {
+            dialog=getLayoutInflater().inflate(R.layout.add_quiz_dialog,binding.rvMessageClassroom,false);
             AlertDialog.Builder builder=new AlertDialog.Builder(ViewMessageClassroomActivity.this,R.style.AlertDialogStyle)
                     .setPositiveButton("نعم", (dialogInterface, i) -> {
-                        Intent intent=new Intent(ViewMessageClassroomActivity.this,AddQuestionsQuizActivity.class);
+                        binding.progressBar3.setVisibility(View.VISIBLE);
+                        intent=new Intent(ViewMessageClassroomActivity.this,AddQuestionsQuizActivity.class);
+                        initDialog();
                         ActivityOptions options= ActivityOptions.makeClipRevealAnimation(binding.addQuiz,binding.addQuiz.getWidth(),binding.addQuiz.getHeight(),300,300);
                         startActivity(intent,options.toBundle());
+                        binding.progressBar3.setVisibility(View.GONE);
                     })
                     .setNegativeButton("الغاء", (dialogInterface, i) -> {
-
-                    })
-                    .setMessage("هل تريد اضافة كويز ؟");
+                        Toast.makeText(this, "تم الالغاء", Toast.LENGTH_SHORT).show();
+                    });
+            builder.setView(dialog);
             builder.show();
 
         });
@@ -99,9 +118,8 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
             videoId.setHintTextColor(Color.GRAY);
             videoId.setTextSize(16);
             videoId.setTextColor(Color.WHITE);
-            videoId.setBackground(getDrawable(R.drawable.background_raduis_16));
+            videoId.setBackground(AppCompatResources.getDrawable(this,R.drawable.background_raduis_16));
             videoId.setSingleLine();
-
             videoId.setPadding(10,10,10,10);
             videoId.setImeOptions(EditorInfo.IME_ACTION_DONE);
             AlertDialog.Builder builder=new AlertDialog.Builder(ViewMessageClassroomActivity.this,R.style.AlertDialogStyle)
@@ -147,13 +165,6 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
             intent.setType("image/*");
             someActivityResultLauncher.launch(intent);
         });
-        binding.btnEmoji.setOnClickListener(view -> {
-            InputMethodManager methodManager=(InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (methodManager!=null){
-                methodManager.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
-            }
-        });
-
         binding.iconSend.setOnClickListener(view -> {
             Animation animationMic= AnimationUtils.loadAnimation(this, R.anim.mic_anim);
                         view.startAnimation(animationMic);
@@ -193,8 +204,34 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                     }
                 }
             });
+   /*private void addQuiz(String title,String description,int numberOfQuestion,int timeLimit,int score,int lecturerId){
+       Quiz quiz=new Quiz(title,description,numberOfQuestion,timeLimit,score,lecturerId);
+       call= RetrofitClientLaravelData.getInstance().getApiInterfaceUser().addQuiz(quiz);
+       call.enqueue(new Callback<Data<Quiz>>() {
+           @Override
+           public void onResponse(@NonNull Call<Data<Quiz>> call, @NonNull Response<Data<Quiz>> response) {
+               if (response.isSuccessful()){
+                   quizId=response.body().getData().getQuizId();
+               }
+           }
 
-   private void micAnim(){
+           @Override
+           public void onFailure(@NonNull Call<Data<Quiz>> call, @NonNull Throwable t) {
+               Toast.makeText(ViewMessageClassroomActivity.this, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+           }
+       });
+   }*/
+   private void initDialog(){
+       EditText title=dialog.findViewById(R.id.dialog_title);
+       EditText description=dialog.findViewById(R.id.dialog_description);
+       EditText numberOfQuestion=dialog.findViewById(R.id.dialog_questions);
+       EditText timeLimit=dialog.findViewById(R.id.dialog_minutes);
+
+       Toast.makeText(this, ""+quizId, Toast.LENGTH_SHORT).show();
+       intent.putExtra("numberOfQuestion",Integer.parseInt(numberOfQuestion.getText().toString()));
+       intent.putExtra("timeLimit",Integer.parseInt(timeLimit.getText().toString()));
+       intent.putExtra("quizId",quizId);
+
    }
   }
 

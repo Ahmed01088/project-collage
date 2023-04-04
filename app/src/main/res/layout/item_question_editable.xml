@@ -16,23 +16,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <EditText
-            android:id="@+id/textView9"
+            android:id="@+id/question_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:textStyle="bold"
             android:layout_marginBottom="10dp"
+            android:layout_weight="1"
             android:background="@android:color/transparent"
             android:hint="اكتب السؤال هنا من فضلك"
+            android:inputType="textMultiLine"
             android:minHeight="48dp"
             android:paddingStart="16dp"
+            android:paddingTop="8dp"
             android:paddingEnd="16dp"
-            android:inputType="textMultiLine"
-            android:layout_weight="1"
             android:textColor="@color/textColor"
             android:textColorHint="@color/white"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
         <TextView
             android:id="@+id/question_number"
             android:textColor="@color/white"
@@ -59,8 +60,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <EditText
-                android:id="@+id/textView27"
+                android:id="@+id/answer_a"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -90,8 +92,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <EditText
-                android:id="@+id/textView26"
+                android:id="@+id/answer_b"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -120,8 +123,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <EditText
-                android:id="@+id/textView25"
+                android:id="@+id/answer_c"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -150,14 +154,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <EditText
-                android:id="@+id/textView24"
+                android:id="@+id/answer_d"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:hint="الاختيار الرابع"
+                android:imeOptions="actionDone"
                 android:minHeight="48dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
@@ -181,7 +187,7 @@
         android:id="@+id/textView41"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="الاجابة الصحيحة"
+        android:text="@string/correct_ansore"
         android:textColor="@color/white"
         android:textStyle="bold"
         android:textSize="18sp"
@@ -190,51 +196,55 @@
         android:layout_marginEnd="10dp"/>
 
     <RadioGroup
+        android:id="@+id/radioChosices"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/background_16_stroke_1"
         android:layout_marginRight="8dp"
-        android:layout_height="wrap_content" >
+        android:background="@drawable/background_16_stroke_1"
+        android:orientation="horizontal">
+
         <RadioButton
-            android:id="@+id/radioButton4"
+            android:id="@+id/correct_answer_a"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="(A)"
-            android:buttonTint="@color/main2"
-            android:layout_weight="1"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
-        <RadioButton
-            android:id="@+id/radioButton3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="(B)"
-            android:buttonTint="@color/main2"
-            android:layout_weight="1"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-        <RadioButton
-            android:id="@+id/radioButton2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="(C)"
             android:layout_weight="1"
             android:buttonTint="@color/main2"
+            android:text="@string/a"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
 
         <RadioButton
-            android:id="@+id/radioButton"
+            android:id="@+id/correct_answer_b"
             android:layout_width="wrap_content"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="(D)"
+            android:layout_weight="1"
             android:buttonTint="@color/main2"
+            android:text="@string/b"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <RadioButton
+            android:id="@+id/correct_answer_c"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:buttonTint="@color/main2"
+            android:text="@string/c"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <RadioButton
+            android:id="@+id/correct_answer_d"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:buttonTint="@color/main2"
+            android:text="@string/d"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold" />

@@ -29,7 +29,7 @@ public class SplashActivity extends AppCompatActivity {
         Drawable drawable= AppCompatResources.getDrawable(this,R.drawable.background_gradient);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(getColor(android.R.color.transparent));
-        window.setNavigationBarColor(getColor(android.R.color.transparent));
+        window.setNavigationBarColor(getColor(R.color.statesOnBoarding));
         window.setBackgroundDrawable(drawable);
         Animation animation= AnimationUtils.loadAnimation(this, R.anim.rotate);
         binding.imageView.startAnimation(animation);

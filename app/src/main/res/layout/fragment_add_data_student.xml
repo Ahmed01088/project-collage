@@ -9,7 +9,7 @@
 
 
 <androidx.constraintlayout.widget.ConstraintLayout
-
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:background="#1C1B1B"
     android:layoutDirection="rtl"
@@ -33,6 +33,8 @@
         app:boxCornerRadiusTopStart="16dp"
         app:boxStrokeColor="@color/white"
         app:hintTextColor="@color/white"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayoutEmail">
@@ -141,12 +143,13 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayouty">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password"
-            android:maxLength="40"
             android:imeOptions="actionDone"
             android:inputType="textPassword"
+            android:maxLength="40"
             android:maxLines="1"
             android:minLines="1"
             android:textColor="#FFFFFF" />
@@ -174,12 +177,12 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/lastName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/last_name"
-            android:inputType="text"
             android:imeOptions="actionNext"
-            android:maxLength="40"
+            android:inputType="text"
             android:maxLines="1"
             android:minLines="1"
             android:textColor="#FFFFFF" />
@@ -207,7 +210,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout4">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/userId"
+            android:id="@+id/notional_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:imeOptions="actionNext"

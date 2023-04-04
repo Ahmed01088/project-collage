@@ -56,14 +56,14 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView3">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/userIdLogin"
+            android:id="@+id/nationalId"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:drawablePadding="8dp"
             android:drawableStart="@drawable/ic_id_24"
             android:drawableTint="@color/main2"
             android:hint="@string/username"
-            android:maxLength="16"
+            android:maxLength="20"
             android:imeOptions="actionNext"
             android:inputType="number"
             android:lines="1"

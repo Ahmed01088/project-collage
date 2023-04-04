@@ -16,7 +16,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <TextView
@@ -25,149 +26,143 @@
             android:layout_height="wrap_content"
             android:text=" ( 1 ) "
             android:textStyle="bold"
-            android:textSize="18sp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
+            android:textSize="@dimen/_12ssp"
+            android:layout_marginStart="@dimen/_2sdp"
+            android:layout_marginEnd="@dimen/_2sdp"
+            android:padding="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_8sdp"
             android:layout_gravity="top"
             android:textColor="@color/white"/>
 
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/question_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="@dimen/_4sdp"
             android:text="@string/quistion"
             android:layout_weight="1"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_gravity="center"
             android:textColor="@color/textColor"
-            android:textSize="16sp" />
+            android:textSize="@dimen/_10ssp" />
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:background="#FFFFFF"
-        android:layout_height="1dp"/>
+        android:layout_height="@dimen/_1sdp"/>
 
     <LinearLayout
 
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/_8sdp"
+            android:paddingBottom="@dimen/_8sdp">
+
+            <TextView
+                android:id="@+id/textView37"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text=" ( A ) "
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/_12ssp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView38"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text=" ( B ) "
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/_12ssp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView39"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text=" ( C ) "
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/_12ssp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView40"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text=" ( D ) "
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/_12ssp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <RadioGroup
             android:id="@+id/group"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_height="wrap_content"
-            android:padding="8dp">
+            android:padding="@dimen/_8sdp">
 
-            <LinearLayout
+            <RadioButton
+                android:id="@+id/radioButtonA"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/main2"
+                android:text="1 and  2"
+                android:textColor="@color/textColor"
+                android:textSize="@dimen/_10ssp" />
 
-                <TextView
-                    android:id="@+id/textView37"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:gravity="top"
-                    android:text=" ( A ) "
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <RadioButton
-                    android:id="@+id/radioButtonA"
-                    android:layout_width="match_parent"
-                    android:checked="true"
-                    android:buttonTint="@color/main2"
-                    android:layout_height="wrap_content"
-                    android:text="1 and  2"
-                    android:textColor="@color/textColor" />
-
-            </LinearLayout>
-
-            <LinearLayout
+            <RadioButton
+                android:id="@+id/radioButtonB"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:buttonTint="@color/main2"
+                android:text="1 and  2"
+                android:textColor="@color/textColor"
+                android:textSize="@dimen/_10ssp" />
 
-                <TextView
-                    android:id="@+id/textView38"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:gravity="top"
-                    android:text=" ( B ) "
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <RadioButton
-                    android:id="@+id/radioButtonB"
-                    android:layout_width="match_parent"
-                    android:buttonTint="@color/main2"
-                    android:layout_height="wrap_content"
-                    android:text="answer 1"
-                    android:textColor="@color/textColor" />
-            </LinearLayout>
-
-            <LinearLayout
+            <RadioButton
+                android:id="@+id/radioButtonC"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/main2"
+                android:text="answer 1"
+                android:textColor="@color/textColor"
+                android:textSize="@dimen/_10ssp" />
 
-                <TextView
-                    android:id="@+id/textView39"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:gravity="top"
-                    android:text=" ( C ) "
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <RadioButton
-                    android:id="@+id/radioButtonC"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:buttonTint="@color/main2"
-                    android:text="none"
-                    android:textColor="@color/textColor" />
-            </LinearLayout>
-
-            <LinearLayout
+            <RadioButton
+                android:id="@+id/radioButtonD"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/main2"
+                android:text="none"
+                android:textColor="@color/textColor"
+                android:textSize="@dimen/_10ssp" />
 
-                <TextView
-                    android:id="@+id/textView40"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:gravity="top"
-                    android:text=" ( D ) "
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <RadioButton
-                    android:id="@+id/radioButtonD"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:buttonTint="@color/main2"
-                    android:text="all above"
-                    android:textColor="@color/textColor" />
-            </LinearLayout>
         </RadioGroup>
     </LinearLayout>
 

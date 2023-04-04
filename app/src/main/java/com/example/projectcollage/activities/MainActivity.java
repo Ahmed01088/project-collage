@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     SharedPreferences.Editor editor;
     String []nameOfFragments;
     View header;
+    String USER_TYPE;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(binding.getRoot());
         getWindow().setNavigationBarColor(getColor(R.color.main_bar));
         Window window=this.getWindow();
+        USER_TYPE=getIntent().getStringExtra("userType");
         Drawable drawable= AppCompatResources.getDrawable(this,R.drawable.background_gradient);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(getColor(android.R.color.transparent));
@@ -47,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(binding.toolbar);
         header= LayoutInflater.from(this).inflate(R.layout.header_student_affairse, null);
         login=getSharedPreferences("login",MODE_PRIVATE);
-        username=getIntent().getStringExtra("name");
         initViewPager();
         binding.navBar.setNavigationItemSelectedListener(this);
         binding.toolbar.setNavigationOnClickListener(view -> binding.drawer.openDrawer(GravityCompat.START));
@@ -59,7 +61,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 case R.id.search:
                     View view=findViewById(R.id.search);
                     Intent intent=new Intent(this,SearchActivity.class);
-                    ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,view.getWidth()/2,view.getHeight()/2,300,300);
+                    ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,
+                            view.getWidth()/2,view.getHeight()/2,300,300);
                     startActivity(intent,options.toBundle());
                     return true;
             }
@@ -70,8 +73,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initViewPager() {
-        if (getIntent().getStringExtra(LoginActivity.STUDENT_AFFAIRS)!=null){
-            if (getIntent().getStringExtra(LoginActivity.STUDENT_AFFAIRS).equals(LoginActivity.STUDENT_AFFAIRS)){
+        if (USER_TYPE!=null){
+            if (USER_TYPE.equals("Student Affairs")){
                 adapter=new ViewPagerAdapter(this,false);
                 nameOfFragments= new String[]{"الصفحة الرئيسية", "الدرداشات"};
                 binding.navBar.getMenu().removeItem(R.id.quiz);
@@ -82,17 +85,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 adapter=new ViewPagerAdapter(this,true);
                 nameOfFragments=new String[]{"الصفحة الرئيسية","الفصول الدراسية","الدرداشات"};
 //                binding.navBar.getMenu().removeItem(R.id.study_table);
-
             }
         }else {
             adapter=new ViewPagerAdapter(this,true);
             nameOfFragments=new String[]{"الصفحة الرئيسية","الفصول الدراسية","الدرداشات"};
-
         }
         binding.viewTabs.setAdapter(adapter);
         new TabLayoutMediator(binding.tabLayout, binding.viewTabs, (tab, position) -> {
             tab.setText(nameOfFragments[position]);
-
         }).attach();
     }
 

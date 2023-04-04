@@ -2,11 +2,11 @@ package com.example.projectcollage.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Data {
+public class Data <T>{
     @SerializedName("message")
     private String message;
     @SerializedName("data")
-    private User user;
+    private T data;
 
     public String getMessage() {
         return message;
@@ -16,11 +16,11 @@ public class Data {
         this.message = message;
     }
 
-    public User getUser() {
-        return user;
+    public T getData() {
+        return data;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setData(T data) {
+        this.data = data;
     }
 }

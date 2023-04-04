@@ -2,7 +2,8 @@ package com.example.projectcollage.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Comment {
+public class CommentReply {
+
     @SerializedName("id")
     private int id;
     @SerializedName("comment_text")
@@ -17,6 +18,8 @@ public class Comment {
     private int lecturerId;
     @SerializedName("post_id")
     private int postId;
+    @SerializedName("comment_id")
+    private int commentId;
     @SerializedName("created_at")
     private String createdAt;
     @SerializedName("updated_at")
@@ -76,6 +79,14 @@ public class Comment {
 
     public void setPostId(int postId) {
         this.postId = postId;
+    }
+
+    public int getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(int commentId) {
+        this.commentId = commentId;
     }
 
     public String getCreatedAt() {

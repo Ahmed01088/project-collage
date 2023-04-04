@@ -8,6 +8,7 @@
         <item name="android:background">@color/main_bar</item>
         <item name="android:layoutDirection">rtl</item>
         <item name="android:textAlignment">textStart</item>
+        <item name="android:titleTextStyle">@style/titleSize</item>
         <item name="colorAccent">#cccccc</item>
         <item name="android:textSize">@dimen/_20ssp</item>
         <item name="android:paddingLeft">@dimen/_4sdp</item>
@@ -23,6 +24,9 @@
     <style name="Positive" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor" >@color/statesBar</item>
         <item name="android:textSize" >@dimen/_14ssp</item>
+    </style>
+    <style name="titleSize" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textSize" >@dimen/_16ssp</item>
     </style>
     <style name="BottomSheetDialog" parent="Theme.MaterialComponents.BottomSheetDialog">
         <item name="android:layout_marginLeft">@dimen/_50sdp</item>

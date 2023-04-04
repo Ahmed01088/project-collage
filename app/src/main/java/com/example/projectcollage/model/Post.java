@@ -1,44 +1,41 @@
 package com.example.projectcollage.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Post {
-    private int pid;
-    private int userId;
-    private String url;
-    private String timestamp;
+    @SerializedName("id")
+    private int id;
+    @SerializedName("content")
+    private String content;
+    @SerializedName("image")
     private String image;
-    private String title;
-    private String body;
+    @SerializedName("posted_at")
+    private String postedAt;
+    @SerializedName("student_id")
+    private int studentId;
+    @SerializedName("student_affairs_id")
+    private int studentAffairsId;
+    @SerializedName("lecturer_id")
+    private int lecturerId;
+    @SerializedName("created_at")
+    private String createdAt;
+    @SerializedName("updated_at")
+    private String updatedAt;
 
-    public String getUrl() {
-        return url;
+    public int getId() {
+        return id;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public int getPid() {
-        return pid;
+    public String getContent() {
+        return content;
     }
 
-    public void setPid(int pid) {
-        this.pid = pid;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getImage() {
@@ -49,19 +46,51 @@ public class Post {
         this.image = image;
     }
 
-    public String getTitle() {
-        return title;
+    public String getPostedAt() {
+        return postedAt;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setPostedAt(String postedAt) {
+        this.postedAt = postedAt;
     }
 
-    public String getBody() {
-        return body;
+    public int getStudentId() {
+        return studentId;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public void setStudentId(int studentId) {
+        this.studentId = studentId;
+    }
+
+    public int getStudentAffairsId() {
+        return studentAffairsId;
+    }
+
+    public void setStudentAffairsId(int studentAffairsId) {
+        this.studentAffairsId = studentAffairsId;
+    }
+
+    public int getLecturerId() {
+        return lecturerId;
+    }
+
+    public void setLecturerId(int lecturerId) {
+        this.lecturerId = lecturerId;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

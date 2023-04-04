@@ -3,8 +3,7 @@ package com.example.projectcollage.model;
 import com.google.gson.annotations.SerializedName;
 
 public class User {
-    @SerializedName("id")
-    private int id;
+
     @SerializedName("name")
     private String name;
     @SerializedName("email")
@@ -13,25 +12,35 @@ public class User {
     private String nationalId;
     @SerializedName("password")
     private String password;
+    @SerializedName("id")
+    private Integer uid;
 
     public User(String nationalId, String password) {
         this.nationalId = nationalId;
         this.password = password;
     }
 
-    public User(String name, String email, String nationalId, String password) {
+    public User(String name, String email,String nationalId, String password) {
         this.name = name;
         this.email = email;
         this.nationalId = nationalId;
         this.password = password;
     }
 
-    public int getId() {
-        return id;
+    public String getPassword() {
+        return password;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Integer getUid() {
+        return uid;
+    }
+
+    public void setUid(Integer  uid) {
+        this.uid = uid;
     }
 
     public String getName() {

@@ -1,5 +1,6 @@
 package com.example.projectcollage.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -17,34 +18,29 @@ import com.example.projectcollage.R;
 import com.example.projectcollage.adapters.QuestionAdapter;
 import com.example.projectcollage.databinding.ActivityQuizBinding;
 import com.example.projectcollage.model.Question;
+import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class QuizActivity extends AppCompatActivity {
     ActivityQuizBinding binding;
     int counterSeconds = 60;
     final int count=1000;
     CountDownTimer timer;
+    QuestionAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding=ActivityQuizBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        ArrayList<Question>questions=new ArrayList<>();
-        questions.add(new Question());
-        questions.add(new Question());
-        questions.add(new Question());
-        questions.add(new Question());
-        questions.add(new Question());
-        questions.add(new Question());
-        timer();
         getWindow().setNavigationBarColor(getColor(R.color.main_bar));
         getWindow().setStatusBarColor(getColor(R.color.statesBar));
-        QuestionAdapter adapter = new QuestionAdapter(this,questions);
-        LinearLayoutManager manager=new LinearLayoutManager(this);
-        binding.recVQuestions.setAdapter(adapter);
-        binding.recVQuestions.setLayoutManager(manager);
         binding.submit.setOnClickListener(view -> {
             AppCompatEditText uid=new AppCompatEditText(this);
             uid.setHint("ادخل الرقم القومي للتاكيد");
@@ -58,9 +54,8 @@ public class QuizActivity extends AppCompatActivity {
             uid.setImeOptions(EditorInfo.IME_ACTION_DONE);
             uid.setFilters(new InputFilter[] { new InputFilter.LengthFilter(16) });
             AlertDialog.Builder builder=new AlertDialog.Builder(QuizActivity.this,R.style.AlertDialogStyle)
-                    .setMessage("درجتك في هذا الكويز هي 15")
+                    .setMessage("درجتك في هذا الكويز هي"+ QuestionAdapter.getScore())
                     .setPositiveButton("ارسال", (dialogInterface, i) -> {
-                        timer.cancel();
                         finish();
                     })
                     .setNegativeButton("الغاء", (dialogInterface, i) -> {
@@ -84,7 +79,7 @@ public class QuizActivity extends AppCompatActivity {
                     if (counterSeconds ==0){
                         Toast.makeText(QuizActivity.this, "تم انتهاء الوقت ", Toast.LENGTH_SHORT).show();
                         AlertDialog.Builder builder=new AlertDialog.Builder(QuizActivity.this,R.style.AlertDialogStyle)
-                                .setMessage("تم انتهاء الوقت\nدرجتك في هذا الكويز هي 15")
+                                .setMessage("درجتك في هذا الكويز هي "+QuestionAdapter.getScore())
                                 .setPositiveButton("ارسال", (dialogInterface, i) -> timer.cancel())
                                 .setNegativeButton("الغاء", (dialogInterface, i) -> {
                                 });
@@ -104,7 +99,27 @@ public class QuizActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        timer.cancel();
         finish();
     }
+    /*private void getQuestions(){
+        Call<List<Question>>call= RetrofitClientLaravelData.getInstance().getApiInterfaceUser()
+                .getQuestionsByQuizIdAndLecturerId(1,1);
+        call.enqueue(new Callback<List<Question>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Question>> call, Response<List<Question>> response) {
+                if (response.isSuccessful()){
+                    List<Question>questions=response.body();
+                    adapter = new QuestionAdapter(QuizActivity.this,(ArrayList<Question>)questions);
+                    LinearLayoutManager manager=new LinearLayoutManager(QuizActivity.this);
+                    binding.recVQuestions.setAdapter(adapter);
+                    binding.recVQuestions.setLayoutManager(manager);
+                    binding.recVQuestions.setHasFixedSize(true);
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<List<Question>> call, @NonNull Throwable t) {
+                Toast.makeText(QuizActivity.this, ""+t, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }*/
 }
