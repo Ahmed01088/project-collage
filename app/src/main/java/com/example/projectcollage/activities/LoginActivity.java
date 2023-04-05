@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     private void loginStudentAffairs(final String nationalId, final String password) {
         binding.progress.setVisibility(View.VISIBLE);
         binding.login.setVisibility(View.INVISIBLE);
-        Call<Data<StudentAffairs>> login = RetrofitClientLaravelData.getInstance().getApiInterfaceUser()
+        Call<Data<StudentAffairs>> login = RetrofitClientLaravelData.getInstance().getApiInterface()
                 .loginStudentAffairs(nationalId, password);
         login.enqueue(new Callback<Data<StudentAffairs>>() {
             @Override
@@ -110,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
     private void loginAdmin(final String nationalId, final String password) {
         binding.progress.setVisibility(View.VISIBLE);
         binding.login.setVisibility(View.INVISIBLE);
-        Call<Data<Admin>> login = RetrofitClientLaravelData.getInstance().getApiInterfaceUser()
+        Call<Data<Admin>> login = RetrofitClientLaravelData.getInstance().getApiInterface()
                 .loginAdmin(nationalId, password);
         login.enqueue(new Callback<Data<Admin>>() {
             @Override
@@ -151,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
     private void loginStudent(final String nationalId, final String password) {
         binding.progress.setVisibility(View.VISIBLE);
         binding.login.setVisibility(View.INVISIBLE);
-        Call<Data<Student>> login = RetrofitClientLaravelData.getInstance().getApiInterfaceUser()
+        Call<Data<Student>> login = RetrofitClientLaravelData.getInstance().getApiInterface()
                 .loginStudent(nationalId, password);
         login.enqueue(new Callback<Data<Student>>() {
             @Override
@@ -192,7 +192,7 @@ public class LoginActivity extends AppCompatActivity {
     private void loginLecturer(final String nationalId, final String password) {
         binding.progress.setVisibility(View.VISIBLE);
         binding.login.setVisibility(View.INVISIBLE);
-        Call<Data<Lecturer>> login = RetrofitClientLaravelData.getInstance().getApiInterfaceUser()
+        Call<Data<Lecturer>> login = RetrofitClientLaravelData.getInstance().getApiInterface()
                 .loginLecturer(nationalId, password);
         login.enqueue(new Callback<Data<Lecturer>>() {
             @Override
@@ -215,6 +215,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 binding.login.setVisibility(View.VISIBLE);
                 binding.progress.setVisibility(View.GONE);
+                Toast.makeText(LoginActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
             }
 
             @Override

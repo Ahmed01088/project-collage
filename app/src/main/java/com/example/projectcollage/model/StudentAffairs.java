@@ -16,6 +16,8 @@ public class StudentAffairs {
     private String email;
     @SerializedName("phone_no")
     private String phoneNumber;
+    @SerializedName("password")
+    private String password;
     @SerializedName("image")
     private String image;
     @SerializedName("admin_id")
@@ -28,6 +30,27 @@ public class StudentAffairs {
     private String updatedAt;
     @SerializedName("created_at")
     private String createdAt;
+
+    public StudentAffairs(String firstname, String lastname, String nationalId, String email, String phoneNumber, String image, int adminId, String password, String level, String dateAdded) {
+           this.firstName = firstname;
+            this.lastName = lastname;
+            this.nationalId = nationalId;
+            this.email = email;
+            this.phoneNumber = phoneNumber;
+            this.image = image;
+            this.adminId = adminId;
+            this.password = password;
+            this.responsibleLevel = level;
+            this.dateAdded = dateAdded;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public int getSaid() {
         return said;

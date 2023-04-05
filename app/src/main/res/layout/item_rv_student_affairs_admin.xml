@@ -18,7 +18,7 @@
         android:background="@drawable/background_gradient">
 
         <TextView
-            android:id="@+id/textView45"
+            android:id="@+id/respnsiple_level"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -30,7 +30,7 @@
             android:drawablePadding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/enable_admin"
+            app:layout_constraintTop_toBottomOf="@+id/emailAdmin"
             app:layout_constraintVertical_bias="0.0"
             app:drawableRightCompat="@drawable/ic_level" />
 
@@ -61,7 +61,7 @@
             app:drawableRightCompat="@drawable/ic__update" />
 
         <TextView
-            android:id="@+id/textView43"
+            android:id="@+id/nameAdmin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -74,7 +74,7 @@
             app:layout_constraintTop_toBottomOf="@+id/data_add" />
 
         <TextView
-            android:id="@+id/textView44"
+            android:id="@+id/nationalIdAdmin"
             android:layout_width="wrap_content"
             android:layout_height="24dp"
             android:layout_marginTop="16dp"
@@ -84,11 +84,11 @@
             android:textSize="18sp"
             android:drawablePadding="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView43"
+            app:layout_constraintTop_toBottomOf="@+id/nameAdmin"
             app:drawableRightCompat="@drawable/ic_id_24" />
 
         <TextView
-            android:id="@+id/enable_admin"
+            android:id="@+id/emailAdmin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -100,7 +100,7 @@
             android:textColor="@color/white"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView44"
+            app:layout_constraintTop_toBottomOf="@+id/nationalIdAdmin"
             app:drawableRightCompat="@drawable/ic_email"
             app:drawableTint="@color/white" />
 

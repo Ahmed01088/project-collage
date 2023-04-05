@@ -14,7 +14,7 @@ import android.widget.Toast;
 import com.example.projectcollage.R;
 import com.example.projectcollage.databinding.FragmentAddDataStudentBinding;
 import com.example.projectcollage.model.Data;
-import com.example.projectcollage.model.User;
+import com.example.projectcollage.model.Student;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 
 import retrofit2.Call;
@@ -34,14 +34,13 @@ public class AddDataStudentFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding=FragmentAddDataStudentBinding.inflate(getLayoutInflater());
-   preparationSpinner();
+        preparationSpinner();
 
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return binding.getRoot();
     }
     public void preparationSpinner(){
@@ -56,45 +55,54 @@ public class AddDataStudentFragment extends Fragment {
         adapterLevels.setDropDownViewResource(R.layout.item_spinner);
         binding.studentState.setAdapter(adapterState);
         binding.studentDepartment.setAdapter(adapterDepartment);
-        binding.studentLevel.setAdapter(adapterLevels);
+        binding.responsibleLevel.setAdapter(adapterLevels);
         binding.send.setOnClickListener(v -> {
-            String name=binding.nameOfStudent.getText().toString();
-            String email=binding.userEmail.getText().toString();
+            String firstname=binding.firstname.getText().toString();
+            String lastname=binding.lastName.getText().toString();
+            String email=binding.email.getText().toString();
             String password=binding.password.getText().toString();
-            String nationalId=binding.notionalId.getText().toString();
-            binding.nameOfStudent.setText("");
-            binding.userEmail.setText("");
+            String nationalId=binding.nationalIdA.getText().toString();
+            String level=binding.responsibleLevel.getSelectedItem().toString();
+            String department=binding.studentDepartment.getSelectedItem().toString();
+            String state=binding.studentState.getSelectedItem().toString();
+            String phoneNumber=binding.phoneNumber.getText().toString();
+            addStudent(new Student(
+                    firstname,
+                    lastname,
+                    phoneNumber,
+                    email,
+                    "",
+                    level,
+                    state,
+                    nationalId,
+                    department,
+                    password));
+            binding.firstname.setText("");
+            binding.email.setText("");
             binding.password.setText("");
-            binding.notionalId.setText("");
-            if (name.isEmpty()||email.isEmpty()||password.isEmpty()||nationalId.isEmpty()){
-                Toast.makeText(getActivity(), "من فضلك املا كل الحقول", Toast.LENGTH_SHORT).show();
-            }else {
-                boolean isTrue=email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
-                    if (isTrue){
-                        User user=new User(name,email,nationalId,password);
-                    }else {
-                        binding.userEmail.setError("من فضلك ادخل بريد الكتروني صحيح");
-                }
-            }
+            binding.nationalIdA.setText("");
+            binding.lastName.setText("");
+            binding.phoneNumber.setText("");
+
+
         });
     }
-    /*private void addUser(User user){
-        Call<Data<User>> call= RetrofitClientLaravelData.getInstance().getApiInterfaceUser().addUser(user);
-        call.enqueue(new Callback<Data<User>>() {
-            @Override
-            public void onResponse(@NonNull Call<Data<User>> call, @NonNull Response<Data<User>> response) {
-                if (response.isSuccessful()){
-                    Toast.makeText(getActivity(), "Success"+response.body().getData().getName(), Toast.LENGTH_SHORT).show();
 
+   private void addStudent(Student student){
+        Call<Data<Student>>call= RetrofitClientLaravelData.getInstance().getApiInterface().addStudent(student);
+        call.enqueue(new Callback<Data<Student>>() {
+            @Override
+            public void onResponse(@NonNull Call<Data<Student>> call, @NonNull Response<Data<Student>> response) {
+                if (response.isSuccessful()){
+                    Toast.makeText(getActivity(), "تم اضافة الطالب بنجاح", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<Data<User>> call, @NonNull Throwable t) {
-                Toast.makeText(getActivity(), "Error"+t, Toast.LENGTH_SHORT).show();
+            public void onFailure(@NonNull Call<Data<Student>> call, @NonNull Throwable t) {
+                Toast.makeText(getActivity(), "حدث خطأ", Toast.LENGTH_SHORT).show();
             }
         });
-    }*/
-
-
+   }
 }

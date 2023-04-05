@@ -144,8 +144,8 @@ public class Student {
                    String image,
                    String level,
                    String state,
-                   String departmentCode,
                    String nationalId,
+                   String department,
                    String password) {
         this.fName = fName;
         this.lName = lName;

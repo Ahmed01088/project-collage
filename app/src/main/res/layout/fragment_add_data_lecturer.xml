@@ -29,7 +29,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView11">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/nameOfStudent"
+            android:id="@+id/firstname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/first_name"
@@ -163,7 +163,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout3">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/notional_id"
+            android:id="@+id/nationalIdA"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/userId"
@@ -197,7 +197,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPhone">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/userEmail"
+            android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:imeOptions="actionDone"

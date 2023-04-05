@@ -21,6 +21,14 @@ public class Department {
     @SerializedName("updated_at")
     private String updatedAt;
 
+    public Department(String nameDepartment, String departmentCode, String level, String semister, String dateNow) {
+        this.name = nameDepartment;
+        this.departmentCode = departmentCode;
+        this.level = level;
+        this.semester = semister;
+        this.year = dateNow;
+    }
+
     public int getDid() {
         return did;
     }
