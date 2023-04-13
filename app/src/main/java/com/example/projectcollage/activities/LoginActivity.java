@@ -25,7 +25,7 @@ public class LoginActivity extends AppCompatActivity {
     ActivityLoginBinding binding;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
-    public String[] UserType = {"Student Affairs", "Student", "Lecturer", "Admin"};
+    public static String[] UserType = {"Student Affairs", "Student", "Lecturer", "Admin"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +35,29 @@ public class LoginActivity extends AppCompatActivity {
         getWindow().setStatusBarColor(getColor(R.color.statesOnBoarding));
         getWindow().setNavigationBarColor(getColor(R.color.statesOnBoarding));
         preferences = getSharedPreferences("login", MODE_PRIVATE);
+        editor=preferences.edit();
+        if (preferences.getString("nationalId", null) != null) {
+            String userType = preferences.getString("userType", null);
+            if (userType.equals(UserType[0])) {
+                if (preferences.getString("studentAffairs", null)!=null&&
+                        preferences.getString("studentAffairs", null).equals("Admin")) {
+                    startActivity(new Intent(this, ManagementDataOnAppActivity.class));
+                    finish();
+                } else {
+                    startActivity(new Intent(this, MainActivity.class));
+                    finish();
+                }
+            } else if (userType.equals(UserType[1])) {
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
+            } else if (userType.equals(UserType[2])) {
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
+            } else if (userType.equals(UserType[3])) {
+                startActivity(new Intent(this, AddAdminStudentAffairsActivity.class));
+                finish();
+            }
+        }
         binding.login.setOnClickListener(view -> {
             String nationalId = binding.nationalId.getText().toString();
             String password = binding.passwordLogin.getText().toString();
@@ -63,25 +86,34 @@ public class LoginActivity extends AppCompatActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this, R.style.AlertDialogStyle)
                             .setPositiveButton("شئون طلاب ", (dialogInterface, i) -> {
                                 Intent intent = new Intent(LoginActivity.this, ManagementDataOnAppActivity.class);
-                                intent.putExtra("firstname", response.body().getData().getFirstName());
-                                intent.putExtra("lastname", response.body().getData().getLastName());
-                                intent.putExtra("nationalId", response.body().getData().getNationalId());
-                                intent.putExtra("uid", response.body().getData().getSaid());
-                                intent.putExtra("email", response.body().getData().getEmail());
-                                intent.putExtra("userType", UserType[0]);
+                                editor.putString("studentAffairs", "Admin");
+                                editor.putString("userType", UserType[0]);
+                                editor.putString("nationalId", nationalId);
+                                editor.putString("firstName", response.body().getData().getFirstName());
+                                editor.putString("lastName", response.body().getData().getLastName());
+                                editor.putString("email", response.body().getData().getEmail());
+                                editor.putInt("uid", response.body().getData().getSaid());
+                                editor.apply();
                                 ActivityOptions options = ActivityOptions.makeClipRevealAnimation(binding.login, binding.login.getWidth() / 2,
                                         binding.login.getHeight() / 2, 100, 100);
                                 startActivity(intent, options.toBundle());
+                                binding.progress.setVisibility(View.GONE);
+                                binding.login.setVisibility(View.VISIBLE);
                             }).setNegativeButton("دخول عادي", (dialogInterface, i) -> {
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                intent.putExtra("firstname", response.body().getData().getFirstName());
-                                intent.putExtra("uid", response.body().getData().getSaid());
-                                intent.putExtra("email", response.body().getData().getEmail());
-                                intent.putExtra("nationalId", response.body().getData().getNationalId());
-                                intent.putExtra("userType", UserType[0]);
+                                editor.putString("nationalId", nationalId);
+                                editor.putString("firstName", response.body().getData().getFirstName());
+                                editor.putString("lastName", response.body().getData().getLastName());
+                                editor.putString("email", response.body().getData().getEmail());
+                                editor.putInt("uid", response.body().getData().getSaid());
+                                editor.putString("studentAffairs", "User");
+                                editor.putString("userType", UserType[0]);
+                                editor.apply();
                                 ActivityOptions options = ActivityOptions.makeClipRevealAnimation(binding.nationalId,
                                         binding.nationalId.getWidth() / 2, binding.nationalId.getHeight() / 2,
                                         100, 100);
+                                binding.progress.setVisibility(View.GONE);
+                                binding.login.setVisibility(View.VISIBLE);
                                 startActivity(intent, options.toBundle());
                                 finish();
                             }).setMessage("اختار طريقة الدخول ");
@@ -117,12 +149,13 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<Data<Admin>> call, @NonNull Response<Data<Admin>> response) {
                 if (response.isSuccessful()) {
                     Intent intent = new Intent(LoginActivity.this, AddAdminStudentAffairsActivity.class);
-                    intent.putExtra("firstname", response.body().getData().getFirstName());
-                    intent.putExtra("lastname", response.body().getData().getLastName());
-                    intent.putExtra("nationalId", response.body().getData().getNationalId());
-                    intent.putExtra("email", response.body().getData().getEmail());
-                    intent.putExtra("uid", response.body().getData().getAid());
-                    intent.putExtra("userType", UserType[3]);
+                    editor.putString("nationalId", nationalId);
+                    editor.putString("firstName", response.body().getData().getFirstName());
+                    editor.putString("lastName", response.body().getData().getLastName());
+                    editor.putString("email", response.body().getData().getEmail());
+                    editor.putString("userType", UserType[3]);
+                    editor.putInt("uid", response.body().getData().getAid());
+                    editor.apply();
                     ActivityOptions options = ActivityOptions.makeClipRevealAnimation(binding.login, binding.login.getWidth() / 2,
                             binding.login.getHeight() / 2, 100, 100);
                     startActivity(intent, options.toBundle());
@@ -157,13 +190,15 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<Data<Student>> call, @NonNull Response<Data<Student>> response) {
                 if (response.isSuccessful()) {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("firstname", response.body().getData().getfName());
-                    intent.putExtra("lastname", response.body().getData().getlName());
-                    intent.putExtra("nationalId", response.body().getData().getNationalId());
-                    intent.putExtra("email", response.body().getData().getEmail());
-                    intent.putExtra("uid", response.body().getData().getUid());
-                    intent.putExtra("userType", UserType[1]);
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);intent.putExtra("firstname", response.body().getData().getfName());intent.putExtra("lastname", response.body().getData().getlName());
+                    editor.putString("nationalId", response.body().getData().getNationalId());
+                    editor.putString("firstName", response.body().getData().getfName());
+                    editor.putString("lastName", response.body().getData().getlName());
+                    editor.putString("email", response.body().getData().getEmail());
+                    editor.putInt("uid", response.body().getData().getUid());
+                    editor.putString("userType", UserType[1]);
+                    editor.putInt("departmentId", response.body().getData().getDepartmentId());
+                    editor.apply();
                     ActivityOptions options = ActivityOptions.makeClipRevealAnimation(binding.login, binding.login.getWidth() / 2,
                             binding.login.getHeight() / 2, 100, 100);
                     startActivity(intent, options.toBundle());
@@ -199,12 +234,13 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<Data<Lecturer>> call, @NonNull Response<Data<Lecturer>> response) {
                 if (response.isSuccessful()) {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("firstname", response.body().getData().getfName());
-                    intent.putExtra("lastname", response.body().getData().getlName());
-                    intent.putExtra("nationalId", response.body().getData().getNationalId());
-                    intent.putExtra("email", response.body().getData().getEmail());
-                    intent.putExtra("uid", response.body().getData().getLid());
-                    intent.putExtra("userType", UserType[2]);
+                    editor.putString("nationalId", response.body().getData().getNationalId());
+                    editor.putString("firstName", response.body().getData().getfName());
+                    editor.putString("lastName", response.body().getData().getlName());
+                    editor.putString("email", response.body().getData().getEmail());
+                    editor.putInt("uid", response.body().getData().getLid());
+                    editor.putString("userType", UserType[2]);
+                    editor.apply();
                     ActivityOptions options = ActivityOptions.makeClipRevealAnimation(binding.login, binding.login.getWidth() / 2,
                             binding.login.getHeight() / 2, 100, 100);
                     startActivity(intent, options.toBundle());
@@ -212,10 +248,10 @@ public class LoginActivity extends AppCompatActivity {
                     finish();
                 } else {
                     Toast.makeText(LoginActivity.this, "المدرس غير موجود", Toast.LENGTH_SHORT).show();
+                     editor.clear();
                 }
                 binding.login.setVisibility(View.VISIBLE);
                 binding.progress.setVisibility(View.GONE);
-                Toast.makeText(LoginActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
             }
 
             @Override

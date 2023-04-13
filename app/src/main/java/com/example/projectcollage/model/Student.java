@@ -23,13 +23,26 @@ public class Student {
     private String departmentCode;
     @SerializedName("national_id")
     private String nationalId;
+    @SerializedName("department_id")
+    private int departmentId;
     @SerializedName("password")
     private String password;
     @SerializedName("created_at")
     private String createdAt;
     @SerializedName("updated_at")
     private String updatedAt;
-
+    public Student(String firstname, String lastname, String email, String password, String nationalId, String level, String department, String state, String phoneNumber, int departmentId) {
+        this.fName = firstname;
+        this.lName = lastname;
+        this.email = email;
+        this.password = password;
+        this.nationalId = nationalId;
+        this.level = level;
+        this.departmentCode = department;
+        this.state = state;
+        this.phoneNumber = phoneNumber;
+        this.departmentId = departmentId;
+    }
     public int getUid() {
         return uid;
     }
@@ -48,6 +61,15 @@ public class Student {
 
     public String getlName() {
         return lName;
+    }
+
+
+    public int getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(int departmentId) {
+        this.departmentId = departmentId;
     }
 
     public void setlName(String lName) {
@@ -137,25 +159,5 @@ public class Student {
     public Student() {
     }
 
-    public Student(String fName,
-                   String lName,
-                   String phoneNumber,
-                   String email,
-                   String image,
-                   String level,
-                   String state,
-                   String nationalId,
-                   String department,
-                   String password) {
-        this.fName = fName;
-        this.lName = lName;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.image = image;
-        this.level = level;
-        this.state = state;
-        this.departmentCode = departmentCode;
-        this.nationalId = nationalId;
-        this.password = password;
-    }
+
 }

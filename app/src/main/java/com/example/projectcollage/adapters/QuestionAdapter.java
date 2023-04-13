@@ -57,40 +57,50 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         }
         holder.group.clearCheck();
         holder.group.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.radioButtonA
-                    &&holder.radioButtonA.isChecked()==isCorrect[0]) {
-                if (isCorrect[0]&&!isChecked[0]){
-                    score++;
-                }else {
-                    score--;
-                    isChecked[0]=false;
+            int checkedRadioButtonId = group.getCheckedRadioButtonId();
+            if (checkedRadioButtonId == R.id.radioButtonA) {
+                if (isCorrect[0]) {
+                    if (isChecked[0]) {
+                        score = score - 1;
+                        isChecked[0] = false;
+                    } else {
+                        score = score + 1;
+                        isChecked[0] = true;
+                    }
                 }
-                } else if (checkedId == R.id.radioButtonB
-                    &&holder.radioButtonB.isChecked()==isCorrect[1]) {
-                if (isCorrect[1]&&!isChecked[1]){
-                    score++;
-                }else {
-                    score--;
-                    isChecked[1]=true;
-
+            } else if (checkedRadioButtonId == R.id.radioButtonB) {
+                if (isCorrect[1]) {
+                    if (isChecked[1]) {
+                        score = score - 1;
+                        isChecked[1] = false;
+                    } else {
+                        score = score + 1;
+                        isChecked[1] = true;
+                    }
                 }
-            } else if (checkedId == R.id.radioButtonC&&holder.radioButtonC.isChecked()==isCorrect[2]) {
-                if (isCorrect[2]&&!isChecked[2]){
-                    score++;
-                }else {
-                    score--;
-                    isChecked[2]=true;
-
+            } else if (checkedRadioButtonId == R.id.radioButtonC) {
+                if (isCorrect[2]) {
+                    if (isChecked[2]) {
+                        score = score - 1;
+                        isChecked[2] = false;
+                    } else {
+                        score = score + 1;
+                        isChecked[2] = true;
+                    }
                 }
-            } else if (checkedId == R.id.radioButtonD&&holder.radioButtonD.isChecked()==isCorrect[3]) {
-                if (isCorrect[3]&&!isChecked[3]){
-                    score++;
-                }else {
-                    score--;
-                    isChecked[3]=true;
-
+            } else if (checkedRadioButtonId == R.id.radioButtonD) {
+                if (isCorrect[3]) {
+                    if (isChecked[3]) {
+                        score = score - 1;
+                        isChecked[3] = false;
+                    } else {
+                        score = score + 1;
+                        isChecked[3] = true;
+                    }
                 }
             }
+            Toast.makeText(context, ""+score, Toast.LENGTH_SHORT).show();
+
         });
         /*holder.radioButtonA.setOnClickListener(view -> {
             holder.radioButtonB.setChecked(false);
@@ -364,6 +374,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             radioButtonD=itemView.findViewById(R.id.radioButtonD);
             questionText=itemView.findViewById(R.id.question_text);
             group=itemView.findViewById(R.id.group);
+
         }
     }
     public static int getScore(){
@@ -379,4 +390,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     public void setHasStableIds(boolean hasStableIds) {
         super.setHasStableIds(hasStableIds);
     }
+
+
+
 }

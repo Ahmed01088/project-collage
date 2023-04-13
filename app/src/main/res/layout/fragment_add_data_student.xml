@@ -33,8 +33,7 @@
         app:boxCornerRadiusTopStart="16dp"
         app:boxStrokeColor="@color/white"
         app:hintTextColor="@color/white"
-        app:passwordToggleEnabled="true"
-        app:passwordToggleTint="@color/white"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayoutEmail">
@@ -138,6 +137,8 @@
         app:boxCornerRadiusTopEnd="16dp"
         app:boxCornerRadiusTopStart="16dp"
         app:boxStrokeColor="@color/white"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/white"
         app:hintTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -279,7 +280,7 @@
                 android:textColor="@color/white" />
 
             <Spinner
-                android:id="@+id/responsibleLevel"
+                android:id="@+id/level"
                 style="@style/SpinnerStyleFragments"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

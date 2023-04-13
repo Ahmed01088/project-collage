@@ -10,7 +10,7 @@
     <!-- TODO: Update blank fragment layout -->
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_message"
+        android:id="@+id/rv_classroom"
         android:padding="8dp"
         android:layout_width="0dp"
         android:layout_height="0dp"

@@ -9,9 +9,7 @@ public class Course {
     private String name;
     @SerializedName("course_code")
     private String courseCode;
-    @SerializedName("lecturer_id")
-    private int lecturerId;
-    @SerializedName("department_id")
+   @SerializedName("department_id")
     private int departmentId;
     @SerializedName("level")
     private String level;
@@ -21,6 +19,15 @@ public class Course {
     private String createdAt;
     @SerializedName("updated_at")
     private String updatedAt;
+
+    public Course(String courseName, String courseCode, String courseLevel, String courseSemester, int departmentId) {
+                this.name = courseName;
+                this.courseCode = courseCode;
+                this.level = courseLevel;
+                this.semester = courseSemester;
+                this.departmentId = departmentId;
+
+    }
 
     public int getCid() {
         return cid;
@@ -46,13 +53,6 @@ public class Course {
         this.courseCode = courseCode;
     }
 
-    public int getLecturerId() {
-        return lecturerId;
-    }
-
-    public void setLecturerId(int lecturerId) {
-        this.lecturerId = lecturerId;
-    }
 
     public int getDepartmentId() {
         return departmentId;

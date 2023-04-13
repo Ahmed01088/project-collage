@@ -6,22 +6,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.projectcollage.R;
 import com.example.projectcollage.activities.ViewMessageClassroomActivity;
-import com.example.projectcollage.models.Course;
-
+import com.example.projectcollage.model.Classroom;
+import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import java.util.ArrayList;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ClassroomAdapter extends RecyclerView.Adapter<ClassroomAdapter.ViewHolder> {
     Context context;
-    ArrayList<Course>courses;
-    public ClassroomAdapter(Context context, ArrayList<Course> courses) {
+    ArrayList<Classroom>classrooms;
+    public ClassroomAdapter(Context context, ArrayList<Classroom> courses) {
         this.context = context;
-        this.courses = courses;
+        this.classrooms = courses;
     }
     @NonNull
     @Override
@@ -31,18 +34,20 @@ public class ClassroomAdapter extends RecyclerView.Adapter<ClassroomAdapter.View
     }
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-           holder.nameOfCourse.setText(courses.get(position).getName());
-           holder.itemView.setOnClickListener(view -> {
-               Intent intent=new Intent(context, ViewMessageClassroomActivity.class);
-               intent.putExtra("nameOfCourse", courses.get(position).getName());
-               intent.putExtra("id", position);
-               ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,view.getWidth()/2,view.getHeight()/2,300,300);
-               context.startActivity(intent,options.toBundle());
+            Classroom classroom=classrooms.get(position);
+            holder.nameOfCourse.setText(classroom.getCourseName());
+            holder.itemView.setOnClickListener(view -> {
+            Intent intent=new Intent(context, ViewMessageClassroomActivity.class);
+            intent.putExtra("classroomId", classroom.getId());
+            intent.putExtra("courseName", classroom.getCourseName());
+            intent.putExtra("courseId", classroom.getCourseId());
+            ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,view.getWidth()/2,view.getHeight()/2,300,300);
+            context.startActivity(intent,options.toBundle());
            });
     }
     @Override
     public int getItemCount() {
-        return courses.size();
+        return classrooms.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{

@@ -17,6 +17,10 @@ public class Message {
     private int classroomId;
     @SerializedName("chat_id")
     private int chatId;
+    @SerializedName("sender")
+    private int sender;
+    @SerializedName("receiver")
+    private int receiver;
     @SerializedName("created_at")
     private String createdAt;
     @SerializedName("updated_at")

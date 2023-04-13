@@ -19,11 +19,14 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 import com.example.projectcollage.R;
 import com.example.projectcollage.adapters.ViewPagerAdapter;
 import com.example.projectcollage.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     ActivityMainBinding binding;
@@ -42,15 +45,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(binding.getRoot());
         getWindow().setNavigationBarColor(getColor(R.color.main_bar));
         Window window=this.getWindow();
-        USER_TYPE=getIntent().getStringExtra("userType");
+        login=getSharedPreferences("login",MODE_PRIVATE);
+        USER_TYPE=login.getString("userType","");
         Drawable drawable= AppCompatResources.getDrawable(this,R.drawable.background_gradient);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(getColor(android.R.color.transparent));
         window.setBackgroundDrawable(drawable);
         setSupportActionBar(binding.toolbar);
         header= LayoutInflater.from(this).inflate(R.layout.header_student_affairse, null);
-        login=getSharedPreferences("login",MODE_PRIVATE);
         initViewPager();
+        setHeader();
         binding.navBar.setNavigationItemSelectedListener(this);
         binding.toolbar.setNavigationOnClickListener(view -> binding.drawer.openDrawer(GravityCompat.START));
         binding.toolbar.setOnMenuItemClickListener(item -> {
@@ -84,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }else {
                 adapter=new ViewPagerAdapter(this,true);
                 nameOfFragments=new String[]{"الصفحة الرئيسية","الفصول الدراسية","الدرداشات"};
-//                binding.navBar.getMenu().removeItem(R.id.study_table);
+//              binding.navBar.getMenu().removeItem(R.id.study_table);
             }
         }else {
             adapter=new ViewPagerAdapter(this,true);
@@ -150,5 +154,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
         return false;
+    }
+    private void setHeader(){
+        TextView name=header.findViewById(R.id.student_name);
+        TextView email=header.findViewById(R.id.student_email);
+        TextView level=header.findViewById(R.id.student_grade);
+        TextView department=header.findViewById(R.id.student_department);
+
+
+        ImageView image=header.findViewById(R.id.student_pic);
+        name.setText(login.getString("firstName","")+" "+login.getString("lastName",""));
+        email.setText(login.getString("email",""));
+
+
     }
 }

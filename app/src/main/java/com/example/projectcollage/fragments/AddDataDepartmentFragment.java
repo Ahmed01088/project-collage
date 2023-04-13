@@ -34,7 +34,6 @@ public class AddDataDepartmentFragment extends Fragment {
     FragmentAddDataDepartmentBinding binding;
     String[] level={"الربعة","التالتة ","التانية","الاولي "};
     String[] classS={"الاول","التاني"};
-    String[] depart={"Computer Science","Biology","Chemistry","Math","Physics","Math&Physics","Chemistry&Physics"};
     List<String >courses= Arrays.asList("Data Structure","Formal Language","Complex Analysis"
     , "Function Analysis","Probability","Tensors","Cyber security","Project");
 //    String[] courses={"Data Structure","Formal Language","Complex Analysis"};
@@ -63,31 +62,20 @@ public class AddDataDepartmentFragment extends Fragment {
                 new ArrayAdapter<>(getActivity(), R.layout.item_spinner,level);
         ArrayAdapter<String>adapterClass=
                 new ArrayAdapter<>(getActivity(), R.layout.item_spinner,classS);
-        SpinnerAdapter adapter=new SpinnerAdapter(getActivity(),R.layout.multi_item_spinner,courses);
-        binding.send.setOnClickListener(view -> {
-            if (SpinnerAdapter.checked==null){
-                Toast.makeText(getActivity(), "لم يتم تحديد اي عناصر ", Toast.LENGTH_SHORT).show();
-            }else{
-                for (int i = 0; i < SpinnerAdapter.checked.length; i++) {
-                    Toast.makeText(getActivity(), ""+SpinnerAdapter.checked[i], Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         adapterLevels.setDropDownViewResource(R.layout.item_spinner);
         adapterClass.setDropDownViewResource(R.layout.item_spinner);
         binding.spinLevel.setAdapter(adapterLevels);
         binding.semisterSpinner.setAdapter(adapterClass);
-        binding.departCourses.setAdapter(adapter);
         binding.send.setOnClickListener(v -> {
             String nameDepartment=binding.nameDepartment.getText().toString();
             String departmentCode=binding.codeDepartment.getText().toString();
             String level=binding.spinLevel.getSelectedItem().toString();
-            String semister=binding.semisterSpinner.getSelectedItem().toString();
-            Date date=new Date();
-            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-            String dateNow=simpleDateFormat.format(date);
-            Department department=new Department(nameDepartment,departmentCode,level,semister,dateNow);
+            String semester=binding.semisterSpinner.getSelectedItem().toString();
+            Department department=new Department(nameDepartment,departmentCode,level,semester);
             addDepartment(department);
+            binding.nameDepartment.setText("");
+            binding.codeDepartment.setText("");
+
 
         });
     }

@@ -15,10 +15,10 @@ public class Lecturer {
     private String email;
     @SerializedName("image")
     private String image;
-    @SerializedName("department_code")
-    private String departmentCode;
+    @SerializedName("course_id")
+    private int courseId;
     @SerializedName("department_id")
-    private String departmentId;
+    private int departmentId;
     @SerializedName("national_id")
     private String nationalId;
     @SerializedName("password")
@@ -27,6 +27,31 @@ public class Lecturer {
     private String createdAt;
     @SerializedName("updated_at")
     private String updatedAt;
+
+
+
+    public Lecturer(String firstName, String lastName, String email, String password, String phoneNumber, String nationalId, String code, int departmentId, int courseId) {
+        this.fName = firstName;
+        this.lName = lastName;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.nationalId = nationalId;
+        this.departmentId = departmentId;
+        this.courseId = courseId;
+    }
+
+    public Lecturer(String firstName, String lastName, String email, String password, String phoneNumber, String nationalId, int departmentId, int courseId) {
+        this.fName = firstName;
+        this.lName = lastName;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.nationalId = nationalId;
+        this.departmentId = departmentId;
+        this.courseId = courseId;
+    }
+
 
     public int getLid() {
         return lid;
@@ -50,6 +75,14 @@ public class Lecturer {
 
     public void setlName(String lName) {
         this.lName = lName;
+    }
+
+    public int getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(int courseId) {
+        this.courseId = courseId;
     }
 
     public String getPhoneNumber() {
@@ -76,19 +109,11 @@ public class Lecturer {
         this.image = image;
     }
 
-    public String getDepartmentCode() {
-        return departmentCode;
-    }
-
-    public void setDepartmentCode(String departmentCode) {
-        this.departmentCode = departmentCode;
-    }
-
-    public String getDepartmentId() {
+    public int getDepartmentId() {
         return departmentId;
     }
 
-    public void setDepartmentId(String departmentId) {
+    public void setDepartmentId(int departmentId) {
         this.departmentId = departmentId;
     }
 

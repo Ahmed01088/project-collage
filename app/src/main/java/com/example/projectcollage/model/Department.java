@@ -3,7 +3,6 @@ package com.example.projectcollage.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Department {
-
     @SerializedName("id")
     private int did;//department id
     @SerializedName("name")
@@ -21,12 +20,11 @@ public class Department {
     @SerializedName("updated_at")
     private String updatedAt;
 
-    public Department(String nameDepartment, String departmentCode, String level, String semister, String dateNow) {
+    public Department(String nameDepartment, String departmentCode, String level, String semester) {
         this.name = nameDepartment;
         this.departmentCode = departmentCode;
         this.level = level;
-        this.semester = semister;
-        this.year = dateNow;
+        this.semester = semester;
     }
 
     public int getDid() {

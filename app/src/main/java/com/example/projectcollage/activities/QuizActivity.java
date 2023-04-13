@@ -7,6 +7,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -41,6 +42,11 @@ public class QuizActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().setNavigationBarColor(getColor(R.color.main_bar));
         getWindow().setStatusBarColor(getColor(R.color.statesBar));
+        SharedPreferences settings = getSharedPreferences("login", MODE_PRIVATE);
+        int quizId=getIntent().getIntExtra("quizId",0);
+        int qid=settings.getInt("quizId",0);
+        Toast.makeText(this, ""+quizId, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, ""+qid, Toast.LENGTH_SHORT).show();
         binding.submit.setOnClickListener(view -> {
             AppCompatEditText uid=new AppCompatEditText(this);
             uid.setHint("ادخل الرقم القومي للتاكيد");

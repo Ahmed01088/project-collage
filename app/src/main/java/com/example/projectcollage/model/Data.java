@@ -7,6 +7,8 @@ public class Data <T>{
     private String message;
     @SerializedName("data")
     private T data;
+    @SerializedName("status")
+    private int status;
 
     public String getMessage() {
         return message;
@@ -22,5 +24,13 @@ public class Data <T>{
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

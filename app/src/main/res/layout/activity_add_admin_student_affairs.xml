@@ -28,13 +28,11 @@
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
         app:boxCornerRadiusTopStart="16dp"
-        app:boxStrokeColor="@color/white"
+        app:boxStrokeColor="@color/dark_blue"
         app:hintTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutEmail"
-        app:passwordToggleEnabled="true"
-        app:passwordToggleTint="@color/white">
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutEmail">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/phoneNumber"
@@ -65,7 +63,7 @@
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
         app:boxCornerRadiusTopStart="16dp"
-        app:boxStrokeColor="@color/white"
+        app:boxStrokeColor="@color/dark_blue"
         app:hintTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -99,11 +97,11 @@
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
         app:boxCornerRadiusTopStart="16dp"
-        app:boxStrokeColor="@color/white"
+        app:boxStrokeColor="@color/dark_blue"
         app:hintTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView16">
+        app:layout_constraintTop_toBottomOf="@+id/selectImage">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/firstname"
@@ -134,11 +132,13 @@
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
         app:boxCornerRadiusTopStart="16dp"
-        app:boxStrokeColor="@color/white"
+        app:boxStrokeColor="@color/dark_blue"
         app:hintTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayouty">
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayouty"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/white">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"
@@ -168,7 +168,7 @@
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
         app:boxCornerRadiusTopStart="16dp"
-        app:boxStrokeColor="@color/white"
+        app:boxStrokeColor="@color/dark_blue"
         app:hintTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -201,7 +201,7 @@
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
         app:boxCornerRadiusTopStart="16dp"
-        app:boxStrokeColor="@color/white"
+        app:boxStrokeColor="@color/dark_blue"
         app:hintTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -327,7 +327,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout13" />
 
     <ImageView
-        android:id="@+id/imageView16"
+        android:id="@+id/selectImage"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginTop="16dp"

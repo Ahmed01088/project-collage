@@ -4,38 +4,45 @@ import com.google.gson.annotations.SerializedName;
 
 public class Quiz {
     @SerializedName("id")
-    private int quizId;
+    private int id;
     @SerializedName("title")
     private String title;
     @SerializedName("description")
     private String description;
-    @SerializedName("number_question")
-    private int numberQuestion;
-    @SerializedName("time_limit")
-    private int timeLimit;
-    @SerializedName("score")
-    private int score;
+    @SerializedName("classroom_id")
+    private int classroomId;
+    @SerializedName("course_id")
+    private int courseId;
+    @SerializedName("limit_time")
+    private int limitTime;
     @SerializedName("lecturer_id")
     private int lecturerId;
+    @SerializedName("number_questions")
+    private int numberQuestions;
+    @SerializedName("updated_at")
+    private String updatedAt;
+    @SerializedName("created_at")
+    private String createdAt;
 
-    public Quiz(String title, String description, int number_question, int time_limit, int score, int lecturer_id) {
-        this.title = title;
-        this.description = description;
-        this.numberQuestion = number_question;
-        this.timeLimit = time_limit;
-        this.score = score;
-        this.lecturerId = lecturer_id;
+
+    public Quiz(String titleQuiz, String descriptionQuiz, int numberQuestionQuiz, int quizTimeQuiz, int courseId, int classroomId, int uid) {
+        this.title = titleQuiz;
+        this.description = descriptionQuiz;
+        this.numberQuestions = numberQuestionQuiz;
+        this.limitTime = quizTimeQuiz;
+        this.courseId = courseId;
+        this.classroomId = classroomId;
+        this.lecturerId = uid;
     }
 
-    public int getQuizId() {
-        return quizId;
+    public int getId() {
+        return id;
     }
 
-    public void setQuizId(int quizId) {
-        this.quizId = quizId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    // getters and setters
     public String getTitle() {
         return title;
     }
@@ -52,28 +59,28 @@ public class Quiz {
         this.description = description;
     }
 
-    public int getNumberQuestion() {
-        return numberQuestion;
+    public int getClassroomId() {
+        return classroomId;
     }
 
-    public void setNumberQuestion(int numberQuestion) {
-        this.numberQuestion = numberQuestion;
+    public void setClassroomId(int classroomId) {
+        this.classroomId = classroomId;
     }
 
-    public int getTimeLimit() {
-        return timeLimit;
+    public int getCourseId() {
+        return courseId;
     }
 
-    public void setTimeLimit(int timeLimit) {
-        this.timeLimit = timeLimit;
+    public void setCourseId(int courseId) {
+        this.courseId = courseId;
     }
 
-    public int getScore() {
-        return score;
+    public int getLimitTime() {
+        return limitTime;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setLimitTime(int limitTime) {
+        this.limitTime = limitTime;
     }
 
     public int getLecturerId() {
@@ -82,6 +89,30 @@ public class Quiz {
 
     public void setLecturerId(int lecturerId) {
         this.lecturerId = lecturerId;
+    }
+
+    public int getNumberQuestions() {
+        return numberQuestions;
+    }
+
+    public void setNumberQuestions(int numberQuestions) {
+        this.numberQuestions = numberQuestions;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 }
 

@@ -4,44 +4,34 @@ import com.google.gson.annotations.SerializedName;
 
 public class Question {
     @SerializedName("id")
-    private int qid;
+    private int id;
     @SerializedName("quiz_id")
-    private int quid; //quiz id
+    private int quid;
     @SerializedName("question_text")
     private String question;
-    @SerializedName("answer_1")
-    private String  answerA;
-    @SerializedName("answer_2")
-    private String  answerB;
-    @SerializedName("answer_3")
-    private String  answerC;
-    @SerializedName("answer_4")
-    private String  answerD;
+    @SerializedName("answer_a")
+    private String answerA;
+    @SerializedName("answer_b")
+    private String answerB;
+    @SerializedName("answer_c")
+    private String answerC;
+    @SerializedName("answer_d")
+    private String answerD;
     @SerializedName("correct_answer")
-    private int  correctAnswer;
+    private int correctAnswer;
     @SerializedName("created_at")
-    private String created_at;
+    private String createdAt;
     @SerializedName("updated_at")
-    private String updated_at;
+    private String updatedAt;
 
-    public Question() {
+    private boolean isChecked;
+
+    public int getId() {
+        return id;
     }
 
-    public Question(int quid, String question, String answerA, String answerB, String answerC, String answerD, int correctAnswer) {
-        this.quid = quid;
-        this.question = question;
-        this.answerA = answerA;
-        this.answerB = answerB;
-        this.answerC = answerC;
-        this.answerD = answerD;
-        this.correctAnswer = correctAnswer;
-    }
-    public int getQid() {
-        return qid;
-    }
-
-    public void setQid(int qid) {
-        this.qid = qid;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getQuid() {
@@ -96,23 +86,31 @@ public class Question {
         return correctAnswer;
     }
 
-    public String getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
-    }
-
-    public String getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(String updated_at) {
-        this.updated_at = updated_at;
-    }
-
     public void setCorrectAnswer(int correctAnswer) {
         this.correctAnswer = correctAnswer;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 }

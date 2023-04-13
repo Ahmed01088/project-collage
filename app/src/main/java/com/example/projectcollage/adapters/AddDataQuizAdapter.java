@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class AddDataQuizAdapter extends RecyclerView.Adapter<AddDataQuizAdapter.ViewHolder> {
-    private Context context;
-    private ArrayList<Question>questions;
-    private int quizId;
+    private final Context context;
+    private final ArrayList<Question>questions;
+    private final int quizId;
 
     public AddDataQuizAdapter(Context context, ArrayList<Question> questions, int quizId) {
         this.context = context;
@@ -44,16 +44,7 @@ public class AddDataQuizAdapter extends RecyclerView.Adapter<AddDataQuizAdapter.
         question.setAnswerB(holder.answerB.getText().toString());
         question.setAnswerC(holder.answerC.getText().toString());
         question.setAnswerD(holder.answerD.getText().toString());
-        int checkedRadioButtonId = holder.radioGroup.getCheckedRadioButtonId();
-        if (checkedRadioButtonId == R.id.correct_answer_a) {
-            question.setCorrectAnswer(1);
-        } else if (checkedRadioButtonId == R.id.correct_answer_b) {
-            question.setCorrectAnswer(2);
-        } else if (checkedRadioButtonId == R.id.correct_answer_c) {
-            question.setCorrectAnswer(3);
-        } else if (checkedRadioButtonId == R.id.correct_answer_d) {
-            question.setCorrectAnswer(4);
-        }
+        question.setCorrectAnswer(holder.correctAnswerA.isChecked()?1:holder.correctAnswerB.isChecked()?2:holder.correctAnswerC.isChecked()?3:4);
         question.setQuid(quizId);
     }
     @Override

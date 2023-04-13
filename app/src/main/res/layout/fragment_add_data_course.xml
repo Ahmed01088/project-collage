@@ -1,61 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:background="#1C1B1B"
-    android:layoutDirection="rtl"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.AddDataCourseFragment">
+    tools:context=".fragments.AddDataCourseFragment"
+    android:background="#1C1B1B"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayoutLecturer"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:textColorHint="@color/white"
-        app:boxBackgroundColor="#2B2B2B"
-        app:boxCornerRadiusBottomEnd="16dp"
-        app:boxCornerRadiusBottomStart="16dp"
-        app:boxCornerRadiusTopEnd="16dp"
-        app:boxCornerRadiusTopStart="16dp"
-        app:boxStrokeColor="@color/white"
-        app:hintTextColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/lecturerId"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="رقم القومي للمحاضر"
-            android:inputType="number"
-            android:imeOptions="actionDone"
-            android:maxLength="40"
-            android:maxLines="1"
-            android:minLines="1"
-            android:textColor="#FFFFFF" />
+<androidx.constraintlayout.widget.ConstraintLayout
 
-    </com.google.android.material.textfield.TextInputLayout>
+    android:layout_width="match_parent"
+    android:layoutDirection="rtl"
+    android:layout_height="wrap_content"
+ >
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="34dp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_28sdp"
         android:textColorHint="@color/white"
         app:boxBackgroundColor="#2B2B2B"
-        app:boxCornerRadiusBottomEnd="16dp"
-        app:boxCornerRadiusBottomStart="16dp"
-        app:boxCornerRadiusTopEnd="16dp"
-        app:boxCornerRadiusTopStart="16dp"
+        app:boxCornerRadiusBottomEnd="@dimen/_16sdp"
+        app:boxCornerRadiusBottomStart="@dimen/_16sdp"
+        app:boxCornerRadiusTopEnd="@dimen/_16sdp"
+        app:boxCornerRadiusTopStart="@dimen/_16sdp"
         app:boxStrokeColor="@color/white"
         app:hintTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
@@ -63,7 +37,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView10">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/firstname"
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:imeOptions="actionNext"
             android:inputType="text"
@@ -81,14 +55,14 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
         android:textColorHint="@color/white"
         app:boxBackgroundColor="#2B2B2B"
-        app:boxCornerRadiusBottomEnd="16dp"
-        app:boxCornerRadiusBottomStart="16dp"
-        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusBottomEnd="@dimen/_16sdp"
+        app:boxCornerRadiusBottomStart="@dimen/_16sdp"
+        app:boxCornerRadiusTopEnd="@dimen/_16sdp"
         app:boxCornerRadiusTopStart="16dp"
         app:boxStrokeColor="@color/white"
         app:hintTextColor="@color/white"
@@ -97,12 +71,12 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/nationalIdA"
+            android:id="@+id/code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/course_code"
             android:inputType="text"
-            android:imeOptions="actionNext"
+            android:imeOptions="actionDone"
             android:maxLength="40"
             android:maxLines="1"
             android:minLines="1"
@@ -132,18 +106,44 @@
 
     <LinearLayout
         android:id="@+id/linearLayout7"
-        android:paddingTop="8dp"
-        android:paddingBottom="16dp"
-         android:layout_width="0dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_32sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
         android:background="@drawable/background_radius_12"
         android:orientation="vertical"
+        android:paddingTop="@dimen/_8sdp"
+        android:paddingBottom="@dimen/_16sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutLecturer">
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_4sdp"
+                android:background="@drawable/background_squire_blue"
+                android:gravity="center"
+                android:paddingTop="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_8sdp"
+                android:text="الفصل"
+                android:textColor="@color/white" />
+
+            <Spinner
+                android:id="@+id/course_semester"
+                style="@style/SpinnerStyleFragments"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="@dimen/_8sdp" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -152,13 +152,13 @@
 
             <TextView
                 android:id="@+id/textView8"
-                android:layout_width="100dp"
+                android:layout_width="@dimen/_100sdp"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_margin="@dimen/_4sdp"
                 android:background="@drawable/background_squire_blue"
                 android:gravity="center"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
+                android:paddingTop="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_8sdp"
                 android:text="الفرقة"
                 android:textColor="@color/white" />
 
@@ -167,8 +167,7 @@
                 style="@style/SpinnerStyleFragments"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp" />
+                android:layout_marginEnd="@dimen/_8sdp" />
         </LinearLayout>
 
         <LinearLayout
@@ -177,24 +176,23 @@
             android:layout_weight="1">
 
             <TextView
-                android:layout_width="100dp"
+                android:layout_width="@dimen/_100sdp"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_margin="@dimen/_4sdp"
                 android:background="@drawable/background_squire_blue"
                 android:gravity="center"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:text="الفصل"
+                android:paddingTop="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_8sdp"
+                android:text="القسم"
                 android:textColor="@color/white" />
 
             <Spinner
-                android:id="@+id/course_class"
+                android:id="@+id/course_department"
                 style="@style/SpinnerStyleFragments"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="0dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp" />
+                android:layout_marginEnd="@dimen/_8sdp" />
 
         </LinearLayout>
 
@@ -202,20 +200,23 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/send"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginTop="@dimen/_24sdp"
+        android:layout_marginBottom="@dimen/_24sdp"
         android:background="@drawable/background_squire_blue"
         android:gravity="center"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:paddingTop="@dimen/_8sdp"
+        android:paddingBottom="@dimen/_8sdp"
         android:text="ارسال"
-        android:textStyle="bold"
-        android:textSize="18sp"
         android:textColor="@color/white"
+        android:textSize="@dimen/_16ssp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout7" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

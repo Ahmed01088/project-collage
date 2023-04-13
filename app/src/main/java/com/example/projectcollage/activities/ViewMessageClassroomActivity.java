@@ -25,6 +25,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -32,6 +33,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.projectcollage.R;
+import com.example.projectcollage.adapters.AddDataQuizAdapter;
 import com.example.projectcollage.adapters.ChatClassroomAdapter;
 import com.example.projectcollage.database.Database;
 import com.example.projectcollage.databinding.ActivityViewMessageClassroomBinding;
@@ -55,28 +57,34 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
     ActivityViewMessageClassroomBinding binding;
     Database database;
     ArrayList<Message>chats;
-    public static final String NAME_OF_COURSE="nameOfCourse";
+    public static final String NAME_OF_COURSE="courseName";
     Bitmap bitmap;
     Uri uriImage;
     View dialog;
-    Integer uid;
+    int uid;
     int quizId;
+    private int departmentId;
     private Call<Data<Quiz>> call;
     SharedPreferences preferences;
+    SharedPreferences.Editor editor;
     private Intent intent;
+    private  EditText title,description,numberQuestion,quizTime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding=ActivityViewMessageClassroomBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        String nameOfCourse=getIntent().getStringExtra(NAME_OF_COURSE);
+        String nameOfCourse=getIntent().getStringExtra("courseName");
         database=new Database(this);
         preferences = getSharedPreferences("login", MODE_PRIVATE);
+        editor = preferences.edit();
         SQLiteDatabase db=database.getWritableDatabase();
         database.createDB(db,"chat_classroom_"+nameOfCourse);
         binding.nameOfCourse.setText(nameOfCourse);
         uid=preferences.getInt("uid",0);
-        if (preferences.getString("email","").startsWith("dr")){
+        departmentId=preferences.getInt("departmentId",0);
+        initDialog();
+        if (preferences.getString("userType","").equals("Lecturer")){
             binding.addQuiz.setVisibility(View.VISIBLE);
             binding.startVideo.setVisibility(View.VISIBLE);
         }else {
@@ -95,19 +103,32 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
           startActivity(intent,options.toBundle());
         });
         binding.addQuiz.setOnClickListener(view -> {
-            dialog=getLayoutInflater().inflate(R.layout.add_quiz_dialog,binding.rvMessageClassroom,false);
             AlertDialog.Builder builder=new AlertDialog.Builder(ViewMessageClassroomActivity.this,R.style.AlertDialogStyle)
-                    .setPositiveButton("نعم", (dialogInterface, i) -> {
-                        binding.progressBar3.setVisibility(View.VISIBLE);
-                        intent=new Intent(ViewMessageClassroomActivity.this,AddQuestionsQuizActivity.class);
-                        initDialog();
-                        ActivityOptions options= ActivityOptions.makeClipRevealAnimation(binding.addQuiz,binding.addQuiz.getWidth(),binding.addQuiz.getHeight(),300,300);
-                        startActivity(intent,options.toBundle());
-                        binding.progressBar3.setVisibility(View.GONE);
-                    })
+                    .setPositiveButton("ارسال", (dialogInterface, i) -> {
+                        String titleQuiz=title.getText().toString();
+                        String descriptionQuiz=description.getText().toString();
+                        int numberQuestionQuiz= Integer.parseInt(numberQuestion.getText().toString());
+                        int quizTimeQuiz= Integer.parseInt(quizTime.getText().toString());
+                        int courseId=getIntent().getIntExtra("courseId",0);
+                        int classroomId=getIntent().getIntExtra("classroomId",0);
+                        Quiz quiz=new Quiz(
+                                titleQuiz,
+                                descriptionQuiz,
+                                numberQuestionQuiz,
+                                quizTimeQuiz,
+                                courseId,
+                                classroomId,
+                                uid);
+                        addQuiz(quiz);
+                        dialogInterface.dismiss();
+                                                })
                     .setNegativeButton("الغاء", (dialogInterface, i) -> {
                         Toast.makeText(this, "تم الالغاء", Toast.LENGTH_SHORT).show();
+                        dialogInterface.dismiss();
                     });
+            if (dialog.getParent()!=null){
+                ((ViewGroup)dialog.getParent()).removeView(dialog);
+            }
             builder.setView(dialog);
             builder.show();
 
@@ -204,14 +225,30 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                     }
                 }
             });
-   /*private void addQuiz(String title,String description,int numberOfQuestion,int timeLimit,int score,int lecturerId){
-       Quiz quiz=new Quiz(title,description,numberOfQuestion,timeLimit,score,lecturerId);
-       call= RetrofitClientLaravelData.getInstance().getApiInterfaceUser().addQuiz(quiz);
+   private void addQuiz(Quiz quiz){
+       call= RetrofitClientLaravelData.getInstance().getApiInterface().addQuiz(quiz);
        call.enqueue(new Callback<Data<Quiz>>() {
            @Override
            public void onResponse(@NonNull Call<Data<Quiz>> call, @NonNull Response<Data<Quiz>> response) {
                if (response.isSuccessful()){
-                   quizId=response.body().getData().getQuizId();
+                   quizId=response.body().getData().getId();
+                   editor.putInt("quizId",quizId);
+                   editor.apply();
+                   binding.progressBar3.setVisibility(View.VISIBLE);
+                   intent=new Intent(ViewMessageClassroomActivity.this,AddQuestionsQuizActivity.class);
+                   ActivityOptions options= ActivityOptions.makeClipRevealAnimation(binding.addQuiz,binding.addQuiz.getWidth(),binding.addQuiz.getHeight(),300,300);
+                   startActivity(intent,options.toBundle());
+                   intent.putExtra("classroomId",quiz.getClassroomId());
+                   intent.putExtra("quizId",quizId);
+                   intent.putExtra("courseId",quiz.getCourseId());
+                   intent.putExtra("courseName",quiz.getTitle());
+                   intent.putExtra("departmentId",departmentId);
+                   intent.putExtra("numberQuestion",quiz.getNumberQuestions());
+                   intent.putExtra("timeLimit",quiz.getLimitTime());
+                   intent.putExtra("uid",uid);
+                   startActivity(intent,options.toBundle());
+                   binding.progressBar3.setVisibility(View.GONE);
+
                }
            }
 
@@ -220,18 +257,13 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                Toast.makeText(ViewMessageClassroomActivity.this, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
            }
        });
-   }*/
+   }
    private void initDialog(){
-       EditText title=dialog.findViewById(R.id.dialog_title);
-       EditText description=dialog.findViewById(R.id.dialog_description);
-       EditText numberOfQuestion=dialog.findViewById(R.id.dialog_questions);
-       EditText timeLimit=dialog.findViewById(R.id.dialog_minutes);
-
-       Toast.makeText(this, ""+quizId, Toast.LENGTH_SHORT).show();
-       intent.putExtra("numberOfQuestion",Integer.parseInt(numberOfQuestion.getText().toString()));
-       intent.putExtra("timeLimit",Integer.parseInt(timeLimit.getText().toString()));
-       intent.putExtra("quizId",quizId);
-
+       dialog=getLayoutInflater().inflate(R.layout.add_quiz_dialog,binding.getRoot(),false);
+       title=dialog.findViewById(R.id.dialog_title);
+       description=dialog.findViewById(R.id.dialog_description);
+       numberQuestion=dialog.findViewById(R.id.dialog_questions);
+       quizTime=dialog.findViewById(R.id.dialog_minutes);
    }
   }
 
