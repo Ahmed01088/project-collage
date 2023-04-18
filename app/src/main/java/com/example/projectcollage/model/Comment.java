@@ -10,13 +10,15 @@ public class Comment {
     @SerializedName("timestamp")
     private String timestamp;
     @SerializedName("student_id")
-    private int studentId;
+    private Integer studentId;
     @SerializedName("student_affairs_id")
-    private int studentAffairsId;
+    private Integer studentAffairsId;
     @SerializedName("lecturer_id")
-    private int lecturerId;
+    private Integer lecturerId;
     @SerializedName("post_id")
     private int postId;
+    @SerializedName("person_name")
+    private String personName;
     @SerializedName("created_at")
     private String createdAt;
     @SerializedName("updated_at")
@@ -34,6 +36,14 @@ public class Comment {
         return commentText;
     }
 
+    public String getPersonName() {
+        return personName;
+    }
+
+    public void setPersonName(String personName) {
+        this.personName = personName;
+    }
+
     public void setCommentText(String commentText) {
         this.commentText = commentText;
     }
@@ -46,27 +56,27 @@ public class Comment {
         this.timestamp = timestamp;
     }
 
-    public int getStudentId() {
+    public Integer getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(int studentId) {
+    public void setStudentId(Integer studentId) {
         this.studentId = studentId;
     }
 
-    public int getStudentAffairsId() {
+    public Integer getStudentAffairsId() {
         return studentAffairsId;
     }
 
-    public void setStudentAffairsId(int studentAffairsId) {
+    public void setStudentAffairsId(Integer studentAffairsId) {
         this.studentAffairsId = studentAffairsId;
     }
 
-    public int getLecturerId() {
+    public Integer getLecturerId() {
         return lecturerId;
     }
 
-    public void setLecturerId(int lecturerId) {
+    public void setLecturerId(Integer lecturerId) {
         this.lecturerId = lecturerId;
     }
 
@@ -74,7 +84,7 @@ public class Comment {
         return postId;
     }
 
-    public void setPostId(int postId) {
+    public void setPostId(Integer postId) {
         this.postId = postId;
     }
 

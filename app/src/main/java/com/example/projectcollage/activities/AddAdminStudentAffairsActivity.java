@@ -7,8 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Patterns;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -18,6 +16,7 @@ import com.example.projectcollage.databinding.ActivityAddAdminStudentAffairsBind
 import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.StudentAffairs;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
+import com.example.projectcollage.utiltis.Constants;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,7 +31,6 @@ public class AddAdminStudentAffairsActivity extends AppCompatActivity {
 
     ActivityAddAdminStudentAffairsBinding binding;
     AddAdminAdapter adapter;
-    String[] responsibleLevel ={"الربعة","التالتة ","التانية","الاولي "};
     List<StudentAffairs> studentAffairsList;
     SharedPreferences preferences;
 
@@ -42,35 +40,19 @@ public class AddAdminStudentAffairsActivity extends AppCompatActivity {
         binding=ActivityAddAdminStudentAffairsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().setNavigationBarColor(getColor(R.color.main_bar));
-        preferences=getSharedPreferences("login",MODE_PRIVATE);
-        binding.responsibleLevel.setAdapter(new ArrayAdapter<>(this, R.layout.item_spinner,responsibleLevel));
+        preferences=getSharedPreferences(Constants.DATA,MODE_PRIVATE);
+        binding.responsibleLevel.setAdapter(new ArrayAdapter<>(this, R.layout.item_spinner,Constants.LEVEL));
         binding.logout.setOnClickListener(view -> startActivity(new Intent(this,LoginActivity.class)));
         binding.addAdmin.setOnClickListener(v -> {
             organizeData();
             });
-        allAdmins();
         binding.logout.setOnClickListener(v -> {
             SharedPreferences.Editor editor=preferences.edit();
             editor.clear();
             editor.apply();
             startActivity(new Intent(this,LoginActivity.class));
         });
-    }
-    private void addStudentAffairsAdmin(StudentAffairs studentAffairs) {
-        Call<Data<StudentAffairs>> call= RetrofitClientLaravelData.getInstance().getApiInterface().addStudentAffairs(studentAffairs);
-        call.enqueue(new Callback<Data<StudentAffairs>>() {
-            @Override
-            public void onResponse(@NonNull Call<Data<StudentAffairs>> call, @NonNull Response<Data<StudentAffairs>> response) {
-                if (response.isSuccessful()){
-                    Toast.makeText(AddAdminStudentAffairsActivity.this, "تم اضافة الادمن بنجاح", Toast.LENGTH_SHORT).show();
-                }
-            }
-            @Override
-            public void onFailure(@NonNull Call<Data<StudentAffairs>> call, @NonNull Throwable t) {
-                Toast.makeText(AddAdminStudentAffairsActivity.this, "حدث خطأ", Toast.LENGTH_SHORT).show();
-
-            }
-        });
+        allAdmins();
     }
     private void allAdmins() {
         Call<Data<List<StudentAffairs>>> call= RetrofitClientLaravelData.getInstance().getApiInterface().getAllStudentAffairs();
@@ -104,7 +86,7 @@ public class AddAdminStudentAffairsActivity extends AppCompatActivity {
         Date currentDate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         String dateAdded = sdf.format(currentDate);
-        boolean validateEmail = email.matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$\n");
+        boolean validateEmail = email.matches(Constants.EMAIL_PATTERN);
         boolean validatePhone = phoneNumber.matches("^(?:\\+20|0)[17][0125][\\d]{7}$\n");
         binding.email.addTextChangedListener(new TextWatcher() {
             @Override
@@ -112,12 +94,13 @@ public class AddAdminStudentAffairsActivity extends AppCompatActivity {
             }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
                 if (!validateEmail) {
                     binding.email.setError("البريد الالكتروني غير صحيح");
                 }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
         binding.phoneNumber.addTextChangedListener(new TextWatcher() {
@@ -126,12 +109,13 @@ public class AddAdminStudentAffairsActivity extends AppCompatActivity {
             }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
                 if (!validatePhone) {
                     binding.phoneNumber.setError("رقم الهاتف غير صحيح");
                 }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
         if (firstname.isEmpty()
@@ -144,16 +128,31 @@ public class AddAdminStudentAffairsActivity extends AppCompatActivity {
         }
 
         StudentAffairs studentAffairs=new StudentAffairs(firstname,lastname,nationalId,email,phoneNumber,image,adminId,password,level,dateAdded);
-        addStudentAffairsAdmin(studentAffairs);
         if (adapter!=null){
             adapter.notifyDataSetChanged();
         }
+        addAdmin(studentAffairs);
         binding.firstname.setText("");
         binding.lastName.setText("");
         binding.nationalIdA.setText("");
         binding.email.setText("");
         binding.phoneNumber.setText("");
         binding.password.setText("");
-
+    }
+    private void addAdmin(StudentAffairs studentAffairs){
+        Call<Data<StudentAffairs>> call= RetrofitClientLaravelData.getInstance().getApiInterface().addAdminStudentAffairs(studentAffairs);
+        call.enqueue(new Callback<Data<StudentAffairs>>() {
+            @Override
+            public void onResponse(@NonNull Call<Data<StudentAffairs>> call, @NonNull Response<Data<StudentAffairs>> response) {
+                if (response.isSuccessful()){
+                    Toast.makeText(AddAdminStudentAffairsActivity.this, "تمت الاضافة بنجاح", Toast.LENGTH_SHORT).show();
+                    allAdmins();
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<Data<StudentAffairs>> call, @NonNull Throwable t) {
+                Toast.makeText(AddAdminStudentAffairsActivity.this, "حدث خطأ", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

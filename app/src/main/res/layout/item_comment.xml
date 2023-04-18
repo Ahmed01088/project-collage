@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginTop="8dp"
-    android:paddingRight="8dp"
-    android:paddingLeft="8dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rvReplayComments"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/_8sdp"
+    android:paddingLeft="@dimen/_8sdp"
+    android:paddingRight="@dimen/_8sdp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageView9"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
         android:src="@drawable/avatar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -19,11 +21,11 @@
         android:id="@+id/linearLayout5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
+        android:layout_marginEnd="@dimen/_4sdp"
         android:background="@drawable/background_radius_12"
-        android:gravity="right"
+        android:gravity="end"
         android:orientation="vertical"
-        android:padding="2dp"
+        android:padding="@dimen/_2sdp"
         app:layout_constraintEnd_toStartOf="@+id/imageView9"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -31,56 +33,55 @@
             android:id="@+id/nameComment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:maxWidth="300dp"
-            android:paddingLeft="8dp"
-            android:paddingTop="2dp"
-            android:paddingRight="8dp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:maxWidth="@dimen/_300sdp"
+            android:paddingLeft="@dimen/_8sdp"
+            android:paddingTop="@dimen/_2sdp"
+            android:paddingRight="@dimen/_8sdp"
             android:text="@string/name_person"
             android:textColor="@color/white"
-            android:textSize="16sp"
-            />
+            android:textSize="@dimen/_14ssp" />
 
         <TextView
             android:id="@+id/body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:paddingLeft="8dp"
-            android:maxWidth="300dp"
-            android:gravity="right"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:gravity="end"
+            android:maxWidth="@dimen/_300sdp"
+            android:paddingStart="@dimen/_8sdp"
+            android:paddingTop="@dimen/_4sdp"
             android:paddingRight="8dp"
+            android:paddingBottom="@dimen/_4sdp"
             android:text="@string/post_comment"
             android:textColor="#CCcccc"
-            android:textSize="14sp" />
+            android:textSize="@dimen/_12ssp" />
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textView20"
+        android:id="@+id/time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="right"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:gravity="end"
+        android:paddingLeft="@dimen/_16sdp"
+        android:paddingRight="@dimen/_16sdp"
         android:text="@string/time_comment"
         android:textColor="@color/white"
-        android:textSize="11sp"
+        android:textSize="@dimen/_11ssp"
         app:layout_constraintEnd_toEndOf="@+id/linearLayout5"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
 
     <TextView
-        android:id="@+id/textView28"
+        android:id="@+id/replay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingStart="@dimen/_8sdp"
+        android:paddingEnd="@dimen/_8sdp"
         android:text="@string/replay"
-        android:textSize="14sp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/textView20"
-        app:layout_constraintEnd_toStartOf="@+id/textView20"
-        app:layout_constraintTop_toTopOf="@+id/textView20" />
+        android:textSize="@dimen/_14ssp"
+        app:layout_constraintBottom_toBottomOf="@+id/time"
+        app:layout_constraintEnd_toStartOf="@+id/time"
+        app:layout_constraintTop_toTopOf="@+id/time" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

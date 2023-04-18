@@ -19,6 +19,7 @@ import com.example.projectcollage.databinding.ActivityStudentOfCourseBinding;
 import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Student;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
+import com.example.projectcollage.utiltis.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,13 +32,12 @@ import retrofit2.Response;
 public class StudentOfCourseActivity extends AppCompatActivity {
     ActivityStudentOfCourseBinding binding;
     SharedPreferences sharedPreferences;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding=ActivityStudentOfCourseBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        sharedPreferences=getSharedPreferences("login", Context.MODE_PRIVATE);
+        sharedPreferences=getSharedPreferences(Constants.DATA, Context.MODE_PRIVATE);
         getWindow().setNavigationBarColor(getColor(R.color.main_bar));
         Window window=this.getWindow();
         Drawable drawable= AppCompatResources.getDrawable(this,R.drawable.background_gradient);
@@ -46,7 +46,7 @@ public class StudentOfCourseActivity extends AppCompatActivity {
         window.setBackgroundDrawable(drawable);
         String nameOfCourse=getIntent().getStringExtra(ViewMessageClassroomActivity.NAME_OF_COURSE);
         binding.courseName.setText(nameOfCourse);
-        int departmentId=sharedPreferences.getInt("departmentId", 0);
+        int departmentId=sharedPreferences.getInt(Constants.DEPARTMENT_ID, 0);
         getAllStudentInCourse(departmentId);
         binding.back.setOnClickListener(view -> finish());
     }

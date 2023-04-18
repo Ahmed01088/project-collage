@@ -1,7 +1,9 @@
 package com.example.projectcollage.adapters;
+import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.text.method.LinkMovementMethod;
@@ -15,26 +17,35 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.example.projectcollage.R;
 import com.example.projectcollage.activities.DetailsActivity;
 import com.example.projectcollage.activities.PostCommentsActivity;
 import com.example.projectcollage.activities.ShowImageActivity;
-import com.example.projectcollage.database.Database;
-import com.example.projectcollage.models.Post;
+import com.example.projectcollage.model.Data;
+import com.example.projectcollage.model.Post;
+import com.example.projectcollage.retrofit.RetrofitClient;
+import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
+import com.example.projectcollage.utiltis.Constants;
+
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
-    private Context context;
-    private ArrayList<Post>posts;
-    private Database database;
-    private boolean isLarge=false;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
+    private final Context context;
+    private final ArrayList<Post> posts;
+    SharedPreferences sharedPreferences;
     public PostAdapter(Context context, ArrayList<Post> posts) {
         this.context = context;
         this.posts = posts;
+        sharedPreferences=context.getSharedPreferences(Constants.DATA,Context.MODE_PRIVATE);
     }
 
     @NonNull
@@ -45,16 +56,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-         holder.counterReact.setText(""+CommentsAdapter.counterComments);
-        holder.name.setText(posts.get(position).getNameOfPerson());
-        String string = posts.get(position).getQuestion();
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        holder.counterReact.setText(posts.get(position).getLikes()+" مشاهدة ");
+        holder.number_of_comments.setText(posts.get(position).getNumberOfComments()+" تعليق");
+        holder.name.setText(posts.get(position).getPersonName());
+        holder.time.setText(posts.get(position).getPosted_at());
+        String string = posts.get(position).getContent();
+        Glide.with(context).load(posts.get(position).getImage()).into(holder.post_image);
         if (!(string.isEmpty())){
             holder.question.setText(string);
             holder.question.setVisibility(View.VISIBLE);
             String text=holder.question.getText().toString();
-            String regexLinks = "(?i)\\b((?:https?://|www\\d{0,3}[.]|[a-z0-9.\\-]+[.][a-z]{2,4}/)(?:[^\\s()<>]+|\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\))+(?:\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\)|[^\\s`!()\\[\\]{};:'\".,<>?«»“”‘’]))";
-            Pattern pattern=Pattern.compile(regexLinks);
+            Pattern pattern=Pattern.compile(Constants.REGEX_LINKS);
             Matcher matcher=pattern.matcher(text);
             while (matcher.find()){
                 String match=matcher.group();
@@ -62,40 +75,36 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 holder.question.setText(HtmlCompat.fromHtml(newTeat+" "+"<br><a href=\""+match+"\">"+match+"</a>",HtmlCompat.FROM_HTML_MODE_LEGACY));
                 holder.question.setMovementMethod(LinkMovementMethod.getInstance());
             }
-
         }else {
             holder.question.setVisibility(View.GONE);
         }
-        holder.time.setText(posts.get(position).getTime());
-        holder.post_image.setImageBitmap(posts.get(position).getBitmap());
-        database=new Database(context);
         holder.manage_post.setOnClickListener(view -> {
-            PopupMenu menu=new PopupMenu(context, holder.manage_post);
-            menu.getMenuInflater().inflate(R.menu.popup_menu_post, menu.getMenu());
-            menu.setOnMenuItemClickListener(menuItem -> {
-                switch (menuItem.getItemId()){
-                    case R.id.delete:
-                        Toast.makeText(context, "تم ازاله المنشور... ", Toast.LENGTH_SHORT).show();
-                        database.deletePost(posts.get(position).getId());
-                        removeItem(position);
-                        notifyItemRemoved(position);
-                        notifyDataSetChanged();
-                        return true;
-                    case R.id.update:
-                        Toast.makeText(context, "تم تحديث المنشور ", Toast.LENGTH_SHORT).show();
-                        return true;
+            Call<Data<Post>> call= RetrofitClientLaravelData.getInstance().getApiInterface().deletePostByStudentId(posts.get(position).getId(),sharedPreferences.getInt(Constants.UID,0));
+            call.enqueue(new Callback<Data<Post>>() {
+                @Override
+                public void onResponse(@NonNull Call<Data<Post>> call, @NonNull Response<Data<Post>> response) {
+                    if (response.isSuccessful()){
+                        if (response.body().getData()!=null){
+                            showMenu(context,holder.manage_post,position).show();
+                        }else {
+                            showMenu(context,holder.manage_post,position).dismiss();
+
+                        }
+                    }
                 }
-                return false;
+
+                @Override
+                public void onFailure(@NonNull Call<Data<Post>> call, @NonNull Throwable t) {
+                    Toast.makeText(context, "خطا در حذف پست", Toast.LENGTH_SHORT).show();
+                }
             });
-            menu.show();
         });
         holder.comment.setOnClickListener(view -> {
             Intent intent=new Intent(context, PostCommentsActivity.class);
+            intent.putExtra(Constants.POST_ID,posts.get(position).getId());
             ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,view.getWidth()/2,view.getHeight()/2,300,300);
             context.startActivity(intent,options.toBundle());
-
         });
-
         int[] counterOfReacts = {100};
         boolean[] check = {false};
         holder.counterReact.setVisibility(View.VISIBLE);
@@ -109,7 +118,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     holder.counterReact.setVisibility(View.VISIBLE);
                 }else {
                     holder.counterReact.setVisibility(View.GONE);
-
                 }
                 holder.react.setCompoundDrawableTintList(ColorStateList.valueOf(Color.WHITE));
             }else {
@@ -129,8 +137,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         });
         holder.post_image.setOnClickListener(view -> {
             Intent intent=new Intent(context, ShowImageActivity.class);
-            ShowImageActivity.DATA=posts.get(position).getBitmap();
-            ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,view.getWidth()/2,view.getHeight()/2,300,300);
+                        ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,view.getWidth()/2,view.getHeight()/2,300,300);
             context.startActivity(intent,options.toBundle());
         });
         holder.name.setOnClickListener(view -> {
@@ -155,7 +162,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        TextView name,question,time,comment,react,counterReact;
+        TextView name,question,time,comment,react,counterReact,number_of_comments;
         ImageView manage_post,post_image,profilePic;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -168,13 +175,30 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             counterReact=itemView.findViewById(R.id.counterReact);
             manage_post=itemView.findViewById(R.id.manage_post);
             post_image=itemView.findViewById(R.id.post_image);
+            number_of_comments=itemView.findViewById(R.id.numberOfComments);
         }
     }
     public  void removeItem(int position){
         posts.remove(position);
         notifyItemRemoved(position);
-
-
+    }
+    private PopupMenu showMenu(Context context, View view, int position){
+        PopupMenu menu=new PopupMenu(context, view);
+        menu.getMenuInflater().inflate(R.menu.popup_menu_post, menu.getMenu());
+        menu.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()){
+                case R.id.delete:
+                    Toast.makeText(context, "تم ازاله المنشور... ", Toast.LENGTH_SHORT).show();
+                    removeItem(position);
+                    notifyDataSetChanged();
+                    return true;
+                case R.id.update:
+                    Toast.makeText(context, "تم تحديث المنشور ", Toast.LENGTH_SHORT).show();
+                    return true;
+            }
+            return false;
+        });
+       return menu;
     }
 
 }

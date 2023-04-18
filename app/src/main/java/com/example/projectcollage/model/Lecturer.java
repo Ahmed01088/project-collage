@@ -19,6 +19,10 @@ public class Lecturer {
     private int courseId;
     @SerializedName("department_id")
     private int departmentId;
+    @SerializedName("department_level")
+    private String departmentLevel;
+    @SerializedName("department_name")
+    private String departmentName;
     @SerializedName("national_id")
     private String nationalId;
     @SerializedName("password")
@@ -52,9 +56,24 @@ public class Lecturer {
         this.courseId = courseId;
     }
 
+    public String getDepartmentLevel() {
+        return departmentLevel;
+    }
+
+    public void setDepartmentLevel(String departmentLevel) {
+        this.departmentLevel = departmentLevel;
+    }
 
     public int getLid() {
         return lid;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 
     public void setLid(int lid) {

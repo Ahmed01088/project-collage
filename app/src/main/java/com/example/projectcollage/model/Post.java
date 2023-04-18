@@ -3,24 +3,54 @@ package com.example.projectcollage.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Post {
-    @SerializedName("id")
-    private int id;
-    @SerializedName("content")
-    private String content;
-    @SerializedName("image")
-    private String image;
-    @SerializedName("posted_at")
-    private String postedAt;
-    @SerializedName("student_id")
-    private int studentId;
-    @SerializedName("student_affairs_id")
-    private int studentAffairsId;
-    @SerializedName("lecturer_id")
-    private int lecturerId;
-    @SerializedName("created_at")
-    private String createdAt;
-    @SerializedName("updated_at")
-    private String updatedAt;
+        @SerializedName("id")
+        private int id;
+        @SerializedName("title")
+        private String title;
+        @SerializedName("content")
+        private String content;
+        @SerializedName("image")
+        private String image;
+        @SerializedName("posted_at")
+        private String posted_at;
+        @SerializedName("created_at")
+        private String created_at;
+        @SerializedName("updated_at")
+        private String updated_at;
+        @SerializedName("student_id")
+        private Integer studentId;
+        @SerializedName("student_affairs_id")
+        private Integer studentAffairsId;
+        @SerializedName("lecturer_id")
+        private Integer lecturerId;
+        @SerializedName("person_name")
+        private String personName;
+        @SerializedName("likes")
+        private int likes;
+        @SerializedName("number_of_comments")
+        private int numberOfComments;
+
+    public Post(String title, String content, String posted_at) {
+        this.title = title;
+        this.content = content;
+        this.posted_at = posted_at;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public int getNumberOfComments() {
+        return numberOfComments;
+    }
+
+    public void setNumberOfComments(int numberOfComments) {
+        this.numberOfComments = numberOfComments;
+    }
 
     public int getId() {
         return id;
@@ -28,6 +58,14 @@ public class Post {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getContent() {
@@ -46,51 +84,63 @@ public class Post {
         this.image = image;
     }
 
-    public String getPostedAt() {
-        return postedAt;
+    public String getPosted_at() {
+        return posted_at;
     }
 
-    public void setPostedAt(String postedAt) {
-        this.postedAt = postedAt;
-    }
-
-    public int getStudentId() {
+    public Integer getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(int studentId) {
+    public void setStudentId(Integer studentId) {
         this.studentId = studentId;
     }
 
-    public int getStudentAffairsId() {
+    public Integer getStudentAffairsId() {
         return studentAffairsId;
     }
 
-    public void setStudentAffairsId(int studentAffairsId) {
+    public void setStudentAffairsId(Integer studentAffairsId) {
         this.studentAffairsId = studentAffairsId;
     }
 
-    public int getLecturerId() {
+    public Integer getLecturerId() {
         return lecturerId;
     }
 
-    public void setLecturerId(int lecturerId) {
+    public void setLecturerId(Integer lecturerId) {
         this.lecturerId = lecturerId;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+    public void setPosted_at(String posted_at) {
+        this.posted_at = posted_at;
     }
 
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    public String getCreated_at() {
+        return created_at;
     }
 
-    public String getUpdatedAt() {
-        return updatedAt;
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
     }
 
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
+    public String getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
+    }
+
+
+
+
+
+    public String getPersonName() {
+        return personName;
+    }
+
+    public void setPersonName(String personName) {
+        this.personName = personName;
     }
 }

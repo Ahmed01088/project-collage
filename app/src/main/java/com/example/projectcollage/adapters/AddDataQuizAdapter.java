@@ -5,18 +5,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectcollage.R;
+import com.example.projectcollage.activities.AddQuestionsQuizActivity;
+import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Question;
+import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddDataQuizAdapter extends RecyclerView.Adapter<AddDataQuizAdapter.ViewHolder> {
     private final Context context;
@@ -38,25 +47,44 @@ public class AddDataQuizAdapter extends RecyclerView.Adapter<AddDataQuizAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.question_num.setText(String.format(Locale.ENGLISH," ( %d ) ", position+1));
-        Question question=questions.get(position);
-        question.setQuestion(holder.questionText.getText().toString());
-        question.setAnswerA(holder.answerA.getText().toString());
-        question.setAnswerB(holder.answerB.getText().toString());
-        question.setAnswerC(holder.answerC.getText().toString());
-        question.setAnswerD(holder.answerD.getText().toString());
-        question.setCorrectAnswer(holder.correctAnswerA.isChecked()?1:holder.correctAnswerB.isChecked()?2:holder.correctAnswerC.isChecked()?3:4);
-        question.setQuid(quizId);
+        holder.done.setOnClickListener(view -> {
+            Question question=questions.get(position);
+            question.setQuestion(holder.questionText.getText().toString());
+            question.setAnswerA(holder.answerA.getText().toString());
+            question.setAnswerB(holder.answerB.getText().toString());
+            question.setAnswerC(holder.answerC.getText().toString());
+            question.setAnswerD(holder.answerD.getText().toString());
+            question.setCorrectAnswer(holder.correctAnswerA.isChecked()?1:holder.correctAnswerB.isChecked()?2:holder.correctAnswerC.isChecked()?3:4);
+            question.setQuid(quizId);
+            if (!question.isChecked()){
+                if (question.getQuestion().isEmpty() ||
+                        question.getAnswerA().isEmpty() ||
+                        question.getAnswerB().isEmpty() ||
+                        question.getAnswerC().isEmpty() ||
+                        question.getAnswerD().isEmpty()||
+                        holder.radioGroup.getCheckedRadioButtonId()==-1){
+                    Toast.makeText(context, "من فضلك املاء كل الحقول", Toast.LENGTH_SHORT).show();
+                }else {
+                    addQuestion(question);
+                    holder.done.setImageResource(R.drawable.ic_check_circle);
+                    question.setChecked(true);
+                }
+            }else {
+                Toast.makeText(context, "تم اضافة السؤال من قبل", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
     @Override
     public int getItemCount() {
         return questions.size();
     }
-
     public static class ViewHolder extends RecyclerView.ViewHolder{
         TextView question_num;
         EditText questionText,answerA,answerB,answerC,answerD;
         RadioButton correctAnswerA,correctAnswerB,correctAnswerC,correctAnswerD;
         RadioGroup radioGroup;
+        ImageView done;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             question_num=itemView.findViewById(R.id.question_number);
@@ -70,12 +98,27 @@ public class AddDataQuizAdapter extends RecyclerView.Adapter<AddDataQuizAdapter.
             correctAnswerC=itemView.findViewById(R.id.correct_answer_c);
             correctAnswerD=itemView.findViewById(R.id.correct_answer_d);
             radioGroup=itemView.findViewById(R.id.radioChosices);
+            done=itemView.findViewById(R.id.question_done);
 
         }
     }
-    public ArrayList<Question> getDataUpdated () {
-        return questions;
+    private void addQuestion(Question question){
+        Call<Data<Question>> call= RetrofitClientLaravelData.getInstance().getApiInterface().addQuestion(question);
+        call.enqueue(new Callback<Data<Question>>() {
+            @Override
+            public void onResponse(@NonNull Call<Data<Question>> call, @NonNull Response<Data<Question>> response) {
+                if (response.isSuccessful()){
+                    Toast.makeText(context, "تم اضافة السؤال", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<Data<Question>> call, @NonNull Throwable t) {
+                Toast.makeText(context, "حدث خطأ", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-
+    public ArrayList<Question> getQuestions() {
+        return questions;
+    }
 }

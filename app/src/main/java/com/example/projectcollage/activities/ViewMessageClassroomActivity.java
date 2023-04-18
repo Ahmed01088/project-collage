@@ -41,6 +41,7 @@ import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Quiz;
 import com.example.projectcollage.models.Message;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
+import com.example.projectcollage.utiltis.Constants;
 
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
@@ -76,15 +77,15 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         String nameOfCourse=getIntent().getStringExtra("courseName");
         database=new Database(this);
-        preferences = getSharedPreferences("login", MODE_PRIVATE);
+        preferences = getSharedPreferences(Constants.DATA, MODE_PRIVATE);
         editor = preferences.edit();
         SQLiteDatabase db=database.getWritableDatabase();
         database.createDB(db,"chat_classroom_"+nameOfCourse);
         binding.nameOfCourse.setText(nameOfCourse);
-        uid=preferences.getInt("uid",0);
-        departmentId=preferences.getInt("departmentId",0);
+        uid=preferences.getInt(Constants.UID,0);
+        departmentId=preferences.getInt(Constants.DEPARTMENT_ID,0);
         initDialog();
-        if (preferences.getString("userType","").equals("Lecturer")){
+        if (preferences.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[1])){
             binding.addQuiz.setVisibility(View.VISIBLE);
             binding.startVideo.setVisibility(View.VISIBLE);
         }else {

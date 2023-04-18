@@ -3,79 +3,75 @@ package com.example.projectcollage.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Chat {
-
     @SerializedName("id")
     private int id;
     @SerializedName("student_sender_id")
-    private int studentSenderId;
+    private Integer studentSenderId;
     @SerializedName("student_affairs_sender_id")
-    private int studentAffairsSenderId;
+    private Integer studentAffairsSenderId;
     @SerializedName("lecturer_sender_id")
-    private int lecturerSenderId;
+    private Integer lecturerSenderId;
     @SerializedName("student_reciver_id")
-    private int studentReciverId;
+    private Integer studentReciverId;
     @SerializedName("student_affairs_reciver_id")
-    private int studentAffairsReciverId;
+    private Integer studentAffairsReciverId;
     @SerializedName("lecturer_reciver_id")
-    private int lecturerReciverId;
+    private Integer lecturerReciverId;
     @SerializedName("updated_at")
     private String updatedAt;
     @SerializedName("created_at")
     private String createdAt;
-
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
-
-    public int getStudentSenderId() {
+    public Integer getStudentSenderId() {
         return studentSenderId;
     }
 
-    public void setStudentSenderId(int studentSenderId) {
+    public void setStudentSenderId(Integer studentSenderId) {
         this.studentSenderId = studentSenderId;
     }
 
-    public int getStudentAffairsSenderId() {
+    public Integer getStudentAffairsSenderId() {
         return studentAffairsSenderId;
     }
 
-    public void setStudentAffairsSenderId(int studentAffairsSenderId) {
+    public void setStudentAffairsSenderId(Integer studentAffairsSenderId) {
         this.studentAffairsSenderId = studentAffairsSenderId;
     }
 
-    public int getLecturerSenderId() {
+    public Integer getLecturerSenderId() {
         return lecturerSenderId;
     }
 
-    public void setLecturerSenderId(int lecturerSenderId) {
+    public void setLecturerSenderId(Integer lecturerSenderId) {
         this.lecturerSenderId = lecturerSenderId;
     }
 
-    public int getStudentReciverId() {
+    public Integer getStudentReciverId() {
         return studentReciverId;
     }
 
-    public void setStudentReciverId(int studentReciverId) {
+    public void setStudentReciverId(Integer studentReciverId) {
         this.studentReciverId = studentReciverId;
     }
 
-    public int getStudentAffairsReciverId() {
+    public Integer getStudentAffairsReciverId() {
         return studentAffairsReciverId;
     }
 
-    public void setStudentAffairsReciverId(int studentAffairsReciverId) {
+    public void setStudentAffairsReciverId(Integer studentAffairsReciverId) {
         this.studentAffairsReciverId = studentAffairsReciverId;
     }
 
-    public int getLecturerReciverId() {
+    public Integer getLecturerReciverId() {
         return lecturerReciverId;
     }
 
-    public void setLecturerReciverId(int lecturerReciverId) {
+    public void setLecturerReciverId(Integer lecturerReciverId) {
         this.lecturerReciverId = lecturerReciverId;
     }
 

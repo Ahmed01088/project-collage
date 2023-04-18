@@ -15,10 +15,10 @@ import com.example.projectcollage.fragments.AddDataCourseFragment;
 import com.example.projectcollage.fragments.AddDataDepartmentFragment;
 import com.example.projectcollage.fragments.AddDataLecturerFragment;
 import com.example.projectcollage.fragments.AddDataStudentFragment;
+import com.example.projectcollage.utiltis.Constants;
 
 public class ManagementDataOnAppActivity extends AppCompatActivity {
     ActivityMamagementDataOnAppBinding binding;
-    String[] spinnerElements={"بيانات دكتور" ,"بيانات طالب","بيانات قسم","بيانات كورس"};
     SharedPreferences login;
     SharedPreferences.Editor editor;
     @Override
@@ -27,12 +27,12 @@ public class ManagementDataOnAppActivity extends AppCompatActivity {
         binding=ActivityMamagementDataOnAppBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().setNavigationBarColor(getColor(R.color.main_bar));
-        ArrayAdapter<String> adapter=new ArrayAdapter<>(this, R.layout.item_spinner_main,spinnerElements);
+        ArrayAdapter<String> adapter=new ArrayAdapter<>(this, R.layout.item_spinner_main, Constants.ADD_DATA_TYPE);
         adapter.setDropDownViewResource(R.layout.item_spinner_main);
         binding.spinnerData.setAdapter(adapter);
         binding.logout.setOnClickListener(view -> {
             finish();
-            login=getSharedPreferences("login", MODE_PRIVATE);
+            login=getSharedPreferences(Constants.DATA, MODE_PRIVATE);
             editor = login.edit();
             editor.clear();
             editor.commit();
@@ -41,15 +41,15 @@ public class ManagementDataOnAppActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
-                if (binding.spinnerData.getSelectedItem().toString().equals("بيانات طالب")){
+                if (binding.spinnerData.getSelectedItem().toString().equals(Constants.ADD_DATA_TYPE[1])){
                     transaction.replace(R.id.container, new AddDataStudentFragment());
                     transaction.addToBackStack(null);
                     transaction.commit();
-                }else if (binding.spinnerData.getSelectedItem().toString().equals("بيانات دكتور")){
+                }else if (binding.spinnerData.getSelectedItem().toString().equals(Constants.ADD_DATA_TYPE[0])){
                     transaction.replace(R.id.container, new AddDataLecturerFragment());
                     transaction.addToBackStack(null);
                     transaction.commit();
-                }else if (binding.spinnerData.getSelectedItem().toString().equals("بيانات كورس")){
+                }else if (binding.spinnerData.getSelectedItem().toString().equals(Constants.ADD_DATA_TYPE[3])){
                     transaction.replace(R.id.container, new AddDataCourseFragment());
                     transaction.addToBackStack(null);
                     transaction.commit();

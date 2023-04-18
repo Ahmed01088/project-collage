@@ -3,30 +3,37 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 import com.example.projectcollage.R;
-import com.example.projectcollage.database.Database;
 import com.example.projectcollage.databinding.ActivityAddPostBinding;
-import com.example.projectcollage.models.Post;
+import com.example.projectcollage.model.Data;
+import com.example.projectcollage.model.Post;
+import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
+import com.example.projectcollage.utiltis.Constants;
+import com.squareup.picasso.Picasso;
 import java.io.FileNotFoundException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddPostActivity extends AppCompatActivity {
-    private static final int SPLASH_DISPLAY_LENGTH = 300;
     ActivityAddPostBinding binding;
-    Database database;
+    SharedPreferences preferences;
     private Uri uriImage;
     private Bitmap bitmap;
     @Override
@@ -35,21 +42,34 @@ public class AddPostActivity extends AppCompatActivity {
         binding=ActivityAddPostBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().setNavigationBarColor(getColor(R.color.main_bar));
-        database=new Database(this);
+        preferences=getSharedPreferences(Constants.DATA,MODE_PRIVATE);
+        String userType=preferences.getString(Constants.USER_TYPE,"");
         binding.post.setOnClickListener(view -> {
-            String name="احمد ابراهيم";
-            String  question=binding.contentQuestionPost.getText().toString();
-            Date date = new Date();
-                SimpleDateFormat format = new SimpleDateFormat("HH:mm aa", Locale.ENGLISH);
-                String time = format.format(date);
-                binding.progressBar.setVisibility(View.VISIBLE);
-                database.insertPost(new Post(name, question, time, bitmap));
-                new Handler().postDelayed(() -> {
-                    Toast.makeText(AddPostActivity.this, "تم النشر ...", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(AddPostActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                }, SPLASH_DISPLAY_LENGTH);
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            LocalDateTime targetDateTime = currentDateTime.minusHours(2).minusMinutes(30);
+            Duration duration = Duration.between(targetDateTime, currentDateTime);
+            String durationString = formatDurationAsAgo(duration);
+            Post post=new Post("M12121",binding.contentQuestionPost.getText().toString(),durationString);
+            if (userType.equals(Constants.USER_TYPES[2])){
+                post.setStudentAffairsId(preferences.getInt(Constants.UID,0));
+                post.setLecturerId(null);
+                post.setStudentId(null);
+            } else if (userType.equals(Constants.USER_TYPES[0])){
+                post.setStudentId(preferences.getInt(Constants.UID,0));
+                post.setLecturerId(null);
+                post.setStudentAffairsId(null);
+            } else if (userType.equals(Constants.USER_TYPES[1])){
+                post.setLecturerId(preferences.getInt(Constants.UID,0));
+                post.setStudentId(null);
+                post.setStudentAffairsId(null);
+            }
+            post.setLikes(100);
+            post.setNumberOfComments(100);
+            if (binding.contentQuestionPost.getText().toString().isEmpty()){
+                binding.contentQuestionPost.setError("الرجاء كتابة المنشور");
+                return;
+            }
+            addPost(post);
          });
         binding.btnPostBack.setOnClickListener(view -> {
             if (!(binding.contentQuestionPost.toString().isEmpty())){
@@ -64,7 +84,6 @@ public class AddPostActivity extends AppCompatActivity {
                         })
                         .setMessage("هل تريد تجاهل المنشور ؟");
                 builder.show();
-
             }
 
         });
@@ -98,6 +117,8 @@ public class AddPostActivity extends AppCompatActivity {
                                 if (uriImage!=null){
                                     binding.card.setVisibility(View.VISIBLE);
                                     binding.showImage.setImageURI(uriImage);
+                                    Picasso.get().load(uriImage).into(binding.showImage);
+                                    Glide.with(AddPostActivity.this).load(uriImage).into(binding.showImage);
                                 }else {
                                     binding.card.setVisibility(View.GONE);
 
@@ -110,5 +131,48 @@ public class AddPostActivity extends AppCompatActivity {
                     }
                 }
             });
+    private void addPost(Post post){
+        Call<Data<Post>> call= RetrofitClientLaravelData.getInstance().getApiInterface().addPost(post);
+        call.enqueue(new Callback<Data<Post>>() {
+            @Override
+            public void onResponse(@NonNull Call<Data<Post>> call, @NonNull Response<Data<Post>> response) {
+                if (response.isSuccessful()){
+
+                        Toast.makeText(AddPostActivity.this, "تم النشر", Toast.LENGTH_SHORT).show();
+                        Intent intent=new Intent(AddPostActivity.this,MainActivity.class);
+                        ActivityOptions options= ActivityOptions.makeClipRevealAnimation(binding.showImage,
+                                binding.showImage.getWidth()/2,binding.showImage.getHeight()/2,300,300);
+                        startActivity(intent,options.toBundle());
+                        finish();
+                    }
+                else {
+                    binding.contentQuestionPost.setText(response.errorBody().toString());
+                    Toast.makeText(AddPostActivity.this, "Field", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Data<Post>> call, @NonNull Throwable t) {
+                Toast.makeText(AddPostActivity.this, "حدث خطأ"+t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private String formatDurationAsAgo(Duration duration) {
+        long seconds = duration.getSeconds();
+
+        if (seconds < 60) {
+            return seconds + " seconds";
+        } else if (seconds < 3600) {
+            long minutes = seconds / 60;
+            return minutes + " minutes";
+        } else if (seconds < 86400) {
+            long hours = seconds / 3600;
+            return hours + " hours";
+        } else {
+            long days = seconds / 86400;
+            return days + " days";
+        }
+    }
 
 }

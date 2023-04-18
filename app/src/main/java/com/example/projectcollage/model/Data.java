@@ -9,6 +9,8 @@ public class Data <T>{
     private T data;
     @SerializedName("status")
     private int status;
+    @SerializedName("quiz_time")
+    private int quiz_time;
 
     public String getMessage() {
         return message;
@@ -24,6 +26,14 @@ public class Data <T>{
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    public int getQuiz_time() {
+        return quiz_time;
+    }
+
+    public void setQuiz_time(int quiz_time) {
+        this.quiz_time = quiz_time;
     }
 
     public int getStatus() {

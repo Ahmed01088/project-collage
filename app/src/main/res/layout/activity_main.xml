@@ -6,102 +6,78 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
-
-
-<androidx.drawerlayout.widget.DrawerLayout
-      android:id="@+id/drawer"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layoutDirection="rtl">
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-
-        android:layout_height="match_parent"
-        >
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="4dp"
-            android:background="@drawable/background_gradient"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:menu="@menu/menu_bar"
-            app:navigationIcon="@drawable/ic_menu" />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="4dp"
-            android:background="@drawable/background_gradient"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar"
-            app:tabIndicatorColor="#E80000"
-            app:tabTextColor="#ffffff">
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chats" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/classroom" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/home_page" />
-        </com.google.android.material.tabs.TabLayout>
-
-        <View
-            android:id="@+id/view2"
-            android:layout_width="match_parent"
-            android:layout_height=".5dp"
-            android:background="#164571"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewTabs"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="#1C1B1B"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view2">
-
-
-        </androidx.viewpager2.widget.ViewPager2>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.google.android.material.navigation.NavigationView
-        android:layoutDirection="rtl"
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/nav_bar"
-        android:fitsSystemWindows="true"
-        android:layout_gravity="start"
-        android:background="#2B2B2B"
-        app:drawerLayoutCornerSize="16dp"
-        app:itemTextColor="@color/textColor"
-        app:headerLayout="@layout/header"
-        app:menu="@menu/navigation_menu"
-        />
+        android:layoutDirection="rtl">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="@dimen/_2sdp"
+                android:background="@drawable/background_gradient"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="?attr/actionBarTheme"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:menu="@menu/menu_bar"
+                app:navigationIcon="@drawable/ic_menu" />
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="@dimen/_2sdp"
+                android:background="@drawable/background_gradient"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar"
+                app:tabIndicatorColor="#E80000"
+                app:tabTextColor="#ffffff">
+            </com.google.android.material.tabs.TabLayout>
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height=".5dp"
+                android:background="#164571"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
-</androidx.drawerlayout.widget.DrawerLayout>
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewTabs"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="#1C1B1B"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view2">
+
+
+            </androidx.viewpager2.widget.ViewPager2>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.navigation.NavigationView
+            android:layoutDirection="rtl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/nav_bar"
+            android:fitsSystemWindows="true"
+            android:layout_gravity="start"
+            android:background="#2B2B2B"
+            app:drawerLayoutCornerSize="16dp"
+            app:itemTextColor="@color/textColor"
+            app:headerLayout="@layout/header"
+            app:menu="@menu/navigation_menu"
+            />
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-<!--    android:layout_marginEnd="-65dp"-->
 

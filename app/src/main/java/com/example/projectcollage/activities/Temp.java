@@ -64,7 +64,7 @@ public class Temp {
 //        }
 //    });   }
 
-    //        binding.joinButton.setOnClickListener(view -> {
+//        binding.joinButton.setOnClickListener(view -> {
 //            if (!isJoined){
 //                joinChannel();
 //                isJoined=true;

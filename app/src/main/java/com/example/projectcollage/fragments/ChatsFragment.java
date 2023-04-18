@@ -21,20 +21,15 @@ import java.util.ArrayList;
 
 public class ChatsFragment extends Fragment {
     FragmentChatsBinding binding;
-    Database database;
     UserAdapter adapter;
     ArrayList<User> users;
 
     public ChatsFragment() {
     }
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding=FragmentChatsBinding.inflate(getLayoutInflater());
-        database=new Database(getContext());
-        users=database.getAllUsers();
         adapter=new UserAdapter(getContext(), users);
         binding.rvUsers.setAdapter(adapter);
         binding.rvUsers.setLayoutManager(new LinearLayoutManager(getContext()));

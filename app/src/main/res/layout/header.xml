@@ -32,7 +32,7 @@
         android:paddingRight="16dp"
         android:text="@string/grade"
         android:textColor="#FFFFFF"
-        android:textSize="16sp" />
+        android:textSize="@dimen/_11ssp" />
 
     <TextView
         android:id="@+id/student_department"
@@ -43,7 +43,7 @@
         android:paddingRight="16dp"
         android:text="@string/department"
         android:textColor="#FFFFFF"
-        android:textSize="16sp" />
+        android:textSize="@dimen/_11ssp" />
 
     <TextView
         android:id="@+id/student_state"
@@ -54,7 +54,7 @@
         android:paddingRight="16dp"
         android:text="@string/state"
         android:textColor="#FFFFFF"
-        android:textSize="16sp" />
+        android:textSize="@dimen/_11ssp" />
 
     <TextView
         android:id="@+id/student_email"
@@ -67,5 +67,5 @@
         android:paddingBottom="8dp"
         android:text="@string/email"
         android:textColor="#FFFFFF"
-        android:textSize="16sp" />
+        android:textSize="@dimen/_11ssp" />
 </LinearLayout>

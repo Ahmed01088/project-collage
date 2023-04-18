@@ -16,6 +16,10 @@ import com.example.projectcollage.model.Lecturer;
 import com.example.projectcollage.model.Student;
 import com.example.projectcollage.model.StudentAffairs;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
+import com.example.projectcollage.utiltis.Constants;
+
+import org.checkerframework.checker.units.qual.C;
+
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import retrofit2.Call;
@@ -25,7 +29,6 @@ public class LoginActivity extends AppCompatActivity {
     ActivityLoginBinding binding;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
-    public static String[] UserType = {"Student Affairs", "Student", "Lecturer", "Admin"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,26 +37,26 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().setStatusBarColor(getColor(R.color.statesOnBoarding));
         getWindow().setNavigationBarColor(getColor(R.color.statesOnBoarding));
-        preferences = getSharedPreferences("login", MODE_PRIVATE);
+        preferences = getSharedPreferences(Constants.DATA, MODE_PRIVATE);
         editor=preferences.edit();
-        if (preferences.getString("nationalId", null) != null) {
-            String userType = preferences.getString("userType", null);
-            if (userType.equals(UserType[0])) {
-                if (preferences.getString("studentAffairs", null)!=null&&
-                        preferences.getString("studentAffairs", null).equals("Admin")) {
+        if (preferences.getString(Constants.NATIONAL_ID, null) != null) {
+            String userType = preferences.getString(Constants.USER_TYPE, null);
+            if (userType.equals(Constants.USER_TYPES[0])) {
+                if (preferences.getString(Constants.STUDENT_AFFAIRS, null)!=null&&
+                        preferences.getString(Constants.STUDENT_AFFAIRS, null).equals(Constants.ADMIN)) {
                     startActivity(new Intent(this, ManagementDataOnAppActivity.class));
                     finish();
                 } else {
                     startActivity(new Intent(this, MainActivity.class));
                     finish();
                 }
-            } else if (userType.equals(UserType[1])) {
+            } else if (userType.equals(Constants.USER_TYPES[1])) {
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
-            } else if (userType.equals(UserType[2])) {
+            } else if (userType.equals(Constants.USER_TYPES[2])) {
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
-            } else if (userType.equals(UserType[3])) {
+            } else if (userType.equals(Constants.USER_TYPES[3])) {
                 startActivity(new Intent(this, AddAdminStudentAffairsActivity.class));
                 finish();
             }
@@ -86,13 +89,14 @@ public class LoginActivity extends AppCompatActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this, R.style.AlertDialogStyle)
                             .setPositiveButton("شئون طلاب ", (dialogInterface, i) -> {
                                 Intent intent = new Intent(LoginActivity.this, ManagementDataOnAppActivity.class);
-                                editor.putString("studentAffairs", "Admin");
-                                editor.putString("userType", UserType[0]);
-                                editor.putString("nationalId", nationalId);
-                                editor.putString("firstName", response.body().getData().getFirstName());
-                                editor.putString("lastName", response.body().getData().getLastName());
-                                editor.putString("email", response.body().getData().getEmail());
-                                editor.putInt("uid", response.body().getData().getSaid());
+                                editor.putString(Constants.STUDENT_AFFAIRS, Constants.ADMIN);
+                                editor.putString(Constants.USER_TYPE, Constants.USER_TYPES[0]);
+                                editor.putString(Constants.NATIONAL_ID, nationalId);
+                                editor.putString(Constants.FIRSTNAME, response.body().getData().getFirstName());
+                                editor.putString(Constants.LASTNAME, response.body().getData().getLastName());
+                                editor.putString(Constants.PHONE, response.body().getData().getPhoneNumber());
+                                editor.putString(Constants.EMAIL, response.body().getData().getEmail());
+                                editor.putInt(Constants.UID, response.body().getData().getSaid());
                                 editor.apply();
                                 ActivityOptions options = ActivityOptions.makeClipRevealAnimation(binding.login, binding.login.getWidth() / 2,
                                         binding.login.getHeight() / 2, 100, 100);
@@ -101,13 +105,16 @@ public class LoginActivity extends AppCompatActivity {
                                 binding.login.setVisibility(View.VISIBLE);
                             }).setNegativeButton("دخول عادي", (dialogInterface, i) -> {
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                editor.putString("nationalId", nationalId);
-                                editor.putString("firstName", response.body().getData().getFirstName());
-                                editor.putString("lastName", response.body().getData().getLastName());
-                                editor.putString("email", response.body().getData().getEmail());
-                                editor.putInt("uid", response.body().getData().getSaid());
-                                editor.putString("studentAffairs", "User");
-                                editor.putString("userType", UserType[0]);
+                                editor.putString(Constants.NATIONAL_ID, nationalId);
+                                editor.putString(Constants.FIRSTNAME, response.body().getData().getFirstName());
+                                editor.putString(Constants.LASTNAME, response.body().getData().getLastName());
+                                editor.putString(Constants.EMAIL, response.body().getData().getEmail());
+                                editor.putInt(Constants.UID, response.body().getData().getSaid());
+                                editor.putString(Constants.PHONE, response.body().getData().getPhoneNumber());
+                                editor.putString(Constants.STUDENT_AFFAIRS, "User");
+                                editor.putString(Constants.STUDENT_DEPARTMENT,Constants.STUDENT_AFFAIRS);
+                                editor.putString(Constants.USER_TYPE, Constants.USER_TYPES[2]);
+                                editor.putString(Constants.STUDENT_LEVEL,response.body().getData().getResponsibleLevel());
                                 editor.apply();
                                 ActivityOptions options = ActivityOptions.makeClipRevealAnimation(binding.nationalId,
                                         binding.nationalId.getWidth() / 2, binding.nationalId.getHeight() / 2,
@@ -149,12 +156,13 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<Data<Admin>> call, @NonNull Response<Data<Admin>> response) {
                 if (response.isSuccessful()) {
                     Intent intent = new Intent(LoginActivity.this, AddAdminStudentAffairsActivity.class);
-                    editor.putString("nationalId", nationalId);
-                    editor.putString("firstName", response.body().getData().getFirstName());
-                    editor.putString("lastName", response.body().getData().getLastName());
-                    editor.putString("email", response.body().getData().getEmail());
-                    editor.putString("userType", UserType[3]);
-                    editor.putInt("uid", response.body().getData().getAid());
+                    editor.putString(Constants.NATIONAL_ID, nationalId);
+                    editor.putString(Constants.FIRSTNAME, response.body().getData().getFirstName());
+                    editor.putString(Constants.LASTNAME, response.body().getData().getLastName());
+                    editor.putString(Constants.PHONE, response.body().getData().getPhoneNumber());
+                    editor.putString(Constants.EMAIL, response.body().getData().getEmail());
+                    editor.putString(Constants.USER_TYPE, Constants.USER_TYPES[3]);
+                    editor.putInt(Constants.UID, response.body().getData().getAid());
                     editor.apply();
                     ActivityOptions options = ActivityOptions.makeClipRevealAnimation(binding.login, binding.login.getWidth() / 2,
                             binding.login.getHeight() / 2, 100, 100);
@@ -191,13 +199,17 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<Data<Student>> call, @NonNull Response<Data<Student>> response) {
                 if (response.isSuccessful()) {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);intent.putExtra("firstname", response.body().getData().getfName());intent.putExtra("lastname", response.body().getData().getlName());
-                    editor.putString("nationalId", response.body().getData().getNationalId());
-                    editor.putString("firstName", response.body().getData().getfName());
-                    editor.putString("lastName", response.body().getData().getlName());
-                    editor.putString("email", response.body().getData().getEmail());
-                    editor.putInt("uid", response.body().getData().getUid());
-                    editor.putString("userType", UserType[1]);
-                    editor.putInt("departmentId", response.body().getData().getDepartmentId());
+                    editor.putString(Constants.NATIONAL_ID, response.body().getData().getNationalId());
+                    editor.putString(Constants.FIRSTNAME, response.body().getData().getfName());
+                    editor.putString(Constants.LASTNAME, response.body().getData().getlName());
+                    editor.putString(Constants.EMAIL, response.body().getData().getEmail());
+                    editor.putInt(Constants.UID, response.body().getData().getUid());
+                    editor.putString(Constants.PHONE, response.body().getData().getPhoneNumber());
+                    editor.putString(Constants.USER_TYPE, Constants.USER_TYPES[0]);
+                    editor.putInt(Constants.DEPARTMENT_ID, response.body().getData().getDepartmentId());
+                    editor.putString(Constants.STUDENT_DEPARTMENT, response.body().getData().getDepartmentName());
+                    editor.putString(Constants.STUDENT_LEVEL, response.body().getData().getLevel());
+                    editor.putString(Constants.STUDENT_STAT, response.body().getData().getState());
                     editor.apply();
                     ActivityOptions options = ActivityOptions.makeClipRevealAnimation(binding.login, binding.login.getWidth() / 2,
                             binding.login.getHeight() / 2, 100, 100);
@@ -234,12 +246,15 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<Data<Lecturer>> call, @NonNull Response<Data<Lecturer>> response) {
                 if (response.isSuccessful()) {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    editor.putString("nationalId", response.body().getData().getNationalId());
-                    editor.putString("firstName", response.body().getData().getfName());
-                    editor.putString("lastName", response.body().getData().getlName());
-                    editor.putString("email", response.body().getData().getEmail());
-                    editor.putInt("uid", response.body().getData().getLid());
-                    editor.putString("userType", UserType[2]);
+                    editor.putString(Constants.NATIONAL_ID, response.body().getData().getNationalId());
+                    editor.putString(Constants.FIRSTNAME, response.body().getData().getfName());
+                    editor.putString(Constants.LASTNAME, response.body().getData().getlName());
+                    editor.putString(Constants.EMAIL, response.body().getData().getEmail());
+                    editor.putString(Constants.PHONE, response.body().getData().getPhoneNumber());
+                    editor.putInt(Constants.UID, response.body().getData().getLid());
+                    editor.putString(Constants.STUDENT_LEVEL, response.body().getData().getDepartmentLevel());
+                    editor.putString(Constants.STUDENT_DEPARTMENT, response.body().getData().getDepartmentName());
+                    editor.putString(Constants.USER_TYPE, Constants.USER_TYPES[1]);
                     editor.apply();
                     ActivityOptions options = ActivityOptions.makeClipRevealAnimation(binding.login, binding.login.getWidth() / 2,
                             binding.login.getHeight() / 2, 100, 100);

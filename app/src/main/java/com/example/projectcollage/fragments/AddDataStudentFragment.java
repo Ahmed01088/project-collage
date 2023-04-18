@@ -18,6 +18,7 @@ import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Department;
 import com.example.projectcollage.model.Student;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
+import com.example.projectcollage.utiltis.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +29,6 @@ import retrofit2.Response;
 
 public class AddDataStudentFragment extends Fragment {
     FragmentAddDataStudentBinding binding;
-    String[] studentLevels={"الربعة","التالتة ","التانية","الاولي "};
-    String[] studentState={"باقي","مستجد"};
-    String[] studentDepartment={"Computer Science","Biology","Chemistry","Math","Physics","Math&Physics","Chemistry&Physics"};
     ArrayList<String> departmentArray=new ArrayList<>();
     ArrayAdapter<String> adapterDepartments;
     List<Department> departments;
@@ -54,9 +52,9 @@ public class AddDataStudentFragment extends Fragment {
     }
     public void preparationSpinner(){
         ArrayAdapter<String>adapterLevels=
-                new ArrayAdapter<>(getActivity(), R.layout.item_spinner,studentLevels);
+                new ArrayAdapter<>(getActivity(), R.layout.item_spinner, Constants.LEVEL);
        ArrayAdapter<String>adapterState=
-                new ArrayAdapter<>(getActivity(), R.layout.item_spinner,studentState);
+                new ArrayAdapter<>(getActivity(), R.layout.item_spinner,Constants.STUDENT_STATUS);
         adapterState.setDropDownViewResource(R.layout.item_spinner);
         adapterLevels.setDropDownViewResource(R.layout.item_spinner);
         binding.studentState.setAdapter(adapterState);

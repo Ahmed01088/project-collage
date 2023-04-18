@@ -7,6 +7,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,8 +19,10 @@ import android.widget.Toast;
 import com.example.projectcollage.R;
 import com.example.projectcollage.adapters.QuestionAdapter;
 import com.example.projectcollage.databinding.ActivityQuizBinding;
+import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Question;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
+import com.example.projectcollage.utiltis.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,11 +45,7 @@ public class QuizActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().setNavigationBarColor(getColor(R.color.main_bar));
         getWindow().setStatusBarColor(getColor(R.color.statesBar));
-        SharedPreferences settings = getSharedPreferences("login", MODE_PRIVATE);
-        int quizId=getIntent().getIntExtra("quizId",0);
-        int qid=settings.getInt("quizId",0);
-        Toast.makeText(this, ""+quizId, Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, ""+qid, Toast.LENGTH_SHORT).show();
+        SharedPreferences settings = getSharedPreferences(Constants.DATA, MODE_PRIVATE);
         binding.submit.setOnClickListener(view -> {
             AppCompatEditText uid=new AppCompatEditText(this);
             uid.setHint("ادخل الرقم القومي للتاكيد");
@@ -68,11 +67,12 @@ public class QuizActivity extends AppCompatActivity {
                     });
         builder.setView(uid);
         builder.show();
-
         });
+        getQuestions();
     }
-    private void timer(){
-       timer=new CountDownTimer(61000, count) {
+    private void timer(long timeByMints){
+        long timeByMilliSeconds=timeByMints*60*1000;
+       timer=new CountDownTimer(timeByMilliSeconds, count) {
             @Override
             public void onTick(long l) {
                 if (counterSeconds >30){
@@ -107,25 +107,30 @@ public class QuizActivity extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
-    /*private void getQuestions(){
-        Call<List<Question>>call= RetrofitClientLaravelData.getInstance().getApiInterfaceUser()
+    private void getQuestions(){
+        Call<Data<List<Question>>>call= RetrofitClientLaravelData.getInstance().getApiInterface()
                 .getQuestionsByQuizIdAndLecturerId(1,1);
-        call.enqueue(new Callback<List<Question>>() {
+        call.enqueue(new Callback<Data<List<Question>>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Question>> call, Response<List<Question>> response) {
+            public void onResponse(@NonNull Call<Data<List<Question>>> call, @NonNull Response<Data<List<Question>>> response) {
                 if (response.isSuccessful()){
-                    List<Question>questions=response.body();
-                    adapter = new QuestionAdapter(QuizActivity.this,(ArrayList<Question>)questions);
-                    LinearLayoutManager manager=new LinearLayoutManager(QuizActivity.this);
-                    binding.recVQuestions.setAdapter(adapter);
-                    binding.recVQuestions.setLayoutManager(manager);
-                    binding.recVQuestions.setHasFixedSize(true);
+                    if (response.body()!=null){
+                            List<Question>questions=response.body().getData();
+                            adapter=new QuestionAdapter(QuizActivity.this, (ArrayList<Question>) questions);
+                            binding.recVQuestions.setLayoutManager(new LinearLayoutManager(QuizActivity.this));
+                            binding.recVQuestions.setAdapter(adapter);
+                            int quizTimeByMuints=response.body().getQuiz_time();
+                            timer(quizTimeByMuints);
+
+
+                    }
                 }
             }
+
             @Override
-            public void onFailure(@NonNull Call<List<Question>> call, @NonNull Throwable t) {
-                Toast.makeText(QuizActivity.this, ""+t, Toast.LENGTH_SHORT).show();
+            public void onFailure(@NonNull Call<Data<List<Question>>> call, @NonNull Throwable t) {
+                                Toast.makeText(QuizActivity.this, "حدث خطأ ما", Toast.LENGTH_SHORT).show();
             }
         });
-    }*/
-}
+        }
+    }

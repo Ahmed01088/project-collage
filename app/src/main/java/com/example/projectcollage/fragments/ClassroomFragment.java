@@ -24,6 +24,7 @@ import com.example.projectcollage.model.Classroom;
 import com.example.projectcollage.model.Data;
 import com.example.projectcollage.models.Course;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
+import com.example.projectcollage.utiltis.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,15 +44,14 @@ public class ClassroomFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding=FragmentClassroomBinding.inflate(getLayoutInflater());
-        sharedPreferences=getActivity().getSharedPreferences("login", Context.MODE_PRIVATE);
+        sharedPreferences=getActivity().getSharedPreferences(Constants.DATA, Context.MODE_PRIVATE);
         editor=sharedPreferences.edit();
-        int departmentId=sharedPreferences.getInt("departmentId", 0);
-        int uid=sharedPreferences.getInt("uid", 0);
-        if (sharedPreferences.getString("userType", "").equals(LoginActivity
-                .UserType[2])){
+        int departmentId=sharedPreferences.getInt(Constants.DEPARTMENT_ID, 0);
+        int uid=sharedPreferences.getInt(Constants.UID, 0);
+        if (sharedPreferences.getString(Constants.USER_TYPE, "").equals(Constants.USER_TYPES[1])){
             getClassroomByLecturerId(uid);
         }
-        else if (sharedPreferences.getString("userType", "").equals(LoginActivity.UserType[1])) {
+        else if (sharedPreferences.getString(Constants.USER_TYPE, "").equals(Constants.USER_TYPES[0])) {
             getClassroomsByDepartmentId(departmentId);
         }
     }
@@ -65,7 +65,6 @@ public class ClassroomFragment extends Fragment {
         call.enqueue(new Callback<Data<List<Classroom>>>() {
             @Override
             public void onResponse(@NonNull Call<Data<List<Classroom>>> call, @NonNull Response<Data<List<Classroom>>> response) {
-                Toast.makeText(binding.getRoot().getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 if(response.isSuccessful()){
                         List<Classroom>classrooms=response.body().getData();
                         if(classrooms.size()>0){
@@ -94,7 +93,6 @@ public class ClassroomFragment extends Fragment {
         call.enqueue(new Callback<Data<List<Classroom>>>() {
             @Override
             public void onResponse(@NonNull Call<Data<List<Classroom>>> call, @NonNull Response<Data<List<Classroom>>> response) {
-                Toast.makeText(binding.getRoot().getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 if(response.isSuccessful()){
                     List<Classroom>classrooms=response.body().getData();
                     if(classrooms.size()>0){

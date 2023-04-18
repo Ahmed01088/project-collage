@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav"
+    app:startDestination="@id/addDataStudentFragment">
+
+    <fragment
+        android:id="@+id/addDataStudentFragment"
+        android:name="com.example.projectcollage.fragments.AddDataStudentFragment"
+        android:label="fragment_add_data_student"
+        tools:layout="@layout/fragment_add_data_student" >
+
+
+        <action
+            android:id="@+id/action_addDataStudentFragment_to_addDataCourseFragment"
+            app:destination="@id/addDataCourseFragment" />
+        <action
+            android:id="@+id/action_addDataStudentFragment_to_loginActivity"
+            app:destination="@id/loginActivity" />
+        <action
+            android:id="@+id/action_addDataStudentFragment_to_loginActivity2"
+            app:destination="@id/loginActivity" />
+        <action
+            android:id="@+id/action_addDataStudentFragment_to_chatsFragment"
+            app:destination="@id/chatsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addDataCourseFragment"
+        android:name="com.example.projectcollage.fragments.AddDataCourseFragment"
+        android:label="fragment_add_data_course"
+        tools:layout="@layout/fragment_add_data_course" >
+        <action
+            android:id="@+id/action_addDataCourseFragment_to_loginActivity"
+            app:destination="@id/loginActivity" />
+        <action
+            android:id="@+id/action_addDataCourseFragment_self"
+            app:destination="@id/addDataCourseFragment" />
+    </fragment>
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="com.example.projectcollage.activities.LoginActivity"
+        android:label="activity_login"
+        tools:layout="@layout/activity_login" />
+    <fragment
+        android:id="@+id/chatsFragment"
+        android:name="com.example.projectcollage.fragments.ChatsFragment"
+        android:label="fragment_chats"
+        tools:layout="@layout/fragment_chats" />
+</navigation>

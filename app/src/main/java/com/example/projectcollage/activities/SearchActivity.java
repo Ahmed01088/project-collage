@@ -34,7 +34,7 @@ public class SearchActivity extends AppCompatActivity {
         Call<List<Post>> posts= RetrofitClient.getInstance().getApiInterface().getPosts();
         posts.enqueue(new Callback<List<Post>>() {
             @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+            public void onResponse(@NonNull Call<List<Post>> call, @NonNull Response<List<Post>> response) {
                 TestApiAdapter adapter=new TestApiAdapter(SearchActivity.this, response.body());
                 LinearLayoutManager manager=new LinearLayoutManager(SearchActivity.this);
 

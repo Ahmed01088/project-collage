@@ -1,9 +1,11 @@
 package com.example.projectcollage.adapters;
 
 import android.content.Context;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -22,8 +24,6 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     Context context;
     ArrayList<Question>questions;
     static int score = 0;
-    private final boolean []isCorrect={false,false,false,false};
-    private final boolean []isChecked={false,false,false,false};
     public QuestionAdapter(Context context, ArrayList<Question> questions) {
         this.context = context;
         this.questions = questions;
@@ -44,315 +44,36 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         holder.radioButtonB.setText(question.getAnswerB());
         holder.radioButtonC.setText(question.getAnswerC());
         holder.radioButtonD.setText(question.getAnswerD());
-        holder.itemView.setTag(this);
         int correctAnswer=question.getCorrectAnswer();
-        if (correctAnswer==1){
-            isCorrect[0]=true;
-        }else if (correctAnswer==2){
-            isCorrect[1]=true;
-        }else if (correctAnswer==3){
-            isCorrect[2]=true;
-        }else if (correctAnswer==4){
-            isCorrect[3]=true;
-        }
-        holder.group.clearCheck();
-        holder.group.setOnCheckedChangeListener((group, checkedId) -> {
-            int checkedRadioButtonId = group.getCheckedRadioButtonId();
-            if (checkedRadioButtonId == R.id.radioButtonA) {
-                if (isCorrect[0]) {
-                    if (isChecked[0]) {
-                        score = score - 1;
-                        isChecked[0] = false;
-                    } else {
-                        score = score + 1;
-                        isChecked[0] = true;
+        final int[] studentAnswer = {0};
+        final boolean[] isChecked= {false};
+        holder.done.setOnClickListener(v -> {
+            if (holder.group.getCheckedRadioButtonId()==-1){
+                Toast.makeText(context, "من فضلك حدد اجابة اولا", Toast.LENGTH_SHORT).show();
+            }else {
+                holder.done.setImageResource(R.drawable.ic_check_circle);
+                if(!isChecked[0]){
+                    isChecked[0]=true;
+                    holder.done.setImageResource(R.drawable.ic_empty_circle);
+                    if (holder.radioButtonA.isChecked())
+                        studentAnswer[0] =1;
+                    else if (holder.radioButtonB.isChecked())
+                        studentAnswer[0] =2;
+                    else if (holder.radioButtonC.isChecked())
+                        studentAnswer[0] =3;
+                    else if (holder.radioButtonD.isChecked())
+                        studentAnswer[0] =4;
+                    else
+                        studentAnswer[0] =0;
+                    if (studentAnswer[0] == correctAnswer){
+                        score++;
                     }
                 }
-            } else if (checkedRadioButtonId == R.id.radioButtonB) {
-                if (isCorrect[1]) {
-                    if (isChecked[1]) {
-                        score = score - 1;
-                        isChecked[1] = false;
-                    } else {
-                        score = score + 1;
-                        isChecked[1] = true;
-                    }
-                }
-            } else if (checkedRadioButtonId == R.id.radioButtonC) {
-                if (isCorrect[2]) {
-                    if (isChecked[2]) {
-                        score = score - 1;
-                        isChecked[2] = false;
-                    } else {
-                        score = score + 1;
-                        isChecked[2] = true;
-                    }
-                }
-            } else if (checkedRadioButtonId == R.id.radioButtonD) {
-                if (isCorrect[3]) {
-                    if (isChecked[3]) {
-                        score = score - 1;
-                        isChecked[3] = false;
-                    } else {
-                        score = score + 1;
-                        isChecked[3] = true;
-                    }
-                }
+
             }
-            Toast.makeText(context, ""+score, Toast.LENGTH_SHORT).show();
 
         });
-        /*holder.radioButtonA.setOnClickListener(view -> {
-            holder.radioButtonB.setChecked(false);
-            holder.radioButtonC.setChecked(false);
-            holder.radioButtonD.setChecked(false);
-            //answer =1;
-            if (correctAnswer == 1) {
-                if (holder.radioButtonA.isChecked()) {
-                    if (isAChecked) {
-                        score = score - 1;
-                        isAChecked = false;
-                        holder.radioButtonA.setChecked(false);
-                    } else {
-                        score = score + 1;
-                        isAChecked = true;
-                    }
-                }
-                isCorrect[0] = true;
-            } else if (correctAnswer == 2) {
-                if (holder.radioButtonB.isChecked()) {
-                    if (isBChecked) {
-                        score = score - 1;
-                        isBChecked = false;
-                        holder.radioButtonB.setChecked(false);
-
-                    } else {
-                        score = score + 1;
-                        isBChecked = true;
-
-
-                    }
-                }
-                isCorrect[1] = true;
-            } else if (correctAnswer == 3) {
-                if (holder.radioButtonC.isChecked()) {
-                    if (isCChecked) {
-                        score = score - 1;
-                        isCChecked = false;
-                        holder.radioButtonC.setChecked(false);
-                    } else {
-                        score = score + 1;
-                        isCChecked = true;
-
-                    }
-                }
-                isCorrect[2] = true;
-            } else if (correctAnswer == 4) {
-                if (holder.radioButtonD.isChecked()) {
-                    if (isDChecked) {
-                        score = score - 1;
-                        isDChecked = false;
-                        holder.radioButtonD.setChecked(false);
-
-                    } else {
-                        score = score + 1;
-                        isDChecked = true;
-
-                    }
-                }
-                isCorrect[3] = true;
-            }
-            Toast.makeText(context, ""+score, Toast.LENGTH_SHORT).show();
-
-        });
-        holder.radioButtonB.setOnClickListener(view -> {
-            holder.radioButtonA.setChecked(false);
-            holder.radioButtonC.setChecked(false);
-            holder.radioButtonD.setChecked(false);
-            switch (correctAnswer){
-                case 1:
-                    if (holder.radioButtonA.isChecked()){
-                        if (isAChecked){
-                            score=score-1;
-                            isAChecked=false;
-                            holder.radioButtonA.setChecked(false);
-                        }else {
-                            score=score+1;
-                            isAChecked=true;
-                        }
-                    }
-                    isCorrectAnswer=true;
-                    break;
-                case 2:
-                    if (holder.radioButtonB.isChecked()){
-                        if (isBChecked){
-                            score=score-1;
-                            isBChecked=false;
-
-                            holder.radioButtonB.setChecked(false);
-                        }else {
-                            score=score+1;
-                            isBChecked=true;
-                        }
-                    }
-                    isCorrectAnswer=true;
-                    break;
-                case 3:
-                    if (holder.radioButtonC.isChecked()){
-                        if (isCChecked){
-                            score=score-1;
-                            isCChecked=false;
-                            holder.radioButtonC.setChecked(false);
-                        }else {
-                            score=score+1;
-                            isCChecked=true;
-                        }
-                    }
-                    isCorrectAnswer=true;
-                    break;
-                case 4:
-                    if (holder.radioButtonD.isChecked()){
-                        if (isDChecked){
-                            score=score-1;
-                            isDChecked=false;
-                            holder.radioButtonD.setChecked(false);
-                        }else {
-                            score=score+1;
-                            isDChecked=true;
-                        }
-                    }
-                    isCorrectAnswer=true;
-                    break;
-            }
-            Toast.makeText(context, ""+score, Toast.LENGTH_SHORT).show();
-
-        });
-
-        holder.radioButtonC.setOnClickListener(view -> {
-            holder.radioButtonB.setChecked(false);
-            holder.radioButtonA.setChecked(false);
-            holder.radioButtonD.setChecked(false);
-            switch (correctAnswer){
-                case 1:
-                    if (holder.radioButtonA.isChecked()){
-                        if (isAChecked||isCorrectAnswer){
-                            score=score-1;
-                            isAChecked=false;
-                            holder.radioButtonA.setChecked(false);
-                        }else {
-                            score=score+1;
-                            isAChecked=true;
-                        }
-                    }
-                    isCorrectAnswer=true;
-                    break;
-                case 2:
-                    if (holder.radioButtonB.isChecked()){
-                        if (isBChecked||isCorrectAnswer){
-                            score=score-1;
-                            isBChecked=false;
-                            holder.radioButtonB.setChecked(false);
-                        }else {
-                            score=score+1;
-                            isBChecked=true;
-                        }
-                    }
-                    isCorrectAnswer=true;
-                    break;
-                case 3:
-                    if (holder.radioButtonC.isChecked()){
-                        if (isCChecked||isCorrectAnswer){
-                            score=score-1;
-                            isCChecked=false;
-                            holder.radioButtonC.setChecked(false);
-                        }else {
-                            score=score+1;
-                            isCChecked=true;
-                        }
-                    }
-                    isCorrectAnswer=true;
-                    break;
-                case 4:
-                    if (holder.radioButtonD.isChecked()){
-                        if (isDChecked||isCorrectAnswer){
-                            score=score-1;
-                            isDChecked=false;
-                            holder.radioButtonD.setChecked(false);
-                        }else {
-                            score=score+1;
-                            isDChecked=true;
-                        }
-                    }
-                    isCorrectAnswer=true;
-                    break;
-            }
-            Toast.makeText(context, ""+score, Toast.LENGTH_SHORT).show();
-
-        });
-        holder.radioButtonD.setOnClickListener(view -> {
-            holder.radioButtonB.setChecked(false);
-            holder.radioButtonC.setChecked(false);
-            holder.radioButtonA.setChecked(false);
-            switch (correctAnswer){
-                case 1:
-                    if (holder.radioButtonA.isChecked()){
-                        if (isAChecked||isCorrectAnswer){
-                            score=score-1;
-                            isAChecked=false;
-                            holder.radioButtonA.setChecked(false);
-                        }else {
-                            score=score+1;
-                            isAChecked=true;
-                        }
-                    }
-                    isCorrectAnswer=true;
-                    break;
-                case 2:
-                    if (holder.radioButtonB.isChecked()){
-                        if (isBChecked||isCorrectAnswer){
-                            score=score-1;
-                            isBChecked=false;
-                            holder.radioButtonB.setChecked(false);
-                        }else {
-                            score=score+1;
-                            isBChecked=true;
-
-                        }
-                    }
-                    isCorrectAnswer=true;
-                    break;
-                case 3:
-                    if (holder.radioButtonC.isChecked()){
-                        if (isCChecked||isCorrectAnswer){
-                            score=score-1;
-                            isCChecked=false;
-                            holder.radioButtonC.setChecked(false);
-                        }else {
-                            score=score+1;
-                            isCChecked=true;
-                        }
-
-                    }
-                    isCorrectAnswer=true;
-                    break;
-                case 4:
-                    if (holder.radioButtonD.isChecked()){
-                        if (isDChecked||isCorrectAnswer){
-                            score=score-1;
-                            isDChecked=false;
-                            holder.radioButtonD.setChecked(false);
-                        }else {
-                            score=score+1;
-                            isDChecked=true;
-                        }
-
-                    }
-                    isCorrectAnswer=true;
-                    break;
-            }
-            Toast.makeText(context, ""+score, Toast.LENGTH_SHORT).show();
-
-        });*/
+        holder.itemView.setTag(this);
 
     }
 
@@ -365,6 +86,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         TextView questionStudentNumber,questionText;
         RadioButton radioButtonA,radioButtonB,radioButtonC,radioButtonD;
         RadioGroup group;
+        ImageView done;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             questionStudentNumber=itemView.findViewById(R.id.question_student_number);
@@ -373,7 +95,9 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             radioButtonC=itemView.findViewById(R.id.radioButtonC);
             radioButtonD=itemView.findViewById(R.id.radioButtonD);
             questionText=itemView.findViewById(R.id.question_text);
+
             group=itemView.findViewById(R.id.group);
+            done=itemView.findViewById(R.id.ic_done);
 
         }
     }

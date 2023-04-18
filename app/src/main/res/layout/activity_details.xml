@@ -24,11 +24,12 @@
             android:layout_height="match_parent"
             android:background="#2B2B2B"
             android:gravity="right"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:paddingStart="16dp"
             android:paddingTop="16dp"
             android:paddingEnd="16dp"
             android:paddingBottom="16dp">
+
 
             <TextView
                 android:id="@+id/rateing"
@@ -42,6 +43,7 @@
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 app:drawableRightCompat="@drawable/ic_star_rate" />
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -49,14 +51,13 @@
         android:id="@+id/card_three"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        app:cardCornerRadius="16dp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        app:cardCornerRadius="@dimen/_16sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/card_two">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -67,9 +68,8 @@
             android:paddingTop="16dp"
             android:paddingEnd="16dp"
             android:paddingBottom="16dp">
-
             <TextView
-                android:id="@+id/textView33"
+                android:id="@+id/levelD"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -80,9 +80,8 @@
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 app:drawableRightCompat="@drawable/ic_level" />
-
             <TextView
-                android:id="@+id/textView34"
+                android:id="@+id/departmentD"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -95,7 +94,7 @@
                 app:drawableRightCompat="@drawable/ic_department" />
 
             <TextView
-                android:id="@+id/textView35"
+                android:id="@+id/statuteD"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -265,6 +264,7 @@
             android:paddingBottom="16dp">
 
             <TextView
+                android:id="@+id/fullNmae"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -290,6 +290,7 @@
                 app:drawableRightCompat="@drawable/ic_college" />
 
             <TextView
+                android:id="@+id/email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -303,7 +304,7 @@
                 app:drawableTint="@color/white" />
 
             <TextView
-                android:id="@+id/textView36"
+                android:id="@+id/phoneNumberD"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -346,17 +347,18 @@
         app:layout_constraintTop_toBottomOf="@+id/card_four">
 
         <EditText
-            android:id="@+id/editTextTextPersonName"
+            android:id="@+id/textRating"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:background="@drawable/background_raduis_16"
             android:ems="10"
             android:gravity="right|top"
             android:hint="تجربتك"
+            android:imeOptions="actionSend"
             android:inputType="textMultiLine"
-            android:padding="8dp"
             android:maxWidth="300dp"
+            android:padding="@dimen/_16sdp"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:textSize="16sp" />

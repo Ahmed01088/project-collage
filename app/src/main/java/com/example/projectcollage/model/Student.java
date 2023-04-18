@@ -25,6 +25,8 @@ public class Student {
     private String nationalId;
     @SerializedName("department_id")
     private int departmentId;
+    @SerializedName("department_name")
+    private String departmentName;
     @SerializedName("password")
     private String password;
     @SerializedName("created_at")
@@ -43,6 +45,15 @@ public class Student {
         this.phoneNumber = phoneNumber;
         this.departmentId = departmentId;
     }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
     public int getUid() {
         return uid;
     }

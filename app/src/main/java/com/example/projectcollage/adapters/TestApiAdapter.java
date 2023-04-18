@@ -6,17 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.bumptech.glide.Glide;
 import com.example.projectcollage.R;
 import com.example.projectcollage.model.Post;
-import com.example.projectcollage.models.Hero;
-import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class TestApiAdapter extends RecyclerView.Adapter<TestApiAdapter.ViewHolder> {
