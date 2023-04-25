@@ -5,6 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <ImageView
+        android:id="@+id/ic_startChat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_chat"
+        app:tint="@color/main2" />
+
     <View
         android:id="@+id/view3"
         android:layout_width="match_parent"
@@ -26,8 +37,8 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingBottom="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageView15"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/studentPicProfile"
+        app:layout_constraintStart_toEndOf="@+id/ic_startChat"
         app:layout_constraintTop_toBottomOf="@+id/view3">
 
         <TextView
@@ -50,7 +61,7 @@
     </LinearLayout>
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imageView15"
+        android:id="@+id/studentPicProfile"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_margin="8dp"

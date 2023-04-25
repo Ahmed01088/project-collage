@@ -25,6 +25,7 @@ import com.example.projectcollage.databinding.ActivityMainBinding;
 import com.example.projectcollage.utiltis.Constants;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     ActivityMainBinding binding;
@@ -162,6 +163,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         email.setText(String.format(" البريد الالكتروني : %s", login.getString(Constants.EMAIL, "")));
         level.setText(String.format("المستوى : %s", login.getString(Constants.STUDENT_LEVEL, "")));
         department.setText(String.format("القسم : %s", login.getString(Constants.STUDENT_DEPARTMENT, "")));
-
+        Picasso.get()
+                .load(Constants.BASE_URL_PATH_USERS+login.getString(Constants.IMAGE,""))
+                .placeholder(R.drawable.avatar)
+                .error(R.drawable.avatar)
+                .into(image);
     }
 }

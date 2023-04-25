@@ -73,7 +73,6 @@ public class ChatClassroomAdapter extends RecyclerView.Adapter<RecyclerView.View
             senderHolder.date.setText(chatsMessage.get(position).getTime());
             senderHolder.image.setOnClickListener(view -> {
                     Intent intent=new Intent(context, ShowImageActivity.class);
-                    ShowImageActivity.DATA=chatsMessage.get(position).getMessageImage();
                     ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,
                             view.getWidth()/2,view.getHeight()/2,100,100);
                     context.startActivity(intent,options.toBundle());
@@ -129,7 +128,6 @@ public class ChatClassroomAdapter extends RecyclerView.Adapter<RecyclerView.View
             receiverHolder.date.setText(chatsMessage.get(position).getTime());
             receiverHolder.image.setOnClickListener(view -> {
                 Intent intent=new Intent(context, ShowImageActivity.class);
-                ShowImageActivity.DATA=chatsMessage.get(position).getMessageImage();
                 ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,
                         view.getWidth()/2,view.getHeight()/2,100,100);
                 context.startActivity(intent,options.toBundle());

@@ -172,7 +172,6 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                 if (Objects.requireNonNull(binding.senderMessage.getText()).toString().isEmpty()){
                     binding.iconSend.setImageResource(R.drawable.ic_mic);
                 }else if (bitmap!=null||!(binding.senderMessage.getText().toString().isEmpty())){
-                        binding.senderMessage.setTextColor(Color.BLACK);
                         binding.iconSend.setImageResource(R.drawable.ic_send);
                      }
                 manager.setStackFromEnd(true);

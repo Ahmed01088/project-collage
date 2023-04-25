@@ -58,7 +58,7 @@ public class StudentOfCourseActivity extends AppCompatActivity {
                 if(response.isSuccessful()){
                     List<Student>students=response.body().getData();
                     if(students.size()>0){
-                        StudentAdapter adapter=new StudentAdapter((Context) StudentOfCourseActivity.this, (ArrayList<Student>) students);
+                        StudentAdapter adapter=new StudentAdapter(StudentOfCourseActivity.this, (ArrayList<Student>) students);
                         LinearLayoutManager manager=new LinearLayoutManager(StudentOfCourseActivity.this);
                         binding.rvOfAllStudentInClass.setLayoutManager(manager);
                         binding.rvOfAllStudentInClass.setAdapter(adapter);

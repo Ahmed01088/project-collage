@@ -22,10 +22,9 @@
         <ImageView
             android:id="@+id/image_user_reciver"
             android:layout_width="200dp"
-            android:layout_marginEnd="-8dp"
             android:layout_height="250dp"
+            android:layout_marginEnd="-8dp"
             android:scaleType="centerCrop"
-            android:visibility="visible"
             app:srcCompat="@drawable/women" />
 
         <TextView

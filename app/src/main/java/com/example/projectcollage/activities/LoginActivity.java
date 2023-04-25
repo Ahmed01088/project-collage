@@ -97,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putString(Constants.PHONE, response.body().getData().getPhoneNumber());
                                 editor.putString(Constants.EMAIL, response.body().getData().getEmail());
                                 editor.putInt(Constants.UID, response.body().getData().getSaid());
+                                editor.putString(Constants.IMAGE, response.body().getData().getImage());
                                 editor.apply();
                                 ActivityOptions options = ActivityOptions.makeClipRevealAnimation(binding.login, binding.login.getWidth() / 2,
                                         binding.login.getHeight() / 2, 100, 100);
@@ -113,6 +114,7 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putString(Constants.PHONE, response.body().getData().getPhoneNumber());
                                 editor.putString(Constants.STUDENT_AFFAIRS, "User");
                                 editor.putString(Constants.STUDENT_DEPARTMENT,Constants.STUDENT_AFFAIRS);
+                                editor.putString(Constants.IMAGE, response.body().getData().getImage());
                                 editor.putString(Constants.USER_TYPE, Constants.USER_TYPES[2]);
                                 editor.putString(Constants.STUDENT_LEVEL,response.body().getData().getResponsibleLevel());
                                 editor.apply();
@@ -205,6 +207,7 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString(Constants.EMAIL, response.body().getData().getEmail());
                     editor.putInt(Constants.UID, response.body().getData().getUid());
                     editor.putString(Constants.PHONE, response.body().getData().getPhoneNumber());
+                    editor.putString(Constants.IMAGE, response.body().getData().getImage());
                     editor.putString(Constants.USER_TYPE, Constants.USER_TYPES[0]);
                     editor.putInt(Constants.DEPARTMENT_ID, response.body().getData().getDepartmentId());
                     editor.putString(Constants.STUDENT_DEPARTMENT, response.body().getData().getDepartmentName());
@@ -252,6 +255,7 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString(Constants.EMAIL, response.body().getData().getEmail());
                     editor.putString(Constants.PHONE, response.body().getData().getPhoneNumber());
                     editor.putInt(Constants.UID, response.body().getData().getLid());
+                    editor.putString(Constants.IMAGE, response.body().getData().getImage());
                     editor.putString(Constants.STUDENT_LEVEL, response.body().getData().getDepartmentLevel());
                     editor.putString(Constants.STUDENT_DEPARTMENT, response.body().getData().getDepartmentName());
                     editor.putString(Constants.USER_TYPE, Constants.USER_TYPES[1]);

@@ -1,4 +1,5 @@
 package com.example.projectcollage.adapters;
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
@@ -12,16 +13,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.projectcollage.R;
 import com.example.projectcollage.activities.ViewMessageUsersActivity;
 import com.example.projectcollage.customView.CustomDialog;
-import com.example.projectcollage.database.Database;
-import com.example.projectcollage.models.User;
+import com.example.projectcollage.model.Chat;
+import com.example.projectcollage.utiltis.Constants;
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
+public class UserAdapter<T> extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     Context context;
-    ArrayList<User>users;
-    Database database;
-    public UserAdapter(Context context, ArrayList<User> users) {
+    ArrayList<Chat> chats;
+    T T;
+    public UserAdapter(Context context, ArrayList chats) {
         this.context = context;
-        this.users = users;
+        this.chats = chats;
     }
     @NonNull
     @Override
@@ -31,38 +34,34 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     }
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.name.setText(users.get(position).getName());
-        holder.profileImage.setImageBitmap(users.get(position).getImageBitmap());
-        holder.itemView.setOnClickListener(view -> {
-//          ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,200,view.getHeight()/2,view.getWidth(),view.getHeight());
-            ViewMessageUsersActivity.data=users.get(position).getImageBitmap();
+        Chat chat=chats.get(position);
+        holder.name.setText(chat.getReciverName());
+        if (chat.getReciverImage()!=null){
+            Picasso.get().load(Constants.BASE_URL_PATH_USERS+chat.getReciverImage()).into(holder.profileImage);
+        }else {
+            holder.profileImage.setImageResource(R.drawable.avatar);
+        }
+        holder.itemView.setOnClickListener(v -> {
             Intent intent=new Intent(context, ViewMessageUsersActivity.class);
-            intent.putExtra("uid", users.get(position).getUid());
-            intent.putExtra("name",users.get(position).getName());
-            notifyDataSetChanged();
-            notifyItemInserted(users.size());
-            ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,view.getWidth()/2,view.getHeight()/2,300,300);
+            intent.putExtra(Constants.FULL_NAME,chat.getReciverName());
+            intent.putExtra(Constants.IMAGE,chat.getReciverImage());
+            intent.putExtra(Constants.CHAT_ID,chat.getId());
+            ActivityOptions options= ActivityOptions.makeClipRevealAnimation(v,v.getWidth()/2,v.getHeight()/2,300,300);
             context.startActivity(intent,options.toBundle());
+         });
+        holder.profileImage.setOnClickListener(v -> {
+            CustomDialog customDialog=new CustomDialog(context);
+            customDialog.imageData=chat.getReciverImage();
+            customDialog.name=chat.getReciverName();
+            customDialog.chatId=chat.getId();
+            customDialog.show();
+
         });
-        holder.itemView.setOnLongClickListener(view -> {
-            database=new Database(context);
-            database.deleteUser(users.get(position).getUid());
-            users.remove(position);
-            notifyItemRemoved(position);
-            notifyDataSetChanged();
-            return false;
-        });
-        holder.profileImage.setOnClickListener(view -> {
-            CustomDialog dialog=new CustomDialog(context);
-            dialog.imageData=users.get(position).getImageBitmap();
-            dialog.uid=users.get(position).getUid();
-            dialog.name=users.get(position).getName();
-            dialog.show();
-        });
+
     }
     @Override
     public int getItemCount() {
-        return users.size();
+        return chats.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{

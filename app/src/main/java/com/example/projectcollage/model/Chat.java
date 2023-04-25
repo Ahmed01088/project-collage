@@ -17,6 +17,10 @@ public class Chat {
     private Integer studentAffairsReciverId;
     @SerializedName("lecturer_reciver_id")
     private Integer lecturerReciverId;
+    @SerializedName("reciver_name")
+    private String reciverName;
+    @SerializedName("reciver_image")
+    private String reciverImage;
     @SerializedName("updated_at")
     private String updatedAt;
     @SerializedName("created_at")
@@ -51,12 +55,28 @@ public class Chat {
         this.lecturerSenderId = lecturerSenderId;
     }
 
+    public String getReciverImage() {
+        return reciverImage;
+    }
+
+    public void setReciverImage(String reciverImage) {
+        this.reciverImage = reciverImage;
+    }
+
     public Integer getStudentReciverId() {
         return studentReciverId;
     }
 
     public void setStudentReciverId(Integer studentReciverId) {
         this.studentReciverId = studentReciverId;
+    }
+
+    public String getReciverName() {
+        return reciverName;
+    }
+
+    public void setReciverName(String reciverName) {
+        this.reciverName = reciverName;
     }
 
     public Integer getStudentAffairsReciverId() {

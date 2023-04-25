@@ -38,11 +38,11 @@
         <ImageView
             android:id="@+id/post_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_300sdp"
             android:background="#2B2B2B"
             android:contentDescription="@string/todo"
-            android:scaleType="centerCrop"
             android:visibility="visible"
+            android:scaleType="centerCrop"
             app:srcCompat="@drawable/women1" />
 
     </androidx.cardview.widget.CardView>

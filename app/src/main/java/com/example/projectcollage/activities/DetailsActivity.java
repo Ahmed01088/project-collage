@@ -14,6 +14,7 @@ import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Rating;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
+import com.squareup.picasso.Picasso;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,6 +30,12 @@ public class DetailsActivity extends AppCompatActivity {
         binding=ActivityDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().setNavigationBarColor(getColor(R.color.main_bar));
+        String image;
+        if (getIntent().getStringExtra(Constants.IMAGE)!=null){
+            image=getIntent().getStringExtra(Constants.IMAGE);
+        }else {
+            image="https://www.flaticon.com/free-icon/hacker_924915?term=avatar&page=1&position=8&origin=search&related_id=924915";
+        }
         sharedPreferences=getSharedPreferences(Constants.DATA,MODE_PRIVATE);
         int uid = sharedPreferences.getInt(Constants.UID, 0);
         String fullName=sharedPreferences.getString(Constants.FIRSTNAME,"")
@@ -52,6 +59,7 @@ public class DetailsActivity extends AppCompatActivity {
         binding.phoneNumberD.setText(String.format("رقم الهاتف : %s", phone));
         binding.departmentD.setText(String.format("القسم : %s", departmentName));
         binding.levelD.setText(String.format("المستوى : %s", level));
+        Picasso.get().load(image).into(binding.profileDetailsPic);
         if (sharedPreferences.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[0])){
             String status=sharedPreferences.getString(Constants.STUDENT_STAT,"");
             binding.statuteD.setText(String.format("الحالة : %s", status));

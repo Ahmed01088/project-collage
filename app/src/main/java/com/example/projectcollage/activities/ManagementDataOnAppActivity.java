@@ -2,6 +2,9 @@ package com.example.projectcollage.activities;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
+
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -36,6 +39,9 @@ public class ManagementDataOnAppActivity extends AppCompatActivity {
             editor = login.edit();
             editor.clear();
             editor.commit();
+            Intent intent=new Intent(ManagementDataOnAppActivity.this, LoginActivity.class);
+            ActivityOptions options=ActivityOptions.makeCustomAnimation(ManagementDataOnAppActivity.this, R.anim.slide_in_left, R.anim.slide_out_right);
+            startActivity(intent, options.toBundle());
         });
         binding.spinnerData.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

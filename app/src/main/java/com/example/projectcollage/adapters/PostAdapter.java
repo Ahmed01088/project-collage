@@ -1,12 +1,15 @@
 package com.example.projectcollage.adapters;
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.text.method.LinkMovementMethod;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +31,7 @@ import com.example.projectcollage.model.Post;
 import com.example.projectcollage.retrofit.RetrofitClient;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -57,12 +61,30 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.counterReact.setText(posts.get(position).getLikes()+" مشاهدة ");
+
+        holder.counterReact.setText(String.format(Locale.ENGLISH,"%d مشاهدة ", posts.get(position).getLikes()));
         holder.number_of_comments.setText(posts.get(position).getNumberOfComments()+" تعليق");
         holder.name.setText(posts.get(position).getPersonName());
+       if (posts.get(position).getPersonImage()!=null){
+           Picasso.get()
+                   .load(Constants.BASE_URL_PATH_USERS+posts.get(position).getPersonImage())
+                   .placeholder(R.drawable.avatar)
+                   .error(R.drawable.ic_image)
+                   .into(holder.profilePic);
+       }else {
+           holder.profilePic.setImageResource(R.drawable.avatar);
+       }
         holder.time.setText(posts.get(position).getPosted_at());
+        if(posts.get(position).getImage()!=null) {
+             Picasso.get()
+                    .load(Constants.BASE_URL_PATH_POSTS+posts.get(position).getImage())
+                    .placeholder(R.drawable.ic_image)
+                    .error(R.drawable.ic_image)
+                    .into(holder.post_image);
+        }else {
+            holder.post_image.setVisibility(View.GONE);
+        }
         String string = posts.get(position).getContent();
-        Glide.with(context).load(posts.get(position).getImage()).into(holder.post_image);
         if (!(string.isEmpty())){
             holder.question.setText(string);
             holder.question.setVisibility(View.VISIBLE);
@@ -138,17 +160,27 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         holder.post_image.setOnClickListener(view -> {
             Intent intent=new Intent(context, ShowImageActivity.class);
                         ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,view.getWidth()/2,view.getHeight()/2,300,300);
+                        intent.putExtra(Constants.PATH,Constants.BASE_URL_PATH_POSTS+posts.get(position).getImage());
             context.startActivity(intent,options.toBundle());
+        });
+        holder.question.setOnLongClickListener(view -> {
+            ClipboardManager clipboardManager=(ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clipData=ClipData.newPlainText("text",holder.question.getText().toString());
+            clipboardManager.setPrimaryClip(clipData);
+            Toast.makeText(context, "تم نسخ ...", Toast.LENGTH_SHORT).show();
+            return true;
         });
         holder.name.setOnClickListener(view -> {
             Intent intent=new Intent(context, DetailsActivity.class);
             ActivityOptions options= ActivityOptions.makeClipRevealAnimation(holder.itemView,holder.itemView.getWidth()/2,holder.itemView.getHeight()/2,300,300);
+            intent.putExtra(Constants.IMAGE,Constants.BASE_URL_PATH_USERS+posts.get(position).getPersonImage());
             context.startActivity(intent,options.toBundle());
 
         });
         holder.profilePic.setOnClickListener(view -> {
             Intent intent=new Intent(context, DetailsActivity.class);
             ActivityOptions options= ActivityOptions.makeClipRevealAnimation(holder.itemView,holder.itemView.getWidth()/2,holder.itemView.getHeight()/2,300,300);
+            intent.putExtra(Constants.IMAGE,Constants.BASE_URL_PATH_USERS+posts.get(position).getPersonImage());
             context.startActivity(intent,options.toBundle());
 
         });
@@ -201,4 +233,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
        return menu;
     }
 
+    @Override
+    public void onViewRecycled(@NonNull ViewHolder holder) {
+        super.onViewRecycled(holder);
+        holder.itemView.clearAnimation();
+
+    }
 }

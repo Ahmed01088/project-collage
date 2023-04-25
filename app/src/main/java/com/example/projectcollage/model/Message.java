@@ -14,9 +14,9 @@ public class Message {
     @SerializedName("voice_file")
     private String voiceFile;
     @SerializedName("classroom_id")
-    private int classroomId;
+    private Integer classroomId;
     @SerializedName("chat_id")
-    private int chatId;
+    private Integer chatId;
     @SerializedName("sender")
     private int sender;
     @SerializedName("receiver")
@@ -25,6 +25,15 @@ public class Message {
     private String createdAt;
     @SerializedName("updated_at")
     private String updatedAt;
+
+    public Message(String content, String date, int chatId, int sender, int receiver) {
+        this.content = content;
+        this.sentAt = date;
+        this.chatId = chatId;
+        this.sender = sender;
+        this.receiver = receiver;
+
+    }
 
     public int getId() {
         return id;
@@ -36,6 +45,30 @@ public class Message {
 
     public String getContent() {
         return content;
+    }
+
+    public void setClassroomId(Integer classroomId) {
+        this.classroomId = classroomId;
+    }
+
+    public void setChatId(Integer chatId) {
+        this.chatId = chatId;
+    }
+
+    public int getSender() {
+        return sender;
+    }
+
+    public void setSender(int sender) {
+        this.sender = sender;
+    }
+
+    public int getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(int receiver) {
+        this.receiver = receiver;
     }
 
     public void setContent(String content) {
@@ -66,7 +99,7 @@ public class Message {
         this.voiceFile = voiceFile;
     }
 
-    public int getClassroomId() {
+    public Integer getClassroomId() {
         return classroomId;
     }
 
@@ -74,7 +107,7 @@ public class Message {
         this.classroomId = classroomId;
     }
 
-    public int getChatId() {
+    public Integer getChatId() {
         return chatId;
     }
 

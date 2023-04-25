@@ -1,16 +1,24 @@
 package com.example.projectcollage.fragments;
-
+import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
-
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import com.example.projectcollage.R;
 import com.example.projectcollage.databinding.FragmentAddDataStudentBinding;
 import com.example.projectcollage.model.Course;
@@ -19,13 +27,19 @@ import com.example.projectcollage.model.Department;
 import com.example.projectcollage.model.Student;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
-
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.Body;
+import retrofit2.http.Part;
 
 public class AddDataStudentFragment extends Fragment {
     FragmentAddDataStudentBinding binding;
@@ -33,6 +47,11 @@ public class AddDataStudentFragment extends Fragment {
     ArrayAdapter<String> adapterDepartments;
     List<Department> departments;
     List<Course> courses;
+
+    private Uri uriImage;
+    private Bitmap bitmap;
+    private ProgressBar progressBar;
+    private File file;
 
     public AddDataStudentFragment() {
         // Required empty public constructor
@@ -53,13 +72,18 @@ public class AddDataStudentFragment extends Fragment {
     public void preparationSpinner(){
         ArrayAdapter<String>adapterLevels=
                 new ArrayAdapter<>(getActivity(), R.layout.item_spinner, Constants.LEVEL);
-       ArrayAdapter<String>adapterState=
+        ArrayAdapter<String>adapterState=
                 new ArrayAdapter<>(getActivity(), R.layout.item_spinner,Constants.STUDENT_STATUS);
         adapterState.setDropDownViewResource(R.layout.item_spinner);
         adapterLevels.setDropDownViewResource(R.layout.item_spinner);
         binding.studentState.setAdapter(adapterState);
         binding.level.setAdapter(adapterLevels);
         getAllDepartments();
+        binding.selectImage.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            someActivityResultLauncher.launch(intent);
+        });
         binding.send.setOnClickListener(v -> {
             String firstname=binding.firstname.getText().toString();
             String lastname=binding.lastName.getText().toString();
@@ -72,16 +96,16 @@ public class AddDataStudentFragment extends Fragment {
             String phoneNumber=binding.phoneNumber.getText().toString();
             int departmentId=departments.get(binding.studentDepartment.getSelectedItemPosition()).getDid();
             Student student=new Student(firstname,lastname,email,password,nationalId,level,department,state,phoneNumber,departmentId);
-            addStudent(student);
-            binding.firstname.setText("");
-            binding.email.setText("");
-            binding.password.setText("");
-            binding.nationalIdA.setText("");
-            binding.lastName.setText("");
-            binding.phoneNumber.setText("");
+            if (uriImage!=null){
+                createStudent(student,file);
+            }else {
+                addStudent(student);
+            }
+
 
         });
     }
+
 
    private void addStudent(Student student){
         Call<Data<Student>>call= RetrofitClientLaravelData.getInstance().getApiInterface().addStudent(student);
@@ -91,6 +115,12 @@ public class AddDataStudentFragment extends Fragment {
                 if (response.isSuccessful()){
                     Toast.makeText(getActivity(), "تم اضافة الطالب بنجاح", Toast.LENGTH_SHORT).show();
                     Toast.makeText(getActivity(), ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    binding.firstname.setText("");
+                    binding.email.setText("");
+                    binding.password.setText("");
+                    binding.nationalIdA.setText("");
+                    binding.lastName.setText("");
+                    binding.phoneNumber.setText("");
                 }
             }
 
@@ -99,6 +129,59 @@ public class AddDataStudentFragment extends Fragment {
                 Toast.makeText(getActivity(), "حدث خطأ", Toast.LENGTH_SHORT).show();
             }
         });
+   }
+   private void createStudent(Student student, File file){
+            RequestBody firstname=RequestBody.create(student.getfName(), MediaType.parse("text/plain"));
+            RequestBody lastname=RequestBody.create(student.getlName(), MediaType.parse("text/plain"));
+            RequestBody nationalId=RequestBody.create(student.getNationalId(), MediaType.parse("text/plain"));
+            RequestBody email=RequestBody.create(student.getEmail(), MediaType.parse("text/plain"));
+            RequestBody phoneNumber=RequestBody.create(student.getPhoneNumber(), MediaType.parse("text/plain"));
+            RequestBody password=RequestBody.create(student.getPassword(), MediaType.parse("text/plain"));
+            RequestBody level=RequestBody.create(student.getLevel(), MediaType.parse("text/plain"));
+            RequestBody state=RequestBody.create(student.getState(), MediaType.parse("text/plain"));
+            RequestBody departmentCode=RequestBody.create(student.getDepartmentCode(), MediaType.parse("text/plain"));
+            RequestBody imageBody = RequestBody.create(file,MediaType.parse("image/*"));
+            MultipartBody.Part imagePart = MultipartBody.Part.createFormData("image", file.getName(), imageBody);
+       Call<Data<Student>> call = RetrofitClientLaravelData.getInstance().getApiInterface().createStudent(
+                firstname,
+                lastname,
+                nationalId,
+                email,
+                phoneNumber,
+                password,
+                level,
+                state,
+                departmentCode,
+                student.getDepartmentId(),
+                imagePart
+         );
+       call.enqueue(new Callback<Data<Student>>() {
+           @Override
+           public void onResponse(@NonNull Call<Data<Student>> call, @NonNull Response<Data<Student>> response) {
+                if (response.isSuccessful()){
+                     Toast.makeText(getActivity(), "تم اضافة الطالب بنجاح 1", Toast.LENGTH_SHORT).show();
+                     Toast.makeText(getActivity(), ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        binding.firstname.setText("");
+                        binding.email.setText("");
+                        binding.password.setText("");
+                        binding.nationalIdA.setText("");
+                        binding.lastName.setText("");
+                        binding.phoneNumber.setText("");
+
+                }else {
+                    binding.firstname.setText(response.errorBody().toString());
+                    Toast.makeText(getActivity(), "تم اضافة الطالب بنجاح 2", Toast.LENGTH_SHORT).show();
+                }
+           }
+
+           @Override
+           public void onFailure(@NonNull Call<Data<Student>> call, @NonNull Throwable t) {
+               binding.firstname.setText(t.getMessage());
+
+
+           }
+       });
+
    }
     private void getAllDepartments(){
         Call<Data<List<Department>>> call= RetrofitClientLaravelData.getInstance().getApiInterface().getAllDepartments();
@@ -142,6 +225,40 @@ public class AddDataStudentFragment extends Fragment {
                 Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    ActivityResultLauncher<Intent> someActivityResultLauncher
+            = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (!(data == null)) {
+                            uriImage = data.getData();
+                            try {
+                                if (uriImage != null) {
+                                    binding.selectImage.setImageURI(uriImage);
+                                    file = new File(getRealPathFromURI(uriImage));
+                                }
+                                bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(uriImage));
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            });
+
+    private String getRealPathFromURI(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getActivity().getContentResolver().query(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String filePath = cursor.getString(column_index);
+        cursor.close();
+        return filePath;
     }
 
 }

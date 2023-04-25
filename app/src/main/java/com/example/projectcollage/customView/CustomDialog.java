@@ -15,11 +15,14 @@ import com.example.projectcollage.R;
 import com.example.projectcollage.activities.DetailsActivity;
 import com.example.projectcollage.activities.ShowImageActivity;
 import com.example.projectcollage.activities.ViewMessageUsersActivity;
+import com.example.projectcollage.utiltis.Constants;
+import com.squareup.picasso.Picasso;
 
 public class CustomDialog extends Dialog {
-    public Bitmap imageData;
+    public String imageData;
     public String uid;
     public String name;
+    public int chatId;
     Context context;
     ImageView chat,details,image;
     public CustomDialog(@NonNull Context context) {
@@ -38,20 +41,18 @@ public class CustomDialog extends Dialog {
             Intent intent=new Intent(context, DetailsActivity.class);
             ActivityOptions options= ActivityOptions.makeClipRevealAnimation(image,image.getWidth()/2,image.getHeight()/2,100,100);
             context.startActivity(intent,options.toBundle());
-
         });
         image=findViewById(R.id.imageCardShow);
-        image.setImageBitmap(imageData);
+        Picasso.get().load(Constants.BASE_URL_PATH_USERS+imageData).into(image);
         image.setOnClickListener(view -> {
             Intent intent=new Intent(context,ShowImageActivity.class);
-            ShowImageActivity.DATA=imageData;
             ActivityOptions options= ActivityOptions.makeClipRevealAnimation(image,image.getWidth()/2,image.getHeight()/2,100,100);
             context.startActivity(intent,options.toBundle());
         });
         chat.setOnClickListener(view -> {
             ActivityOptions options= ActivityOptions.makeClipRevealAnimation(image,image.getWidth()/2,image.getHeight()/2,100,100);
             Intent intent=new Intent(context, ViewMessageUsersActivity.class);
-            intent.putExtra("uid", uid);
+            intent.putExtra(Constants.UID, uid);
             intent.putExtra("name",name);
             ViewMessageUsersActivity.data=imageData;
             context.startActivity(intent,options.toBundle());});
