@@ -1,6 +1,4 @@
 package com.example.projectcollage.activities;
-import static java.lang.Thread.sleep;
-
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -12,55 +10,65 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.example.projectcollage.R;
-import com.example.projectcollage.adapters.AddDataQuizAdapter;
 import com.example.projectcollage.adapters.ChatClassroomAdapter;
-import com.example.projectcollage.database.Database;
 import com.example.projectcollage.databinding.ActivityViewMessageClassroomBinding;
 import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Quiz;
-import com.example.projectcollage.models.Message;
+import com.example.projectcollage.model.Message;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
+import com.pusher.client.Pusher;
+import com.pusher.client.PusherOptions;
+import com.pusher.client.channel.Channel;
+import com.pusher.client.channel.PusherEvent;
+import com.pusher.client.channel.SubscriptionEventListener;
+import com.pusher.client.connection.ConnectionEventListener;
+import com.pusher.client.connection.ConnectionState;
+import com.pusher.client.connection.ConnectionStateChange;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
-
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ViewMessageClassroomActivity extends AppCompatActivity {
     ActivityViewMessageClassroomBinding binding;
-    Database database;
-    ArrayList<Message>chats;
+    ArrayList<Message>messages;
     public static final String NAME_OF_COURSE="courseName";
     Bitmap bitmap;
     Uri uriImage;
+    LinearLayoutManager manager;
+    ChatClassroomAdapter adapter;
+    File file;
     View dialog;
     int uid;
     int quizId;
@@ -76,14 +84,14 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
         binding=ActivityViewMessageClassroomBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         String nameOfCourse=getIntent().getStringExtra("courseName");
-        database=new Database(this);
         preferences = getSharedPreferences(Constants.DATA, MODE_PRIVATE);
-        editor = preferences.edit();
-        SQLiteDatabase db=database.getWritableDatabase();
-        database.createDB(db,"chat_classroom_"+nameOfCourse);
         binding.nameOfCourse.setText(nameOfCourse);
         uid=preferences.getInt(Constants.UID,0);
+        String lecturerName=getIntent().getStringExtra("lecturerName");
+        int classroomId=getIntent().getIntExtra(Constants.CLASSROOM_ID,0);
+        getMessagesByClassroomId(classroomId);
         departmentId=preferences.getInt(Constants.DEPARTMENT_ID,0);
+        manager=new LinearLayoutManager(this);
         initDialog();
         if (preferences.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[1])){
             binding.addQuiz.setVisibility(View.VISIBLE);
@@ -92,14 +100,11 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
             binding.addQuiz.setVisibility(View.GONE);
             binding.startVideo.setVisibility(View.GONE);
         }
-        if (database.getAllMessage()==null){
-            chats=new ArrayList<>();
-        }else {
-            chats=database.getAllMessage();
-        }
+
         binding.nameOfCourse.setOnClickListener(view -> {
           ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,view.getWidth(),view.getHeight(),50,50);
           Intent intent=new Intent(this,StudentOfCourseActivity.class);
+          intent.putExtra("lecturerName",lecturerName);
           intent.putExtra(NAME_OF_COURSE,nameOfCourse);
           startActivity(intent,options.toBundle());
         });
@@ -111,7 +116,6 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                         int numberQuestionQuiz= Integer.parseInt(numberQuestion.getText().toString());
                         int quizTimeQuiz= Integer.parseInt(quizTime.getText().toString());
                         int courseId=getIntent().getIntExtra("courseId",0);
-                        int classroomId=getIntent().getIntExtra("classroomId",0);
                         Quiz quiz=new Quiz(
                                 titleQuiz,
                                 descriptionQuiz,
@@ -157,66 +161,75 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
             builder.setView(videoId);
             builder.show();
           });
-        ChatClassroomAdapter adapter=new ChatClassroomAdapter(this,chats,nameOfCourse);
-        LinearLayoutManager manager=new LinearLayoutManager(this);
-        binding.rvMessageClassroom.setAdapter(adapter);
         binding.senderMessage.setImeOptions(EditorInfo.IME_ACTION_SEND);
-        manager.setStackFromEnd(true);
         getWindow().setNavigationBarColor(this.getColor(R.color.main_bar));
-        binding.senderMessage.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (Objects.requireNonNull(binding.senderMessage.getText()).toString().isEmpty()){
-                    binding.iconSend.setImageResource(R.drawable.ic_mic);
-                }else if (bitmap!=null||!(binding.senderMessage.getText().toString().isEmpty())){
-                        binding.iconSend.setImageResource(R.drawable.ic_send);
-                     }
-                manager.setStackFromEnd(true);
-            }
-            @Override
-            public void afterTextChanged(Editable editable) {
-                binding.rvMessageClassroom.smoothScrollToPosition(chats.size());
-            }
-        });
         binding.iconSelectImage.setOnClickListener(view -> {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
             someActivityResultLauncher.launch(intent);
         });
-        binding.iconSend.setOnClickListener(view -> {
-            Animation animationMic= AnimationUtils.loadAnimation(this, R.anim.mic_anim);
-                        view.startAnimation(animationMic);
-            String message= Objects.requireNonNull(binding.senderMessage.getText()).toString();
-            if (!message.isEmpty()){
-                Date date=new Date();
-                SimpleDateFormat format=new SimpleDateFormat("HH:mm aa",Locale.ENGLISH);
-                String time=format.format(date);
-                database.insertMessage(new Message(message, time, bitmap));
-                chats.add(new Message(message,time,uriImage));
-                bitmap=null;
-                adapter.notifyItemInserted(chats.size());
+        binding.iconSend.setOnClickListener(v -> {
+            String content=binding.senderMessage.getText().toString();
+            if (!content.isEmpty()){
+                SimpleDateFormat dateFormat=new SimpleDateFormat("HH:mm:ss aa", Locale.getDefault());
+                String date=dateFormat.format(new Date());
+                Message message=new Message();
+                message.setContent(content);
+                message.setSentAt(date);
+                message.setSender(uid);
+                message.setClassroomId(classroomId);
+                message.setReceiver(classroomId);
+                message.setSenderName(preferences.getString(Constants.FIRSTNAME,"")+" "+preferences.getString(Constants.LASTNAME,""));
+                if (uriImage!=null){
+                    createMessage(message,file);
+                }else {
+                    sendMessage(message);
+                }
+                adapter=new ChatClassroomAdapter(ViewMessageClassroomActivity.this,messages);
+                messages.add(message);
+                binding.rvMessageClassroom.setLayoutManager(manager);
+                binding.rvMessageClassroom.setAdapter(adapter);
+                binding.rvMessageClassroom.scrollToPosition(messages.size()-1);
+                adapter.notifyItemInserted(messages.size()-1);
+                binding.rvMessageClassroom.setHasFixedSize(true);
                 binding.senderMessage.setText("");
-            }
 
+            }
         });
-        binding.rvMessageClassroom.setLayoutManager(manager);
         binding.btnBack.setOnClickListener(view -> finish());
+        binding.senderMessage.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!binding.senderMessage.getText().toString().isEmpty()) {
+                    binding.iconSend.setImageResource(R.drawable.ic_send);
+                } else {
+                    binding.iconSend.setImageResource(R.drawable.ic_mic);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
     }
     ActivityResultLauncher<Intent> someActivityResultLauncher
-            =registerForActivityResult(
-                    new ActivityResultContracts.StartActivityForResult(),
+            = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode()==RESULT_OK){
-                        Intent data=result.getData();
-                        if (data!=null){
-                            uriImage=data.getData();
-                            binding.iconSend.setImageResource(R.drawable.ic_send);
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (!(data == null)) {
+                            uriImage = data.getData();
                             try {
+                                if (uriImage != null) {
+                                    file = new File(getRealPathFromURI(uriImage));
+                                }
                                 bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uriImage));
                             } catch (FileNotFoundException e) {
                                 e.printStackTrace();
@@ -225,7 +238,16 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                     }
                 }
             });
-   private void addQuiz(Quiz quiz){
+    private String getRealPathFromURI(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String filePath = cursor.getString(column_index);
+        cursor.close();
+        return filePath;
+    }
+    private void addQuiz(Quiz quiz){
        call= RetrofitClientLaravelData.getInstance().getApiInterface().addQuiz(quiz);
        call.enqueue(new Callback<Data<Quiz>>() {
            @Override
@@ -265,5 +287,100 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
        numberQuestion=dialog.findViewById(R.id.dialog_questions);
        quizTime=dialog.findViewById(R.id.dialog_minutes);
    }
-  }
+    private void sendMessage(Message message){
+        Call<Data<Message>> call= RetrofitClientLaravelData.getInstance().getApiInterface().addMessage(message);
+        call.enqueue(new Callback<Data<Message>>() {
+            @Override
+            public void onResponse(@NonNull Call<Data<Message>> call, @NonNull retrofit2.Response<Data<Message>> response) {
+                if (response.isSuccessful()){
+                    Toast.makeText(ViewMessageClassroomActivity.this, "تم ارسال رساله", Toast.LENGTH_SHORT).show();
+                    pusher();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Data<Message>> call, @NonNull Throwable t) {
+
+            }
+        });
+    }
+    private void createMessage(Message message, File file){
+        RequestBody content=RequestBody.create(message.getContent(), MediaType.parse("text/plain"));
+        RequestBody sentAt=RequestBody.create(message.getSentAt(),MediaType.parse("text/plain"));
+        RequestBody imageBody = RequestBody.create(file,MediaType.parse("image/*"));
+        MultipartBody.Part imagePart = MultipartBody.Part.createFormData("image", file.getName(), imageBody);
+        Call<Data<Message>> call= RetrofitClientLaravelData.getInstance().getApiInterface().createMessage(
+                content,
+                sentAt,
+                message.getClassroomId(),
+                message.getChatId(),
+                message.getSender(),
+                message.getReceiver(),
+                imagePart
+        );
+        call.enqueue(new Callback<Data<Message>>() {
+            @Override
+            public void onResponse(@NonNull Call<Data<Message>> call, @NonNull retrofit2.Response<Data<Message>> response) {
+                if (response.isSuccessful()){
+                    Toast.makeText(ViewMessageClassroomActivity.this, "تم ارسال رساله", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Data<Message>> call, @NonNull Throwable t) {
+                 Toast.makeText(ViewMessageClassroomActivity.this, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+   private void getMessagesByClassroomId(int classroomId){
+       Call<Data<List<Message>>> call= RetrofitClientLaravelData.getInstance().getApiInterface().getMessagesByClassroomId(classroomId);
+       call.enqueue(new Callback<Data<List<Message>>>() {
+           @Override
+           public void onResponse(@NonNull Call<Data<List<Message>>> call, @NonNull Response<Data<List<Message>>> response) {
+               if (response.isSuccessful()){
+                   messages= (ArrayList<Message>) response.body().getData();
+                   adapter=new ChatClassroomAdapter(ViewMessageClassroomActivity.this,messages);
+                   binding.rvMessageClassroom.setAdapter(adapter);
+                   binding.rvMessageClassroom.scrollToPosition(messages.size()-1);
+                   binding.rvMessageClassroom.setLayoutManager(manager);
+                   manager.setStackFromEnd(true);
+
+               }
+           }
+
+           @Override
+           public void onFailure(@NonNull Call<Data<List<Message>>> call, @NonNull Throwable t) {
+               Toast.makeText(ViewMessageClassroomActivity.this, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+           }
+       });
+   }
+   private  void pusher(){
+       runOnUiThread(() -> {
+           PusherOptions options = new PusherOptions();
+           options.setCluster("eu");
+           Pusher pusher = new Pusher("5cb5996a19c6ae482eaa", options);
+           pusher.connect(new ConnectionEventListener() {
+               @Override
+               public void onConnectionStateChange(ConnectionStateChange change) {
+                   Log.d("pusher", "State changed from " + change.getPreviousState() +
+                           " to " + change.getCurrentState());
+
+               }
+               @Override
+               public void onError(String message, String code, Exception e) {
+                  Log.d("pusher", "There was a problem connecting! " +
+                           "\ncode: " + code +
+                           "\nmessage: " + message +
+                           "\nException: " + e);
+               }
+           }, ConnectionState.ALL);
+
+           Channel channel = pusher.subscribe("chat");
+
+           channel.bind("my-event", event -> Log.d("pusher", "Received event with data: " + event.toString()));
+           pusher.user();
+       });
+
+   }
+}
 

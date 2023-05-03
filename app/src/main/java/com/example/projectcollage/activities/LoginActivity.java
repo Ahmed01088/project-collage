@@ -3,12 +3,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.ActivityOptions;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Toast;
 import com.example.projectcollage.R;
+import com.example.projectcollage.customView.ProgressHelper;
 import com.example.projectcollage.databinding.ActivityLoginBinding;
 import com.example.projectcollage.model.Admin;
 import com.example.projectcollage.model.Data;
@@ -29,6 +32,8 @@ public class LoginActivity extends AppCompatActivity {
     ActivityLoginBinding binding;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
+    ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,6 +199,7 @@ public class LoginActivity extends AppCompatActivity {
     private void loginStudent(final String nationalId, final String password) {
         binding.progress.setVisibility(View.VISIBLE);
         binding.login.setVisibility(View.INVISIBLE);
+        showAlertDialog().show();
         Call<Data<Student>> login = RetrofitClientLaravelData.getInstance().getApiInterface()
                 .loginStudent(nationalId, password);
         login.enqueue(new Callback<Data<Student>>() {
@@ -224,6 +230,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 binding.login.setVisibility(View.VISIBLE);
                 binding.progress.setVisibility(View.GONE);
+                showAlertDialog().dismiss();
             }
 
             @Override
@@ -235,6 +242,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 binding.login.setVisibility(View.VISIBLE);
                 binding.progress.setVisibility(View.GONE);
+                showAlertDialog().dismiss();
             }
         });
 
@@ -255,6 +263,7 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString(Constants.EMAIL, response.body().getData().getEmail());
                     editor.putString(Constants.PHONE, response.body().getData().getPhoneNumber());
                     editor.putInt(Constants.UID, response.body().getData().getLid());
+                    editor.putInt(Constants.DEPARTMENT_ID, response.body().getData().getDepartmentId());
                     editor.putString(Constants.IMAGE, response.body().getData().getImage());
                     editor.putString(Constants.STUDENT_LEVEL, response.body().getData().getDepartmentLevel());
                     editor.putString(Constants.STUDENT_DEPARTMENT, response.body().getData().getDepartmentName());
@@ -282,8 +291,20 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 binding.login.setVisibility(View.VISIBLE);
                 binding.progress.setVisibility(View.GONE);
+
             }
         });
 
     }
+
+    public void showProgressDialog() {
+        ProgressHelper.showDialog(this, "جاري تسجيل الدخول ...");
+    }
+    private AlertDialog showAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View progressView = getLayoutInflater().inflate(R.layout.progress_diloge, null);
+        builder.setView(progressView);
+        return builder.show();
+    }
+
 }

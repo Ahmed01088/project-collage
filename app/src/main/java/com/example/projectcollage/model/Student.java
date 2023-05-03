@@ -27,6 +27,8 @@ public class Student {
     private int departmentId;
     @SerializedName("department_name")
     private String departmentName;
+    @SerializedName("fcm_token")
+    private String fcmToken;
     @SerializedName("password")
     private String password;
     @SerializedName("created_at")
@@ -44,6 +46,14 @@ public class Student {
         this.state = state;
         this.phoneNumber = phoneNumber;
         this.departmentId = departmentId;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 
     public String getDepartmentName() {

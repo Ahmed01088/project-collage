@@ -3,7 +3,6 @@ package com.example.projectcollage.model;
 import com.google.gson.annotations.SerializedName;
 
 public class StudentAffairs {
-
     @SerializedName("id")
     private int said;// student affairs id
     @SerializedName("firstname")
@@ -18,6 +17,8 @@ public class StudentAffairs {
     private String phoneNumber;
     @SerializedName("password")
     private String password;
+    @SerializedName("fcm_token")
+    private String fcmToken;
     @SerializedName("image")
     private String image;
     @SerializedName("admin_id")
@@ -42,6 +43,14 @@ public class StudentAffairs {
             this.password = password;
             this.responsibleLevel = level;
             this.dateAdded = dateAdded;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 
     public String getPassword() {

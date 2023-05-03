@@ -6,39 +6,30 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.loader.content.CursorLoader;
-
-import android.Manifest;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
 import com.example.projectcollage.R;
 import com.example.projectcollage.databinding.ActivityAddPostBinding;
 import com.example.projectcollage.model.Data;
+import com.example.projectcollage.model.Notification;
 import com.example.projectcollage.model.Post;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -51,7 +42,6 @@ public class AddPostActivity extends AppCompatActivity {
     SharedPreferences preferences;
     private Uri uriImage;
     private Bitmap bitmap;
-    private ProgressBar progressBar;
     private File file;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +70,8 @@ public class AddPostActivity extends AppCompatActivity {
                 post.setStudentId(null);
                 post.setStudentAffairsId(null);
             }
-            post.setLikes(100);
-            post.setNumberOfComments(100);
+            post.setLikes(104320);
+            post.setNumberOfComments(102430);
             if (binding.contentQuestionPost.getText().toString().isEmpty()){
                 binding.contentQuestionPost.setError("الرجاء كتابة المنشور");
                 return;
@@ -114,6 +104,8 @@ public class AddPostActivity extends AppCompatActivity {
             someActivityResultLauncher.launch(intent);
         });
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -168,6 +160,8 @@ public class AddPostActivity extends AppCompatActivity {
     }
 
     private void createPost(Post post, File file) {
+        ProgressBar progressBar=new ProgressBar(this);
+        progressBar.setVisibility(View.VISIBLE);
         RequestBody imageBody = RequestBody.create( file,MediaType.parse("image/*"));
         RequestBody titleBody = RequestBody.create(post.getTitle(),MediaType.parse("text/plain"));
         RequestBody contentBody = RequestBody.create(post.getContent(),MediaType.parse("text/plain"));
@@ -184,8 +178,10 @@ public class AddPostActivity extends AppCompatActivity {
                             Intent intent=new Intent(AddPostActivity.this,MainActivity.class);
                             ActivityOptions options= ActivityOptions.makeClipRevealAnimation(binding.showImage,
                                     binding.showImage.getWidth()/2,binding.showImage.getHeight()/2,300,300);
-                            startActivity(intent,options.toBundle());
+                        sendNotificationsForAllStudents(new Notification(post.getPersonName() + "تم اضافة منشور جديد بواسطة",post.getContent()));
+                        startActivity(intent,options.toBundle());
                             finish();
+                            progressBar.setVisibility(View.GONE);
                         } else {
                             Toast.makeText(AddPostActivity.this, "حدث خطأ ما 1", Toast.LENGTH_SHORT).show();
                     }
@@ -197,8 +193,6 @@ public class AddPostActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<Data<Post>> call, @NonNull Throwable t) {
-                // handle network failure
-                // ...
                 Toast.makeText(AddPostActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                 binding.contentQuestionPost.setText(t.getMessage());
             }
@@ -224,6 +218,7 @@ public class AddPostActivity extends AppCompatActivity {
                     if (data != null) {
                             Toast.makeText(AddPostActivity.this, "تم اضافة المنشور بنجاح", Toast.LENGTH_SHORT).show();
                             Intent intent=new Intent(AddPostActivity.this,MainActivity.class);
+                            sendNotificationsForAllStudents(new Notification(post.getPersonName() + "تم اضافة منشور جديد بواسطة",post.getContent()));
                             startActivity(intent);
                             finish();
                         } else {
@@ -246,4 +241,23 @@ public class AddPostActivity extends AppCompatActivity {
         });
     }
 
+    private void sendNotificationsForAllStudents(Notification notification) {
+        Call<Void> call = RetrofitClientLaravelData.getInstance().getApiInterface().sendNotificationsForAllStudents(notification);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(AddPostActivity.this, "تم ارسال الاشعارات بنجاح", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(AddPostActivity.this, "حدث خطأ ما 1" +response.errorBody(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                Toast.makeText(AddPostActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
 }

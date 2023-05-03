@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectcollage.R;
-import com.example.projectcollage.models.Notification;
+import com.example.projectcollage.model.Notification;
 
 import java.util.ArrayList;
 

@@ -40,10 +40,12 @@ public class StudentOfCourseActivity extends AppCompatActivity {
         sharedPreferences=getSharedPreferences(Constants.DATA, Context.MODE_PRIVATE);
         getWindow().setNavigationBarColor(getColor(R.color.main_bar));
         Window window=this.getWindow();
+        String lecturerName=getIntent().getStringExtra("lecturerName");
         Drawable drawable= AppCompatResources.getDrawable(this,R.drawable.background_gradient);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(getColor(android.R.color.transparent));
         window.setBackgroundDrawable(drawable);
+        binding.lecturerName.setText(String.format("الدكتور %s", lecturerName));
         String nameOfCourse=getIntent().getStringExtra(ViewMessageClassroomActivity.NAME_OF_COURSE);
         binding.courseName.setText(nameOfCourse);
         int departmentId=sharedPreferences.getInt(Constants.DEPARTMENT_ID, 0);

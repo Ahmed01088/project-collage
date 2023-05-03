@@ -78,7 +78,7 @@ public class AddDataLecturerFragment extends Fragment {
         String email=binding.email.getText().toString();
         String password=binding.password.getText().toString();
         String phoneNumber=binding.phoneNumber.getText().toString();
-        String nationalId=binding.nationalId.getText().toString();
+        String nationalId="2060"+binding.nationalId.getText().toString();
         departmentId=departments.get(binding.department.getSelectedItemPosition()).getDid();
         int courseId=courses.get(binding.course.getSelectedItemPosition()).getCid();
         Lecturer lecturer=new Lecturer(firstName,lastName,email,password,phoneNumber,nationalId,departmentId,courseId);

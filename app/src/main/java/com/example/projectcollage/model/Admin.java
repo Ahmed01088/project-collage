@@ -16,6 +16,8 @@ public class Admin {
     private String email;
     @SerializedName("phone_no")
     private String phoneNumber;
+    @SerializedName("fcm_token")
+    private String fcmToken;
 
     @SerializedName("updated_at")
     private String updatedAt;
@@ -44,6 +46,14 @@ public class Admin {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 
     public String getNationalId() {

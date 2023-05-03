@@ -6,27 +6,23 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FCMClient {
     public static final String BASE_URL_FCM="https://fcm.googleapis.com/";
-    private static Retrofit retrofit=null;
-    public static  Retrofit getInstance(){
-        if (retrofit==null){
-            OkHttpClient okHttpClient =new OkHttpClient.Builder().addInterceptor(
-                    chain -> {
-                        Request original=chain.request();
-                        Request.Builder builder=original.newBuilder()
-                                .addHeader("Content-Type:application/json",
-                                        "Authorization:key=your-key")
-                                .method(original.method(), original.body());
-                        Request request=builder.build();
-                        return chain.proceed(request);
-                    }
-            ).build();
-            retrofit=new Retrofit.Builder()
-                    .baseUrl(BASE_URL_FCM)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+    private static FCMClient instance=null;
+    private final FCMApi apiInterface;
+    private FCMClient(){
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl(BASE_URL_FCM)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        apiInterface=retrofit.create(FCMApi.class);
 
-        }
-        return retrofit;
     }
-
+    public static synchronized FCMClient getInstance(){
+        if (instance==null){
+            instance=new FCMClient();
+        }
+        return instance;
+    }
+    public FCMApi getApiInterface(){
+        return apiInterface;
+    }
 }

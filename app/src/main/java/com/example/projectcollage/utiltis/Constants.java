@@ -1,11 +1,22 @@
 package com.example.projectcollage.utiltis;
 
+import android.graphics.Bitmap;
+
+import com.example.projectcollage.firebase.MyFirebaseMessagingService;
+
 public class Constants {
     public static final String BASE_URL = "http://192.168.1.31:80/api/";
     public static final String BASE_URL_PATH_POSTS = "http://192.168.1.31:80/images/posts/";
     public static final String BASE_URL_PATH_USERS = "http://192.168.1.31:80/images/users/";
     public static final String BASE_URL_PATH_MESSAGES = "http://192.168.1.31:80/images/messages/";
-
+    public static final String CLASSROOM_ID = "classroom_id";
+    public static final String FCM_TOKEN="fcm_token";
+    public static final String TOKEN="f1rzRAsrRkewnpxmSsMVfG:APA91bHE0u7pTqUW4ZLoldrno31zmt6H8NDB3wX_Jqm1_tvDxEMs-e-tC_omWVLFmTtozcHXaQwV3GUyvg7LSH2xzetmafEyJvTL0ZuXfSOengiI7p2MRakk51wipDm7G3rq6zX4CkJq";
+    public static final String SERVER_KEY="key=AAAAjfF8Wec:APA91bEWxNWtrsJ99bucIsqsA_QCpga1OFNOBoOMRwiFZpkGE1F0oLO84hZNEYxWj3KuMcjlaO6_icPysdIeIBFjpAkxNns70u8focMYTzcrnNxfPqaNdd2i3rZRJOr_eMY5hOGE_K0T";
+    public static final String CONTENT_TYPE="application/json";
+    public static final String TITLE="title";
+    public static final String BODY="body";
+    public static final String TO="/topics/All";
     public static final String FILE_NAME ="filename" ;
     public static final String PATH = "path";
     public static final String IMAGE = "image";
@@ -40,4 +51,5 @@ public class Constants {
 
     public static final String CHAT = "chat";
     public static final String CHAT_ID = "chat_id";
+
 }

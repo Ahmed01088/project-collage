@@ -27,6 +27,8 @@ public class Lecturer {
     private String nationalId;
     @SerializedName("password")
     private String password;
+    @SerializedName("fcm_token")
+    private String fcmToken;
     @SerializedName("created_at")
     private String createdAt;
     @SerializedName("updated_at")
@@ -54,6 +56,14 @@ public class Lecturer {
         this.nationalId = nationalId;
         this.departmentId = departmentId;
         this.courseId = courseId;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 
     public String getDepartmentLevel() {

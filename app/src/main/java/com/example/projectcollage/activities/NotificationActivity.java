@@ -8,7 +8,7 @@ import android.widget.Toast;
 import com.example.projectcollage.R;
 import com.example.projectcollage.adapters.NotificationAdapter;
 import com.example.projectcollage.databinding.ActivityNotificationBinding;
-import com.example.projectcollage.models.Notification;
+import com.example.projectcollage.model.Notification;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
@@ -34,7 +34,6 @@ public class NotificationActivity extends AppCompatActivity {
         binding.rvNotification.setLayoutManager(manager);
         binding.btnBackFromNotify.setOnClickListener(view -> finish());
         firebase();
-        binding.token.setText(TOKEN);
     }
     private void firebase(){
         FirebaseMessaging.getInstance().getToken()

@@ -61,10 +61,21 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-
+        if (posts.get(position).getLecturerId() != null) {
+            holder.ic_verified_account.setVisibility(View.VISIBLE);
+            holder.levelPost.setVisibility(View.GONE);
+            holder.name.setText(String.format(" الدكتور %s", posts.get(position).getPersonName()));
+        } else if (posts.get(position).getStudentAffairsId() != null){
+            holder.ic_verified_account.setVisibility(View.VISIBLE);
+            holder.levelPost.setVisibility(View.GONE);
+            holder.name.setText(String.format("شئوان طلاب %s", posts.get(position).getPersonName()));
+        }
+        else {
+            holder.name.setText(String.format("الطالب %s", posts.get(position).getPersonName()));
+            holder.ic_verified_account.setVisibility(View.GONE);
+        }
         holder.counterReact.setText(String.format(Locale.ENGLISH,"%d مشاهدة ", posts.get(position).getLikes()));
-        holder.number_of_comments.setText(posts.get(position).getNumberOfComments()+" تعليق");
-        holder.name.setText(posts.get(position).getPersonName());
+        holder.number_of_comments.setText(String.format("%d تعليق", posts.get(position).getNumberOfComments()));
        if (posts.get(position).getPersonImage()!=null){
            Picasso.get()
                    .load(Constants.BASE_URL_PATH_USERS+posts.get(position).getPersonImage())
@@ -194,8 +205,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        TextView name,question,time,comment,react,counterReact,number_of_comments;
-        ImageView manage_post,post_image,profilePic;
+        TextView name,question,time,comment,react,counterReact,number_of_comments,levelPost;
+        ImageView manage_post,post_image,profilePic,ic_verified_account;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name=itemView.findViewById(R.id.nameOfPostPerson);
@@ -208,6 +219,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             manage_post=itemView.findViewById(R.id.manage_post);
             post_image=itemView.findViewById(R.id.post_image);
             number_of_comments=itemView.findViewById(R.id.numberOfComments);
+            ic_verified_account=itemView.findViewById(R.id.ic_verified_account);
+            levelPost=itemView.findViewById(R.id.levelPost);
         }
     }
     public  void removeItem(int position){

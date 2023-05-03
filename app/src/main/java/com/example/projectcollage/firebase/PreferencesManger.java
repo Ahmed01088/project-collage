@@ -3,29 +3,32 @@ package com.example.projectcollage.firebase;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.projectcollage.utiltis.Constants;
+
 public class PreferencesManger {
-    SharedPreferences preferences;
-    SharedPreferences.Editor editor;
-    public PreferencesManger(Context context){
-       preferences=context.getSharedPreferences(Constants.KEY_PREFERENCES_NAME,Context.MODE_PRIVATE);
-        editor=preferences.edit();
+   public static final String KEY_ACCESS_TOKEN="token";
+   private Context context;
+   private static PreferencesManger instance;
+
+    private PreferencesManger(Context context) {
+        this.context = context;
     }
-   public void putBoolean(String key,boolean value){
-        editor.putBoolean(key,value);
+    public static synchronized PreferencesManger getInstance(Context context){
+        if (instance==null){
+            instance=new PreferencesManger(context);
+        }
+        return instance;
+    }
+    public boolean storeToken(String token){
+        SharedPreferences preferences=context.getSharedPreferences(Constants.DATA,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=preferences.edit();
+        editor.putString(KEY_ACCESS_TOKEN,token);
         editor.apply();
+        return true;
     }
-   public Boolean getBoolean(String key){
-        return preferences.getBoolean(key,false);
+    public String getToken(){
+        SharedPreferences preferences=context.getSharedPreferences(Constants.DATA,Context.MODE_PRIVATE);
+        return preferences.getString(KEY_ACCESS_TOKEN,null);
     }
-    public void putString(String key,String value){
-        editor.putString(key,value);
-        editor.apply();
-    }
-    public String getString(String key){
-        return preferences.getString(key,"");
-    }
-    public void clearPreferences(){
-        editor.clear();
-        editor.apply();
-    }
+
 }

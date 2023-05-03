@@ -76,7 +76,7 @@ public class AddAdminStudentAffairsActivity extends AppCompatActivity {
     private void organizeData(){
         String firstname=binding.firstname.getText().toString();
         String lastname=binding.lastName.getText().toString();
-        String nationalId=binding.nationalIdA.getText().toString();
+        String nationalId="2080"+binding.nationalIdA.getText().toString();
         String email=binding.email.getText().toString();
         String phoneNumber=binding.phoneNumber.getText().toString();
         String image="https://www.google.com";

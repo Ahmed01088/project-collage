@@ -17,6 +17,8 @@ public class Classroom {
     private String updatedAt;
     @SerializedName("course_name")
     private String  courseName;
+    @SerializedName("lecturer_name")
+    private String lecturerName;
 
     public Classroom(int courseId, int LecturerId) {
         this.courseId = courseId;
@@ -39,6 +41,18 @@ public class Classroom {
 
     public int getCourseId() {
         return courseId;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public String getLecturerName() {
+        return lecturerName;
+    }
+
+    public void setLecturerName(String lecturerName) {
+        this.lecturerName = lecturerName;
     }
 
     public void setCourseId(int courseId) {

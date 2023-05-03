@@ -45,6 +45,19 @@
         app:layout_constraintTop_toBottomOf="@+id/icon_group" />
 
     <TextView
+        android:id="@+id/lecturerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/name_of_course"
+        android:textColor="#033B67"
+        android:textSize="@dimen/_14ssp"
+        app:layout_constraintEnd_toEndOf="@+id/courseName"
+        app:layout_constraintHorizontal_bias="0.466"
+        app:layout_constraintStart_toStartOf="@+id/courseName"
+        app:layout_constraintTop_toBottomOf="@+id/courseName" />
+
+    <TextView
         android:id="@+id/level_of_course"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,9 +66,9 @@
         android:textColor="#CCCCCC"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/courseName"
-        app:layout_constraintStart_toStartOf="@+id/courseName"
-        app:layout_constraintTop_toBottomOf="@+id/courseName" />
+        app:layout_constraintEnd_toEndOf="@+id/lecturerName"
+        app:layout_constraintStart_toStartOf="@+id/lecturerName"
+        app:layout_constraintTop_toBottomOf="@+id/lecturerName" />
 
     <TextView
         android:id="@+id/number_of_student_in_coures"

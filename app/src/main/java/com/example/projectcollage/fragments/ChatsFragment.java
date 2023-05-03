@@ -91,7 +91,7 @@ public class ChatsFragment extends Fragment {
                     binding.rvUsers.setAdapter(adapter);
                     binding.rvUsers.setLayoutManager(new LinearLayoutManager(getContext()));
                 }else {
-                    Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), response.errorBody()+"", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -113,7 +113,7 @@ public class ChatsFragment extends Fragment {
                     binding.rvUsers.setAdapter(adapter);
                     binding.rvUsers.setLayoutManager(new LinearLayoutManager(getContext()));
                 }else {
-                    Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Error"+response.errorBody(), Toast.LENGTH_SHORT).show();
                 }
             }
 

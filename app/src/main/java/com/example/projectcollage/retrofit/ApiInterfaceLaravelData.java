@@ -9,6 +9,7 @@ import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Department;
 import com.example.projectcollage.model.Lecturer;
 import com.example.projectcollage.model.Message;
+import com.example.projectcollage.model.Notification;
 import com.example.projectcollage.model.Post;
 import com.example.projectcollage.model.Question;
 import com.example.projectcollage.model.Quiz;
@@ -22,15 +23,18 @@ import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Url;
 
 
 public interface ApiInterfaceLaravelData {
@@ -58,6 +62,8 @@ public interface ApiInterfaceLaravelData {
     Call<Data<Student>> loginStudent(@Path("national_id") String national_id, @Path("password") String password);
     @GET("student/getAllStudentByDepartmentId/{departmentId}")
     Call<Data<List<Student>>> getAllStudentByDepartmentId(@Path("departmentId") int departmentId);
+    @POST("student/{student_id}/update-fcm-token")
+    Call<Data<Student>> updateFcmToken(@Path("student_id") int student_id, @Part("fcm_token") String fcm_token);
 
     //=================================================================
     //=================================Admin===========================
@@ -274,6 +280,14 @@ public interface ApiInterfaceLaravelData {
     @DELETE("message/deleteMessageById/{id}")
     Call<Data<Message>> deleteMessageById(@Path("id") int id);
 
+    @GET("message/getMessagesByClassroomId/{classroom_id}")
+    Call<Data<List<Message>>> getMessagesByClassroomId(@Path("classroom_id") int classroom_id);
+
+    //=================================================================
+    //==================================notifications==================
+    //=================================================================
+    @POST("notification/sendNotificationsForAllStudents")
+    Call<Void> sendNotificationsForAllStudents(@Body Notification notification);
 
 
 }

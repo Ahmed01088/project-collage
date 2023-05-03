@@ -1,10 +1,21 @@
-package com.example.projectcollage.models;
+package com.example.projectcollage.model;
 
+
+import com.google.gson.annotations.SerializedName;
 
 public class Notification {
+    @SerializedName("title")
     private String title;
+    @SerializedName("body")
     private String message;
-    private String image;
+
+    public Notification() {
+    }
+
+    public Notification(String title, String message) {
+        this.title = title;
+        this.message = message;
+    }
     public String getTitle() {
         return title;
     }
@@ -21,11 +32,5 @@ public class Notification {
         this.message = message;
     }
 
-    public String getImage() {
-        return image;
-    }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
 }

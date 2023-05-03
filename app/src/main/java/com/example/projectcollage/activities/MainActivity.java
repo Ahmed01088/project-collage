@@ -25,6 +25,8 @@ import com.example.projectcollage.databinding.ActivityMainBinding;
 import com.example.projectcollage.utiltis.Constants;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.pusher.pushnotifications.PushNotifications;
 import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(binding.getRoot());
         getWindow().setNavigationBarColor(getColor(R.color.main_bar));
         Window window=this.getWindow();
+        subscribeToTopic();
         login=getSharedPreferences(Constants.DATA,MODE_PRIVATE);
         USER_TYPE=login.getString(Constants.USER_TYPE,"");
         Drawable drawable= AppCompatResources.getDrawable(this,R.drawable.background_gradient);
@@ -50,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         window.setStatusBarColor(getColor(android.R.color.transparent));
         window.setBackgroundDrawable(drawable);
         setSupportActionBar(binding.toolbar);
-        initViewPager();
+                initViewPager();
         setHeader();
         binding.navBar.setNavigationItemSelectedListener(this);
         binding.toolbar.setNavigationOnClickListener(view -> binding.drawer.openDrawer(GravityCompat.START));
@@ -169,4 +172,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .error(R.drawable.avatar)
                 .into(image);
     }
+
+    private void subscribeToTopic(){
+        FirebaseMessaging.getInstance().subscribeToTopic("news")
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Toast.makeText(MainActivity.this, "failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
 }

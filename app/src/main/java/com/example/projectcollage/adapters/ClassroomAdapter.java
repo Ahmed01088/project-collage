@@ -14,6 +14,8 @@ import com.example.projectcollage.R;
 import com.example.projectcollage.activities.ViewMessageClassroomActivity;
 import com.example.projectcollage.model.Classroom;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
+import com.example.projectcollage.utiltis.Constants;
+
 import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,9 +40,10 @@ public class ClassroomAdapter extends RecyclerView.Adapter<ClassroomAdapter.View
             holder.nameOfCourse.setText(classroom.getCourseName());
             holder.itemView.setOnClickListener(view -> {
             Intent intent=new Intent(context, ViewMessageClassroomActivity.class);
-            intent.putExtra("classroomId", classroom.getId());
+            intent.putExtra(Constants.CLASSROOM_ID, classroom.getId());
             intent.putExtra("courseName", classroom.getCourseName());
             intent.putExtra("courseId", classroom.getCourseId());
+            intent.putExtra("lecturerName", classroom.getLecturerName());
             ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,view.getWidth()/2,view.getHeight()/2,300,300);
             context.startActivity(intent,options.toBundle());
            });

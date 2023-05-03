@@ -250,7 +250,6 @@ public class AddDataStudentFragment extends Fragment {
                     }
                 }
             });
-
     private String getRealPathFromURI(Uri uri) {
         String[] projection = { MediaStore.Images.Media.DATA };
         Cursor cursor = getActivity().getContentResolver().query(uri, projection, null, null, null);

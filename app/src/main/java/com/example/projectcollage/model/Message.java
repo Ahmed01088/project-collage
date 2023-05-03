@@ -21,10 +21,17 @@ public class Message {
     private int sender;
     @SerializedName("receiver")
     private int receiver;
+    @SerializedName("sender_name")
+    private String senderName;
+    @SerializedName("sender_image")
+    private String senderImage;
     @SerializedName("created_at")
     private String createdAt;
     @SerializedName("updated_at")
     private String updatedAt;
+
+    public Message() {
+    }
 
     public Message(String content, String date, int chatId, int sender, int receiver) {
         this.content = content;
@@ -33,6 +40,22 @@ public class Message {
         this.sender = sender;
         this.receiver = receiver;
 
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public String getSenderImage() {
+        return senderImage;
+    }
+
+    public void setSenderImage(String senderImage) {
+        this.senderImage = senderImage;
     }
 
     public int getId() {
