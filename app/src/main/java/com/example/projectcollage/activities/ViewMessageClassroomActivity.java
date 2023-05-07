@@ -8,12 +8,16 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
+import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,6 +31,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.example.projectcollage.R;
@@ -39,6 +44,9 @@ import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.pusher.client.channel.Channel;
 import com.pusher.client.channel.PusherEvent;
 import com.pusher.client.channel.SubscriptionEventListener;
@@ -78,6 +86,17 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
     SharedPreferences.Editor editor;
     private Intent intent;
     private  EditText title,description,numberQuestion,quizTime;
+    public static final int PERMISSION_REQ_ID=22;
+    public static final String[] REQUESTED_PERMISSIONS={
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+    private boolean checkSelfPermission(){
+        return ContextCompat.checkSelfPermission(this, REQUESTED_PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this, REQUESTED_PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED;
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,7 +112,8 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
         departmentId=preferences.getInt(Constants.DEPARTMENT_ID,0);
         manager=new LinearLayoutManager(this);
         initDialog();
-        if (preferences.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[1])){
+        setupPusher();
+       if (preferences.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[1])){
             binding.addQuiz.setVisibility(View.VISIBLE);
             binding.startVideo.setVisibility(View.VISIBLE);
         }else {
@@ -164,10 +184,14 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
         binding.senderMessage.setImeOptions(EditorInfo.IME_ACTION_SEND);
         getWindow().setNavigationBarColor(this.getColor(R.color.main_bar));
         binding.iconSelectImage.setOnClickListener(view -> {
+            if (!checkSelfPermission()){
+                ActivityCompat.requestPermissions(this, REQUESTED_PERMISSIONS, PERMISSION_REQ_ID);
+            }
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
             someActivityResultLauncher.launch(intent);
         });
+
         binding.iconSend.setOnClickListener(v -> {
             String content=binding.senderMessage.getText().toString();
             if (!content.isEmpty()){
@@ -181,6 +205,7 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                 message.setReceiver(classroomId);
                 message.setSenderName(preferences.getString(Constants.FIRSTNAME,"")+" "+preferences.getString(Constants.LASTNAME,""));
                 if (uriImage!=null){
+                    adapter.notifyDataSetChanged();
                     createMessage(message,file);
                 }else {
                     sendMessage(message);
@@ -294,7 +319,7 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<Data<Message>> call, @NonNull retrofit2.Response<Data<Message>> response) {
                 if (response.isSuccessful()){
                     Toast.makeText(ViewMessageClassroomActivity.this, "تم ارسال رساله", Toast.LENGTH_SHORT).show();
-                    pusher();
+
                 }
             }
 
@@ -354,33 +379,70 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
            }
        });
    }
-   private  void pusher(){
-       runOnUiThread(() -> {
-           PusherOptions options = new PusherOptions();
-           options.setCluster("eu");
-           Pusher pusher = new Pusher("5cb5996a19c6ae482eaa", options);
-           pusher.connect(new ConnectionEventListener() {
-               @Override
-               public void onConnectionStateChange(ConnectionStateChange change) {
-                   Log.d("pusher", "State changed from " + change.getPreviousState() +
-                           " to " + change.getCurrentState());
 
-               }
-               @Override
-               public void onError(String message, String code, Exception e) {
-                  Log.d("pusher", "There was a problem connecting! " +
-                           "\ncode: " + code +
-                           "\nmessage: " + message +
-                           "\nException: " + e);
-               }
-           }, ConnectionState.ALL);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            if (requestCode==PERMISSION_REQ_ID){
+                if (grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(this, "تم منح الوصول", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(this, "تم رفض الوصول", Toast.LENGTH_SHORT).show();
+                }
+            }
+    }
+    private void setupPusher() {
+        PusherOptions options = new PusherOptions();
+        options.setCluster(Constants.PUSHER_APP_CLUSTER);
+        Pusher pusher = new Pusher(Constants.PUSHER_APP_KEY, options);
+        Channel channel = pusher.subscribe("chat");
+        channel.bind("message", event -> {
+            try {
+                JSONObject jsonObject = new JSONObject(event.getData());
+                Message message = new Message();
+                message.setContent(jsonObject.getString("content"));
+                message.setSentAt(jsonObject.getString("sent_at"));
+                message.setSender(jsonObject.getInt("sender"));
+                message.setReceiver(jsonObject.getInt("receiver"));
+                message.setClassroomId(jsonObject.getInt("classroom_id"));
+                message.setChatId(jsonObject.getInt("chat_id"));
+                message.setImage(jsonObject.getString("image"));
+                message.setSenderName(jsonObject.getString("sender_name"));
+                message.setSenderImage(jsonObject.getString("sender_image"));
+                messages.add(message);
+                adapter.notifyDataSetChanged();
+                binding.rvMessageClassroom.scrollToPosition(messages.size()-1);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        });
+        pusher.connect(
+                new ConnectionEventListener() {
+                    @Override
+                    public void onConnectionStateChange(ConnectionStateChange change) {
+                        Log.i("Pusher", "State changed from " + change.getPreviousState() +
+                                " to " + change.getCurrentState());
+                    }
 
-           Channel channel = pusher.subscribe("chat");
+                    @Override
+                    public void onError(String message, String code, Exception e) {
+                        Log.i("Pusher", "There was a problem connecting! " +
+                                "\ncode: " + code +
+                                "\nmessage: " + message +
+                                "\nException: " + e
+                        );
+                    }
+                },
+                ConnectionState.ALL
+        );
+        runOnUiThread(() -> Toast.makeText(ViewMessageClassroomActivity.this, "تم الاتصال بالسيرفر", Toast.LENGTH_SHORT).show());
 
-           channel.bind("my-event", event -> Log.d("pusher", "Received event with data: " + event.toString()));
-           pusher.user();
-       });
+    }
+    private void hideKeyboard(){
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
-   }
+    }
+
+
 }
-

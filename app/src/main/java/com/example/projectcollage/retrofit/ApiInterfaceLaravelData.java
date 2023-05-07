@@ -130,8 +130,9 @@ public interface ApiInterfaceLaravelData {
     @POST("department/add")
     Call<Data<Department>> addDepartment(@Body Department department);
 
-    //==========================;'
-    // =======================================
+    @GET("department/{id}")
+    Call<Data<Department>> getDepartment(@Path("id") int id);
+    // ================================================================
     //=================================Course==========================
     //=================================================================
     @GET("course/all")

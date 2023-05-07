@@ -69,7 +69,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/container"
-        android:name="com.example.projectcollage.fragments.AddDataLecturerFragment"
+        android:name="com.example.projectcollage.fragments.AddDataDepartmentFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"

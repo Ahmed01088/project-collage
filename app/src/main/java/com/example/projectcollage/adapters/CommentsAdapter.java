@@ -49,7 +49,7 @@ public class CommentsAdapter extends RecyclerView .Adapter<CommentsAdapter.ViewH
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name=itemView.findViewById(R.id.nameComment);
-            body=itemView.findViewById(R.id.body);
+            body=itemView.findViewById(R.id.bodyComment);
             time=itemView.findViewById(R.id.time);
             replay=itemView.findViewById(R.id.replay);
         }

@@ -25,7 +25,7 @@ public class Constants {
     public static final String [] USER_TYPES={"Student","Lecturer","Student Affairs","Admin"};
     public static final String [] LEVEL={"الاولي","الثانية","الثالثة","الرابعة"};
     public static final String [] SEMESTER={"الاول","الثاني"};
-    public static final String []ADD_DATA_TYPE={"بيانات دكتور" ,"بيانات طالب","بيانات قسم","بيانات كورس"};
+    public static final String []ADD_DATA_TYPE={"بيانات قسم","بيانات كورس","بيانات دكتور" ,"بيانات طالب"};
     public static final String []STUDENT_STATUS={"باقي","مستجد"};
     public static final String UID="uid";
     public static final String FULL_NAME="fullname";
@@ -33,6 +33,10 @@ public class Constants {
     public static final String STUDENT_AFFAIRS="Student Affairs";
     public static final String STUDENT="Student";
     public static final String LECTURER="Lecturer";
+    public static final String PUSHER_CHANNEL_NAME = "my-channel";
+    public static final String EVENT_NAME = "my-event";
+    public static final String PUSHER_APP_CLUSTER = "eu";
+    public static final String PUSHER_APP_KEY = "e587e23b1e8977d6d4c2";
     public static final String POST_ID="post_id";
     public static final String ADMIN="Admin";
     public static final String FIRSTNAME="firstname";

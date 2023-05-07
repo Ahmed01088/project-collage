@@ -16,6 +16,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -44,8 +45,11 @@ import retrofit2.http.Part;
 public class AddDataStudentFragment extends Fragment {
     FragmentAddDataStudentBinding binding;
     ArrayList<String> departmentArray=new ArrayList<>();
+    ArrayList<String> levelArray=new ArrayList<>();
     ArrayAdapter<String> adapterDepartments;
+    ArrayAdapter<String> adapterLevels;
     List<Department> departments;
+
     List<Course> courses;
 
     private Uri uriImage;
@@ -70,19 +74,26 @@ public class AddDataStudentFragment extends Fragment {
         return binding.getRoot();
     }
     public void preparationSpinner(){
-        ArrayAdapter<String>adapterLevels=
-                new ArrayAdapter<>(getActivity(), R.layout.item_spinner, Constants.LEVEL);
-        ArrayAdapter<String>adapterState=
+           ArrayAdapter<String>adapterState=
                 new ArrayAdapter<>(getActivity(), R.layout.item_spinner,Constants.STUDENT_STATUS);
         adapterState.setDropDownViewResource(R.layout.item_spinner);
-        adapterLevels.setDropDownViewResource(R.layout.item_spinner);
         binding.studentState.setAdapter(adapterState);
-        binding.level.setAdapter(adapterLevels);
         getAllDepartments();
         binding.selectImage.setOnClickListener(view -> {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
             someActivityResultLauncher.launch(intent);
+        });
+        binding.studentDepartment.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                levelArray.clear();
+                getDepartmentById(departments.get(position).getDid());
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
         });
         binding.send.setOnClickListener(v -> {
             String firstname=binding.firstname.getText().toString();
@@ -101,8 +112,6 @@ public class AddDataStudentFragment extends Fragment {
             }else {
                 addStudent(student);
             }
-
-
         });
     }
 
@@ -130,7 +139,29 @@ public class AddDataStudentFragment extends Fragment {
             }
         });
    }
-   private void createStudent(Student student, File file){
+    private void getDepartmentById(int id){
+        Call<Data<Department>> call= RetrofitClientLaravelData.getInstance().getApiInterface().getDepartment(id);
+        call.enqueue(new Callback<Data<Department>>() {
+            @Override
+            public void onResponse(@NonNull Call<Data<Department>> call, @NonNull Response<Data<Department>> response) {
+                if(response.isSuccessful()){
+                    levelArray.add(response.body().getData().getLevel());
+                    adapterLevels=new ArrayAdapter<>(getActivity(), R.layout.item_spinner,levelArray);
+                    adapterLevels.setDropDownViewResource(R.layout.item_spinner);
+                    binding.level.setAdapter(adapterLevels);
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Data<Department>> call, @NonNull Throwable t) {
+                Toast.makeText(getActivity(), "حدث خطأ", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void createStudent(Student student, File file){
             RequestBody firstname=RequestBody.create(student.getfName(), MediaType.parse("text/plain"));
             RequestBody lastname=RequestBody.create(student.getlName(), MediaType.parse("text/plain"));
             RequestBody nationalId=RequestBody.create(student.getNationalId(), MediaType.parse("text/plain"));

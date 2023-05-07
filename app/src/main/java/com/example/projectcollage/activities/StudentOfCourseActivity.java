@@ -64,7 +64,7 @@ public class StudentOfCourseActivity extends AppCompatActivity {
                         LinearLayoutManager manager=new LinearLayoutManager(StudentOfCourseActivity.this);
                         binding.rvOfAllStudentInClass.setLayoutManager(manager);
                         binding.rvOfAllStudentInClass.setAdapter(adapter);
-                        binding.numberOfStudentInCoures.setText(String.format(Locale.getDefault(), "%dعدد الطلاب ", students.size()));
+                        binding.numberOfStudentInCoures.setText(String.format(Locale.ENGLISH,"عدد الطلاب %d", students.size()));
                     }
                 }
             }

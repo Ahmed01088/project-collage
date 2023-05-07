@@ -1,86 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rvReplayComments"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/_8sdp"
     android:paddingLeft="@dimen/_8sdp"
-    android:paddingRight="@dimen/_8sdp">
+    android:paddingRight="@dimen/_8sdp"
+    android:layout_gravity="right"
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imageView9"
-        android:layout_width="@dimen/_30sdp"
-        android:layout_height="@dimen/_30sdp"
-        android:src="@drawable/avatar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:orientation="horizontal">
 
     <LinearLayout
-        android:id="@+id/linearLayout5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_4sdp"
-        android:background="@drawable/background_radius_12"
-        android:gravity="end"
-
-        android:orientation="vertical"
-        android:padding="@dimen/_2sdp"
-        app:layout_constraintEnd_toStartOf="@+id/imageView9"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/nameComment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_8sdp"
-            android:paddingLeft="@dimen/_8sdp"
-            android:paddingTop="@dimen/_2sdp"
-            android:paddingRight="@dimen/_8sdp"
-            android:text="@string/name_person"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_13ssp" />
-
-        <TextView
-            android:id="@+id/body"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_8sdp"
-            android:gravity="end"
-            android:paddingStart="@dimen/_8sdp"
-            android:paddingTop="@dimen/_4sdp"
-            android:paddingRight="8dp"
-            android:paddingBottom="@dimen/_4sdp"
-            android:text="@string/post_comment"
-            android:textColor="#CCcccc"
-            android:textSize="@dimen/_11ssp" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="end"
-        android:paddingLeft="@dimen/_16sdp"
-        android:paddingRight="@dimen/_16sdp"
-        android:text="@string/time_comment"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_10ssp"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout5"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
+        android:orientation="vertical"
+        android:layout_weight="1"
+        >
 
-    <TextView
-        android:id="@+id/replay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/_8sdp"
-        android:paddingEnd="@dimen/_8sdp"
-        android:text="@string/replay"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_10ssp"
-        app:layout_constraintBottom_toBottomOf="@+id/time"
-        app:layout_constraintEnd_toStartOf="@+id/time"
-        app:layout_constraintTop_toTopOf="@+id/time" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:background="@drawable/background_radius_12"
+            android:gravity="end"
+            android:orientation="vertical"
+            android:padding="@dimen/_2sdp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/nameComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:paddingLeft="@dimen/_8sdp"
+                android:paddingTop="@dimen/_2sdp"
+                android:paddingRight="@dimen/_8sdp"
+                android:text="@string/name_person"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_13ssp" />
+
+            <TextView
+                android:id="@+id/bodyComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:gravity="end"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingTop="@dimen/_4sdp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="@dimen/_4sdp"
+                android:text="The main task of the lexical analyzer is to read the input characters
+    of the source program, group them into lexemes, and produce as
+    output a sequence of tokens for each lexeme in the source program.
+    • Lexical analyzers are divided into a cascade of two processes:
+    – a) Scanning consists of the simple processes that do not require tokenization
+    of the input, such as deletion of comments and compaction of consecutive
+    whitespace characters into one."
+                android:textColor="#CCcccc"
+                android:textSize="@dimen/_11ssp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:gravity="end"
+            android:padding="@dimen/_2sdp">
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingLeft="@dimen/_16sdp"
+                android:paddingRight="@dimen/_16sdp"
+                android:text="@string/time_comment"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10ssp" />
+
+            <TextView
+                android:id="@+id/replay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:text="@string/replay"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10ssp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/personComment"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="@dimen/_25sdp"
+        android:src="@drawable/avatar" />
+
+</LinearLayout>

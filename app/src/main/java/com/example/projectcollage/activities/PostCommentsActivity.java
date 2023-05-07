@@ -37,10 +37,10 @@ public class PostCommentsActivity extends AppCompatActivity {
         preferences=getSharedPreferences(Constants.DATA,MODE_PRIVATE);
         int postId=getIntent().getIntExtra(Constants.POST_ID,0);
         getCommentsByPostId(postId);
-        Comment comment=new Comment();
         comments=new ArrayList<>();
         binding.iconSend.setOnClickListener(view -> {
-             comment.setPostId(postId);
+            Comment comment=new Comment();
+            comment.setPostId(postId);
              comment.setCommentText(binding.senderMessage.getText().toString());
              String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
              String fullName=preferences.getString(Constants.FIRSTNAME,"") + " " + preferences.getString(Constants.LASTNAME,"");

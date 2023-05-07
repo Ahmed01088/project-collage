@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
@@ -33,7 +34,16 @@ import com.example.projectcollage.model.Message;
 import com.example.projectcollage.models.MessageUser;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
+import com.pusher.client.Pusher;
+import com.pusher.client.PusherOptions;
+import com.pusher.client.channel.Channel;
+import com.pusher.client.connection.ConnectionEventListener;
+import com.pusher.client.connection.ConnectionState;
+import com.pusher.client.connection.ConnectionStateChange;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -102,6 +112,7 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
 
             }
         });
+        setupPusher();
         binding.iconSend.setOnClickListener(v -> {
             String content=binding.senderMessage.getText().toString();
             if (!content.isEmpty()){
@@ -231,4 +242,66 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
          });
 
     }
+    private void setupPusher() {
+        PusherOptions options = new PusherOptions();
+        options.setCluster(Constants.PUSHER_APP_CLUSTER);
+        Pusher pusher = new Pusher(Constants.PUSHER_APP_KEY, options);
+        Channel channel = pusher.subscribe(Constants.PUSHER_CHANNEL_NAME);
+        channel.bind(Constants.EVENT_NAME, event -> {
+            try {
+                JSONObject jsonObject = new JSONObject(event.getData());
+                Message message = new Message();
+                message.setContent(jsonObject.getString("content"));
+                message.setSentAt(jsonObject.getString("sent_at"));
+                message.setSender(jsonObject.getInt("sender"));
+                message.setReceiver(jsonObject.getInt("receiver"));
+                message.setClassroomId(jsonObject.getInt("classroom_id"));
+                message.setChatId(jsonObject.getInt("chat_id"));
+                message.setImage(jsonObject.getString("image"));
+                message.setSenderName(jsonObject.getString("sender_name"));
+                message.setSenderImage(jsonObject.getString("sender_image"));
+                messages.add(message);
+                adapter.notifyDataSetChanged();
+                runOnUiThread(() -> Toast
+                        .makeText(ViewMessageUsersActivity.this,
+                                message.getSenderName() + " : " + message.getContent()
+                                                , Toast.LENGTH_SHORT)
+                        .show());
+                binding.rvMessageUsers.scrollToPosition(messages.size()-1);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        });
+        pusher.connect(
+                new ConnectionEventListener() {
+                    @Override
+                    public void onConnectionStateChange(ConnectionStateChange change) {
+                        Log.i("Pusher", "State changed from " + change.getPreviousState() +
+                                " to " + change.getCurrentState());
+                        runOnUiThread(() -> Toast.makeText(ViewMessageUsersActivity.this, "State changed from " + change.getPreviousState() +
+                                " to " + change.getCurrentState(), Toast.LENGTH_SHORT).show());
+
+                    }
+
+                    @Override
+                    public void onError(String message, String code, Exception e) {
+                        Log.i("Pusher", "There was a problem connecting! " +
+                                "\ncode: " + code +
+                                "\nmessage: " + message +
+                                "\nException: " + e
+                        );
+                        runOnUiThread(() -> Toast.makeText(ViewMessageUsersActivity.this,
+                                "There was a problem connecting! " +
+                                        "\ncode: " + code +
+                                        "\nmessage: " + message +
+                                        "\nException: " + e
+                                , Toast.LENGTH_SHORT).show());
+                    }
+                },
+                ConnectionState.ALL
+        );
+        runOnUiThread(() -> Toast.makeText(ViewMessageUsersActivity.this, "تم الاتصال بالسيرفر", Toast.LENGTH_SHORT).show());
+
+    }
+
 }

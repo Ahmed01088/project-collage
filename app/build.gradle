@@ -6,13 +6,13 @@ android {
     compileSdk 33
     defaultConfig {
         applicationId "com.example.projectcollage"
-        minSdk 28
+        minSdk 23
         targetSdk 33
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk{
-            abiFilters "arm64-v8a"
+            abiFilters "arm64-v8a", "x86", "x86_64"
         }
 
     }
@@ -37,10 +37,10 @@ android {
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.firebase:firebase-messaging:23.1.2'
-    implementation 'com.google.firebase:firebase-firestore:24.5.0'
+    implementation 'com.google.firebase:firebase-firestore:24.6.0'
     implementation 'androidx.navigation:navigation-fragment:2.5.3'
     implementation 'androidx.navigation:navigation-ui:2.5.3'
     testImplementation 'junit:junit:4.13.2'
@@ -58,13 +58,10 @@ dependencies {
     implementation 'com.intuit.ssp:ssp-android:1.0.6'
     implementation 'com.scwang.wave:MultiWaveHeader:1.0.0-andx'
     implementation 'com.github.lincollincol:compose-audiowaveform:1.1.1'
-
     //pusher
     implementation 'com.pusher:push-notifications-android:1.9.0'
     implementation 'com.pusher:pusher-java-client:2.4.2'
-
     implementation "com.google.firebase:firebase-iid:21.1.0"
-
     annotationProcessor 'com.github.bumptech.glide:compiler:4.15.0'
     annotationProcessor 'androidx.room:room-compiler:2.5.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

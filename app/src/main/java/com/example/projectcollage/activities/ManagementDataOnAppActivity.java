@@ -47,21 +47,21 @@ public class ManagementDataOnAppActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
-                if (binding.spinnerData.getSelectedItem().toString().equals(Constants.ADD_DATA_TYPE[1])){
-                    transaction.replace(R.id.container, new AddDataStudentFragment());
+                if (binding.spinnerData.getSelectedItem().toString().equals(Constants.ADD_DATA_TYPE[0])){
+                    transaction.replace(R.id.container, new AddDataDepartmentFragment());
                     transaction.addToBackStack(null);
                     transaction.commit();
-                }else if (binding.spinnerData.getSelectedItem().toString().equals(Constants.ADD_DATA_TYPE[0])){
-                    transaction.replace(R.id.container, new AddDataLecturerFragment());
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                }else if (binding.spinnerData.getSelectedItem().toString().equals(Constants.ADD_DATA_TYPE[3])){
+                }else if (binding.spinnerData.getSelectedItem().toString().equals(Constants.ADD_DATA_TYPE[1])){
                     transaction.replace(R.id.container, new AddDataCourseFragment());
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }else if (binding.spinnerData.getSelectedItem().toString().equals(Constants.ADD_DATA_TYPE[2])){
+                    transaction.replace(R.id.container, new AddDataLecturerFragment());
                     transaction.addToBackStack(null);
                     transaction.commit();
                 }
                 else {
-                    transaction.replace(R.id.container, new AddDataDepartmentFragment());
+                    transaction.replace(R.id.container, new AddDataStudentFragment());
                     transaction.addToBackStack(null);
                     transaction.commit();
                 }

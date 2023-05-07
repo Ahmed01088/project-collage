@@ -89,6 +89,10 @@ public class AddDataLecturerFragment extends Fragment {
                 if (response.isSuccessful()){
                     Toast.makeText(getContext(), "تم اضافة المدرس بنجاح", Toast.LENGTH_SHORT).show();
                     addClassroom(new Classroom(response.body().getData().getCourseId(),response.body().getData().getLid()));
+                    Chat chat=new Chat();
+                    chat.setLecturerSenderId(response.body().getData().getLid());
+                    chat.setLecturerReciverId(response.body().getData().getLid());
+                    addChat(chat);
                 }
             }
             @Override

@@ -33,7 +33,6 @@ public class ChatClassroomAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.messages = messages;
         sharedPreferences=context.getSharedPreferences(Constants.DATA,Context.MODE_PRIVATE);
     }
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -54,6 +53,9 @@ public class ChatClassroomAdapter extends RecyclerView.Adapter<RecyclerView.View
         if (holder.getClass()== SenderHolder.class){
             ((SenderHolder)holder).message.setText(message.getContent());
             ((SenderHolder)holder).date.setText(message.getSentAt());
+            if (message.getImageBitmap()!=null){
+                ((SenderHolder)holder).image.setImageBitmap(message.getImageBitmap());
+            }
             if (sharedPreferences.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[1])&&message.getSender()==sharedPreferences.getInt(Constants.UID,0)){
                 ((SenderHolder)holder).name.setText(String.format("الدكتور %s", messages.get(position).getSenderName()));
                 ((SenderHolder)holder).ic_verified.setVisibility(View.VISIBLE);
@@ -64,12 +66,14 @@ public class ChatClassroomAdapter extends RecyclerView.Adapter<RecyclerView.View
             if (message.getImage()!=null){
                 Glide.with(context).load(Constants.BASE_URL_PATH_MESSAGES+message.getImage())
                         .into(((SenderHolder)holder).image);
-
             }else
                 ((SenderHolder)holder).image.setVisibility(View.GONE);
         }else {
             ((ReceiverHolder)holder).message.setText(message.getContent());
             ((ReceiverHolder)holder).date.setText(message.getSentAt());
+            if (message.getImageBitmap()!=null){
+                ((ReceiverHolder)holder).image.setImageBitmap(message.getImageBitmap());
+            }
             ((ReceiverHolder)holder).studentClassroomPic.setOnClickListener(v -> {
                 Intent intent=new Intent(context, DetailsActivity.class);
                 ActivityOptions options= ActivityOptions.makeClipRevealAnimation(holder.itemView,holder.itemView.getWidth()/2,holder.itemView.getHeight()/2,300,300);

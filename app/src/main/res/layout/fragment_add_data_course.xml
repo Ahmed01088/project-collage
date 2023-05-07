@@ -132,6 +132,32 @@
                 android:gravity="center"
                 android:paddingTop="@dimen/_8sdp"
                 android:paddingBottom="@dimen/_8sdp"
+                android:text="القسم"
+                android:textColor="@color/white" />
+
+            <Spinner
+                android:id="@+id/course_department"
+                style="@style/SpinnerStyleFragments"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="@dimen/_8sdp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_4sdp"
+                android:background="@drawable/background_squire_blue"
+                android:gravity="center"
+                android:paddingTop="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_8sdp"
                 android:text="الفصل"
                 android:textColor="@color/white" />
 
@@ -168,32 +194,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/_8sdp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <TextView
-                android:layout_width="@dimen/_100sdp"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_4sdp"
-                android:background="@drawable/background_squire_blue"
-                android:gravity="center"
-                android:paddingTop="@dimen/_8sdp"
-                android:paddingBottom="@dimen/_8sdp"
-                android:text="القسم"
-                android:textColor="@color/white" />
-
-            <Spinner
-                android:id="@+id/course_department"
-                style="@style/SpinnerStyleFragments"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="@dimen/_8sdp" />
-
         </LinearLayout>
 
     </LinearLayout>

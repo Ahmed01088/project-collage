@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -32,7 +33,11 @@ import retrofit2.Response;
 public class AddDataCourseFragment extends Fragment {
     FragmentAddDataCourseBinding binding;
     ArrayList<String> departmentArray=new ArrayList<>();
-    ArrayAdapter<String> adapter;
+    ArrayList<String> semesterArray=new ArrayList<>();
+    ArrayList<String> levelArray=new ArrayList<>();
+    ArrayAdapter<String> departmentAdapter;
+    ArrayAdapter<String> semesterAdapter;
+    ArrayAdapter<String> levelAdapter;
     List<Department> departments;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -54,17 +59,23 @@ public class AddDataCourseFragment extends Fragment {
      return binding.getRoot();
     }
     public void preparationSpinner(){
-        ArrayAdapter<String> adapterLevels=
-                new ArrayAdapter<>(getActivity(), R.layout.item_spinner, Constants.LEVEL);
-        ArrayAdapter<String>adapterClass=
-                new ArrayAdapter<>(getActivity(), R.layout.item_spinner,Constants.SEMESTER);
-        adapterLevels.setDropDownViewResource(R.layout.item_spinner);
-        adapterClass.setDropDownViewResource(R.layout.item_spinner);
-        binding.courseLevel.setAdapter(adapterLevels);
-        binding.courseSemester.setAdapter(adapterClass);
-        sharedPreferences=getActivity().getSharedPreferences("user",0);
+        sharedPreferences=getActivity().getSharedPreferences(Constants.DATA,0);
         editor=sharedPreferences.edit();
         allDepartments();
+
+        binding.courseDepartment.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                levelArray.clear();
+                semesterArray.clear();
+                getDepartmentById(departments.get(position).getDid());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         binding.send.setOnClickListener(v -> {
             addCourse();
 
@@ -73,9 +84,9 @@ public class AddDataCourseFragment extends Fragment {
     private void addCourse(){
         String courseName=binding.name.getText().toString();
         String courseCode=binding.code.getText().toString();
-        String courseLevel=binding.courseLevel.getSelectedItem().toString();
-        String courseSemester=binding.courseSemester.getSelectedItem().toString();
         int departmentId=departments.get(binding.courseDepartment.getSelectedItemPosition()).getDid();
+        String courseLevel=departments.get(binding.courseDepartment.getSelectedItemPosition()).getLevel();
+        String courseSemester=departments.get(binding.courseDepartment.getSelectedItemPosition()).getSemester();
         Course course=new Course(courseName,courseCode,courseLevel,courseSemester,departmentId);
         Call<Data<Course>> call= RetrofitClientLaravelData.getInstance().getApiInterface().addCourse(course);
         call.enqueue(new Callback<Data<Course>>() {
@@ -106,16 +117,41 @@ public class AddDataCourseFragment extends Fragment {
                         for (Department department:departments){
                             departmentArray.add(department.getName());
                         }
-                        adapter=new ArrayAdapter<>(getActivity(),R.layout.item_spinner,departmentArray);
-                        adapter.setDropDownViewResource(R.layout.item_spinner);
-                        binding.courseDepartment.setAdapter(adapter);
-
+                        departmentAdapter=new ArrayAdapter<>(getActivity(),R.layout.item_spinner,departmentArray);
+                        departmentAdapter.setDropDownViewResource(R.layout.item_spinner);
+                        binding.courseDepartment.setAdapter(departmentAdapter);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<Data<List<Department>>> call, @NonNull Throwable t) {
 
+            }
+        });
+    }
+    private void getDepartmentById(int id){
+        Call<Data<Department>> call= RetrofitClientLaravelData.getInstance().getApiInterface().getDepartment(id);
+        call.enqueue(new Callback<Data<Department>>() {
+            @Override
+            public void onResponse(@NonNull Call<Data<Department>> call, @NonNull Response<Data<Department>> response) {
+                if(response.isSuccessful()){
+                    levelArray.add(response.body().getData().getLevel());
+                    semesterArray.add(response.body().getData().getSemester());
+                    levelAdapter=new ArrayAdapter<>(getActivity(),R.layout.item_spinner,levelArray);
+                    levelAdapter.setDropDownViewResource(R.layout.item_spinner);
+                    binding.courseLevel.setAdapter(levelAdapter);
+                    semesterAdapter=new ArrayAdapter<>(getActivity(),R.layout.item_spinner,semesterArray);
+                    semesterAdapter.setDropDownViewResource(R.layout.item_spinner);
+                    binding.courseSemester.setAdapter(semesterAdapter);
+
+                    binding.courseLevel.setSelection(levelAdapter.getPosition(response.body().getData().getLevel()));
+                    binding.courseSemester.setSelection(semesterAdapter.getPosition(response.body().getData().getSemester()));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Data<Department>> call, @NonNull Throwable t) {
+                               Toast.makeText(getActivity(), "حدث خطأ", Toast.LENGTH_SHORT).show();
             }
         });
     }

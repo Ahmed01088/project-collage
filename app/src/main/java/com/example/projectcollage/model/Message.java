@@ -1,5 +1,8 @@
 package com.example.projectcollage.model;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Message {
@@ -29,6 +32,7 @@ public class Message {
     private String createdAt;
     @SerializedName("updated_at")
     private String updatedAt;
+    private Bitmap imageBitmap;
 
     public Message() {
     }
@@ -40,6 +44,14 @@ public class Message {
         this.sender = sender;
         this.receiver = receiver;
 
+    }
+
+    public Bitmap getImageBitmap() {
+        return imageBitmap;
+    }
+
+    public void setImageBitmap(Bitmap imageBitmap) {
+        this.imageBitmap = imageBitmap;
     }
 
     public String getSenderName() {

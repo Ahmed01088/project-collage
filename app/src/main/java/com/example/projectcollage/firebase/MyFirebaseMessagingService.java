@@ -9,6 +9,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -46,7 +47,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
 
     }
-
     private void sendNotification(String title, String body) {
         RemoteViews notificationSmall = new RemoteViews(getPackageName(), R.layout.notification_small);
         notificationSmall.setTextViewText(R.id.title, title);
@@ -82,6 +82,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(@NonNull String token) {
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.DATA, MODE_PRIVATE);
         int uid = sharedPreferences.getInt(Constants.UID, 0);
+        Log.d("TAG", "onNewToken: "+uid);
         storeToken(uid,token);
     }
     private void storeToken(int studentId, String token) {

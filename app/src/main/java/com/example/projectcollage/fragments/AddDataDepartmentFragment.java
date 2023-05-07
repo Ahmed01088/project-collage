@@ -11,21 +11,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.example.projectcollage.R;
-import com.example.projectcollage.adapters.SpinnerAdapter;
 import com.example.projectcollage.databinding.FragmentAddDataDepartmentBinding;
 import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Department;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
-
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.function.Function;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -63,16 +53,23 @@ public class AddDataDepartmentFragment extends Fragment {
         binding.spinLevel.setAdapter(adapterLevels);
         binding.semisterSpinner.setAdapter(adapterClass);
         binding.send.setOnClickListener(v -> {
-            String nameDepartment=binding.nameDepartment.getText().toString();
             String departmentCode=binding.codeDepartment.getText().toString();
             String level=binding.spinLevel.getSelectedItem().toString();
             String semester=binding.semisterSpinner.getSelectedItem().toString();
+            String nameDepartment = null;
+            if (level.equals(Constants.LEVEL[0])){
+                nameDepartment=binding.nameDepartment.getText().toString()+ "  1";
+            }else if (level.equals(Constants.LEVEL[1])){
+                nameDepartment=binding.nameDepartment.getText().toString()+ "  2";
+            }else if (level.equals(Constants.LEVEL[2])){
+                nameDepartment=binding.nameDepartment.getText().toString()+ "  3";
+            }else if (level.equals(Constants.LEVEL[3])){
+                nameDepartment=binding.nameDepartment.getText().toString()+ "  4";
+            }
             Department department=new Department(nameDepartment,departmentCode,level,semester);
             addDepartment(department);
             binding.nameDepartment.setText("");
             binding.codeDepartment.setText("");
-
-
         });
     }
 
