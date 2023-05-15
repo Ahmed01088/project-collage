@@ -31,16 +31,13 @@ public class SplashActivity extends AppCompatActivity {
         window.setStatusBarColor(getColor(android.R.color.transparent));
         window.setNavigationBarColor(getColor(R.color.statesOnBoarding));
         window.setBackgroundDrawable(drawable);
-        Animation animation= AnimationUtils.loadAnimation(this, R.anim.rotate);
-        binding.imageView.startAnimation(animation);
         new Handler().postDelayed(() -> {
             Intent intent=new Intent(SplashActivity.this,LoginActivity.class);
-            ActivityOptions options= ActivityOptions.makeClipRevealAnimation(binding.imageView,binding.imageView.getWidth()/2,
-                    binding.imageView.getHeight()/2,300,300);
+            ActivityOptions options= ActivityOptions.makeClipRevealAnimation(binding.animationView,binding.animationView.getWidth()/2,
+                    binding.animationView.getHeight()/2,300,300);
             startActivity(intent,options.toBundle());
             finish();
         }, 2000);
-
 
 
     }

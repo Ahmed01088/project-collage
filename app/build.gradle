@@ -6,7 +6,7 @@ android {
     compileSdk 33
     defaultConfig {
         applicationId "com.example.projectcollage"
-        minSdk 23
+        minSdk 24
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -60,8 +60,11 @@ dependencies {
     implementation 'com.github.lincollincol:compose-audiowaveform:1.1.1'
     //pusher
     implementation 'com.pusher:push-notifications-android:1.9.0'
+
     implementation 'com.pusher:pusher-java-client:2.4.2'
     implementation "com.google.firebase:firebase-iid:21.1.0"
+    //lottie
+    implementation "com.airbnb.android:lottie:6.0.0"
     annotationProcessor 'com.github.bumptech.glide:compiler:4.15.0'
     annotationProcessor 'androidx.room:room-compiler:2.5.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

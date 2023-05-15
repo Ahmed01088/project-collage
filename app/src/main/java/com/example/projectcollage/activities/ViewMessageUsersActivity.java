@@ -68,6 +68,7 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
     Bitmap bitmap;
     Uri uriImage;
     File file;
+    int chatId;
     ChatUserAdapter adapter;
     LinearLayoutManager manager;
     SharedPreferences preferences;
@@ -80,8 +81,8 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
         preferences=getSharedPreferences(Constants.DATA,MODE_PRIVATE);
         manager =new LinearLayoutManager(this);
         //Chat Id
-        int id=getIntent().getIntExtra(Constants.CHAT_ID,0);
-        getMessages(id);
+        chatId=getIntent().getIntExtra(Constants.CHAT_ID,0);
+        getMessages(chatId);
         //Name
         String fullname=getIntent().getStringExtra(Constants.FULL_NAME);
         int senderId=preferences.getInt(Constants.UID,0);
@@ -118,7 +119,7 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
             if (!content.isEmpty()){
                 SimpleDateFormat dateFormat=new SimpleDateFormat("HH:mm:ss aa", Locale.getDefault());
                 String date=dateFormat.format(new Date());
-                Message message=new Message(content,date,id,senderId,receiverId);
+                Message message=new Message(content,date,chatId,senderId,receiverId);
                 if (uriImage!=null){
                     createMessage(message,file);
                 }else {
@@ -246,30 +247,33 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
         PusherOptions options = new PusherOptions();
         options.setCluster(Constants.PUSHER_APP_CLUSTER);
         Pusher pusher = new Pusher(Constants.PUSHER_APP_KEY, options);
-        Channel channel = pusher.subscribe(Constants.PUSHER_CHANNEL_NAME);
-        channel.bind(Constants.EVENT_NAME, event -> {
+        Channel channel = pusher.subscribe("chat");
+        channel.bind("message", event -> {
             try {
                 JSONObject jsonObject = new JSONObject(event.getData());
                 Message message = new Message();
-                message.setContent(jsonObject.getString("content"));
-                message.setSentAt(jsonObject.getString("sent_at"));
-                message.setSender(jsonObject.getInt("sender"));
-                message.setReceiver(jsonObject.getInt("receiver"));
-                message.setClassroomId(jsonObject.getInt("classroom_id"));
-                message.setChatId(jsonObject.getInt("chat_id"));
-                message.setImage(jsonObject.getString("image"));
-                message.setSenderName(jsonObject.getString("sender_name"));
-                message.setSenderImage(jsonObject.getString("sender_image"));
-                messages.add(message);
-                adapter.notifyDataSetChanged();
-                runOnUiThread(() -> Toast
-                        .makeText(ViewMessageUsersActivity.this,
-                                message.getSenderName() + " : " + message.getContent()
-                                                , Toast.LENGTH_SHORT)
-                        .show());
+                JSONObject messageObject=jsonObject.getJSONObject("message");
+//                message.setContent(messageObject.getString("content"));
+//                message.setSentAt(messageObject.getString("sentAt"));
+//                message.setSender(messageObject.getInt("sender"));
+//                message.setReceiver(messageObject.getInt("receiver"));
+//                message.setClassroomId(messageObject.getInt("classroom_id"));
+//                message.setChatId(messageObject.getInt("chat_id"));
+//                message.setImage(messageObject.getString("image"));
+//                message.setSenderName(messageObject.getString("sender_name"));
+//                message.setSenderImage(messageObject.getString("sender_image"));
+                runOnUiThread(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                getMessages(chatId);
+                            }
+                        }
+                );
                 binding.rvMessageUsers.scrollToPosition(messages.size()-1);
             } catch (JSONException e) {
                 e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(ViewMessageUsersActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
             }
         });
         pusher.connect(
@@ -278,9 +282,6 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
                     public void onConnectionStateChange(ConnectionStateChange change) {
                         Log.i("Pusher", "State changed from " + change.getPreviousState() +
                                 " to " + change.getCurrentState());
-                        runOnUiThread(() -> Toast.makeText(ViewMessageUsersActivity.this, "State changed from " + change.getPreviousState() +
-                                " to " + change.getCurrentState(), Toast.LENGTH_SHORT).show());
-
                     }
 
                     @Override
@@ -290,12 +291,6 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
                                 "\nmessage: " + message +
                                 "\nException: " + e
                         );
-                        runOnUiThread(() -> Toast.makeText(ViewMessageUsersActivity.this,
-                                "There was a problem connecting! " +
-                                        "\ncode: " + code +
-                                        "\nmessage: " + message +
-                                        "\nException: " + e
-                                , Toast.LENGTH_SHORT).show());
                     }
                 },
                 ConnectionState.ALL

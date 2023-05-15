@@ -400,15 +400,16 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
             try {
                 JSONObject jsonObject = new JSONObject(event.getData());
                 Message message = new Message();
-                message.setContent(jsonObject.getString("content"));
-                message.setSentAt(jsonObject.getString("sent_at"));
-                message.setSender(jsonObject.getInt("sender"));
-                message.setReceiver(jsonObject.getInt("receiver"));
-                message.setClassroomId(jsonObject.getInt("classroom_id"));
-                message.setChatId(jsonObject.getInt("chat_id"));
-                message.setImage(jsonObject.getString("image"));
-                message.setSenderName(jsonObject.getString("sender_name"));
-                message.setSenderImage(jsonObject.getString("sender_image"));
+                JSONObject messageObject=jsonObject.getJSONObject("message");
+                message.setContent(messageObject.getString("content"));
+                message.setSentAt(messageObject.getString("sentAt"));
+                message.setSender(messageObject.getInt("sender"));
+                message.setReceiver(messageObject.getInt("receiver"));
+                message.setClassroomId(messageObject.getInt("classroom_id"));
+                message.setChatId(messageObject.getInt("chat_id"));
+                message.setImage(messageObject.getString("image"));
+                message.setSenderName(messageObject.getString("sender_name"));
+                message.setSenderImage(messageObject.getString("sender_image"));
                 messages.add(message);
                 adapter.notifyDataSetChanged();
                 binding.rvMessageClassroom.scrollToPosition(messages.size()-1);
