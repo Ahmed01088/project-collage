@@ -31,6 +31,8 @@ import com.example.projectcollage.database.Database;
 import com.example.projectcollage.databinding.ActivityViewMessageUsersBinding;
 import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Message;
+import com.example.projectcollage.model.Notification;
+import com.example.projectcollage.model.Student;
 import com.example.projectcollage.models.MessageUser;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
@@ -182,7 +184,9 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(@NonNull Call<Data<Message>> call, @NonNull retrofit2.Response<Data<Message>> response) {
                     if (response.isSuccessful()){
-                        Toast.makeText(ViewMessageUsersActivity.this, "تم ارسال رساله", Toast.LENGTH_SHORT).show();
+                        Notification notification=new Notification("رساله جديده من " + preferences.getString(Constants.FULL_NAME," "),message.getContent());
+                        notification.setType("message");
+                        sendNotification(notification);
                     }
                 }
 
@@ -210,7 +214,10 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
              @Override
              public void onResponse(@NonNull Call<Data<Message>> call, @NonNull retrofit2.Response<Data<Message>> response) {
                  if (response.isSuccessful()){
-                     Toast.makeText(ViewMessageUsersActivity.this, "تم ارسال رساله", Toast.LENGTH_SHORT).show();
+                     Notification notification=new Notification("رساله جديده من " + preferences.getString(Constants.FULL_NAME," "),message.getContent());
+                     notification.setType("message");
+                     sendNotification(notification);
+
                  }
              }
 
@@ -220,7 +227,25 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
              }
          });
      }
-     private void getMessages(int chatId){
+    private void storeToken(int studentId, String token) {
+        RequestBody body = RequestBody.create(token,MediaType.parse("text/plain"));
+        Call<Data<Student>> call = RetrofitClientLaravelData.getInstance().getApiInterface().updateFcmToken(studentId,body);
+        call.enqueue(new Callback<Data<Student>>() {
+            @Override
+            public void onResponse(@NonNull Call<Data<Student>> call, @NonNull Response<Data<Student>> response) {
+                if (!response.isSuccessful()){
+                    Toast.makeText(ViewMessageUsersActivity.this, "Token stored failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<Data<Student>> call, @NonNull Throwable t) {
+                Toast.makeText(ViewMessageUsersActivity.this, "Token stored failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    private void getMessages(int chatId){
          Call<Data<List<Message>>> call= RetrofitClientLaravelData.getInstance().getApiInterface().getMessagesByChatId(chatId);
          call.enqueue(new Callback<Data<List<Message>>>() {
              @Override
@@ -253,24 +278,27 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(event.getData());
                 Message message = new Message();
                 JSONObject messageObject=jsonObject.getJSONObject("message");
-//                message.setContent(messageObject.getString("content"));
-//                message.setSentAt(messageObject.getString("sentAt"));
-//                message.setSender(messageObject.getInt("sender"));
-//                message.setReceiver(messageObject.getInt("receiver"));
-//                message.setClassroomId(messageObject.getInt("classroom_id"));
-//                message.setChatId(messageObject.getInt("chat_id"));
-//                message.setImage(messageObject.getString("image"));
-//                message.setSenderName(messageObject.getString("sender_name"));
-//                message.setSenderImage(messageObject.getString("sender_image"));
+                message.setContent(messageObject.getString("content"));
+                message.setSentAt(messageObject.getString("sentAt"));
+                message.setSender(messageObject.getInt("sender"));
+                message.setReceiver(messageObject.getInt("receiver"));
+                if (messageObject.getInt("classroom_id")!=0 && !messageObject.isNull("classroom_id")){
+                    message.setClassroomId(messageObject.getInt("classroom_id"));
+                }
+                message.setChatId(messageObject.getInt("chat_id"));
+                message.setImage(messageObject.getString("image"));
+                message.setSenderName(messageObject.getString("sender_name"));
+                message.setSenderImage(messageObject.getString("sender_image"));
                 runOnUiThread(
                         new Runnable() {
                             @Override
                             public void run() {
                                 getMessages(chatId);
+                                binding.rvMessageUsers.scrollToPosition(messages.size()-1);
+
                             }
                         }
                 );
-                binding.rvMessageUsers.scrollToPosition(messages.size()-1);
             } catch (JSONException e) {
                 e.printStackTrace();
                 runOnUiThread(() -> Toast.makeText(ViewMessageUsersActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
@@ -297,6 +325,22 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
         );
         runOnUiThread(() -> Toast.makeText(ViewMessageUsersActivity.this, "تم الاتصال بالسيرفر", Toast.LENGTH_SHORT).show());
 
+    }
+    private void sendNotification(Notification notification){
+        Call<Data<Notification>> call= RetrofitClientLaravelData.getInstance().getApiInterface().sendNotification(notification);
+        call.enqueue(new Callback<Data<Notification>>() {
+            @Override
+            public void onResponse(@NonNull Call<Data<Notification>> call, @NonNull retrofit2.Response<Data<Notification>> response) {
+                if (response.isSuccessful()){
+                    Toast.makeText(ViewMessageUsersActivity.this, "تم ارسال الاشعار", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Data<Notification>> call, @NonNull Throwable t) {
+
+            }
+        });
     }
 
 }

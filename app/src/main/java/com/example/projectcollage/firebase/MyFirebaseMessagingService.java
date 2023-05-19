@@ -7,8 +7,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -27,6 +25,8 @@ import com.example.projectcollage.utiltis.Constants;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,7 +37,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (message.getNotification() != null) {
             String title = message.getNotification().getTitle();
             String body = message.getNotification().getBody();
+            String data=message.getData().get("contents");
             sendNotification(title, body);
+            Log.d("TAG", "onMessageReceived: " + title + " " + body);
         }
     }
 
@@ -45,7 +47,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageSent(@NonNull String msgId) {
         super.onMessageSent(msgId);
         Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
-
     }
     private void sendNotification(String title, String body) {
         RemoteViews notificationSmall = new RemoteViews(getPackageName(), R.layout.notification_small);
@@ -86,7 +87,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         storeToken(uid,token);
     }
     private void storeToken(int studentId, String token) {
-        Call<Data<Student>> call = RetrofitClientLaravelData.getInstance().getApiInterface().updateFcmToken(studentId,token);
+        RequestBody tokenBody = RequestBody.create(token,MediaType.parse("text/plain"));
+        Call<Data<Student>> call = RetrofitClientLaravelData.getInstance().getApiInterface().updateFcmToken(studentId,tokenBody);
         call.enqueue(new Callback<Data<Student>>() {
             @Override
             public void onResponse(@NonNull Call<Data<Student>> call, @NonNull Response<Data<Student>> response) {
@@ -94,11 +96,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     Toast.makeText(MyFirebaseMessagingService.this, "Token stored successfully", Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(@NonNull Call<Data<Student>> call, @NonNull Throwable t) {
                  Toast.makeText(MyFirebaseMessagingService.this, "Token stored failed", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 }

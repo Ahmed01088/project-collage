@@ -1,5 +1,7 @@
 package com.example.projectcollage.model;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Quiz {
@@ -113,6 +115,23 @@ public class Quiz {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Quiz{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", classroomId=" + classroomId +
+                ", courseId=" + courseId +
+                ", limitTime=" + limitTime +
+                ", lecturerId=" + lecturerId +
+                ", numberQuestions=" + numberQuestions +
+                ", updatedAt='" + updatedAt + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                '}';
     }
 }
 

@@ -9,6 +9,9 @@ public class Notification {
     @SerializedName("body")
     private String message;
 
+    @SerializedName("type")
+    private String type;
+
     public Notification() {
     }
 
@@ -26,6 +29,14 @@ public class Notification {
 
     public String getMessage() {
         return message;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public void setMessage(String message) {

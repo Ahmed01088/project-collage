@@ -56,4 +56,7 @@ public class Constants {
     public static final String CHAT = "chat";
     public static final String CHAT_ID = "chat_id";
 
+    public static final String QUIZ_ID = "quiz_id";
+    public static final String LECTURER_NAME = "lecturer_name";
+    public static final String IS_LOGIN = "is_login";
 }

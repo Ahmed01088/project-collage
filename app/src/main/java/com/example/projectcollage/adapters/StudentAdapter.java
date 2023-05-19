@@ -46,7 +46,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
     }
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        if (sharedPreferences.getInt(Constants.UID, 0)==students.get(position).getUid()){
+        if (sharedPreferences.getInt(Constants.UID, 0)==students.get(position).getUid()&&sharedPreferences.getString(Constants.USER_TYPE, "").equals(Constants.USER_TYPES[0])){
             holder.nameOfStudent.setText(String.format("%s %s ( انت )", students.get(position).getfName(), students.get(position).getlName()));
             holder.icStartChat.setVisibility(View.GONE);
         }else {

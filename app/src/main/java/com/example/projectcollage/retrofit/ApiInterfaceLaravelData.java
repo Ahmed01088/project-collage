@@ -62,8 +62,9 @@ public interface ApiInterfaceLaravelData {
     Call<Data<Student>> loginStudent(@Path("national_id") String national_id, @Path("password") String password);
     @GET("student/getAllStudentByDepartmentId/{departmentId}")
     Call<Data<List<Student>>> getAllStudentByDepartmentId(@Path("departmentId") int departmentId);
+    @Multipart
     @POST("student/{student_id}/update-fcm-token")
-    Call<Data<Student>> updateFcmToken(@Path("student_id") int student_id, @Part("fcm_token") String fcm_token);
+    Call<Data<Student>> updateFcmToken(@Path("student_id") int student_id, @Part("fcm_token") RequestBody fcm_token);
 
     //=================================================================
     //=================================Admin===========================
@@ -289,6 +290,7 @@ public interface ApiInterfaceLaravelData {
     //=================================================================
     @POST("notification/sendNotificationsForAllStudents")
     Call<Void> sendNotificationsForAllStudents(@Body Notification notification);
-
+    @POST("/notification/sendNotification")
+    Call<Data<Notification>> sendNotification(@Body Notification notification);
 
 }

@@ -91,7 +91,6 @@ public class AddDataLecturerFragment extends Fragment {
                     addClassroom(new Classroom(response.body().getData().getCourseId(),response.body().getData().getLid()));
                     Chat chat=new Chat();
                     chat.setLecturerSenderId(response.body().getData().getLid());
-                    chat.setLecturerReciverId(response.body().getData().getLid());
                     addChat(chat);
                 }
             }

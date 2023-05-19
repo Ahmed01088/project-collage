@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         getWindow().setNavigationBarColor(getColor(R.color.statesOnBoarding));
         preferences = getSharedPreferences(Constants.DATA, MODE_PRIVATE);
         editor=preferences.edit();
+        editor.putBoolean(Constants.IS_LOGIN,true);
         if (preferences.getString(Constants.NATIONAL_ID, null) != null) {
             String userType = preferences.getString(Constants.USER_TYPE, null);
             if (userType.equals(Constants.USER_TYPES[0])) {
@@ -307,4 +308,10 @@ public class LoginActivity extends AppCompatActivity {
         return builder.show();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        editor.putBoolean(Constants.IS_LOGIN, false);
+        editor.apply();
+    }
 }

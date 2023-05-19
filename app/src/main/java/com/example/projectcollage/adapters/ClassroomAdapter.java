@@ -43,7 +43,7 @@ public class ClassroomAdapter extends RecyclerView.Adapter<ClassroomAdapter.View
             intent.putExtra(Constants.CLASSROOM_ID, classroom.getId());
             intent.putExtra("courseName", classroom.getCourseName());
             intent.putExtra("courseId", classroom.getCourseId());
-            intent.putExtra("lecturerName", classroom.getLecturerName());
+            intent.putExtra(Constants.LECTURER_NAME, classroom.getLecturerName());
             ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,view.getWidth()/2,view.getHeight()/2,300,300);
             context.startActivity(intent,options.toBundle());
            });

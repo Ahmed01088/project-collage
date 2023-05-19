@@ -9,6 +9,8 @@ import com.example.projectcollage.R;
 import com.example.projectcollage.adapters.AddDataQuizAdapter;
 import com.example.projectcollage.databinding.ActivityAddQuestionsQuizBinding;
 import com.example.projectcollage.model.Question;
+import com.example.projectcollage.utiltis.Constants;
+
 import java.util.ArrayList;
 public class AddQuestionsQuizActivity extends AppCompatActivity {
     ActivityAddQuestionsQuizBinding binding;
@@ -22,7 +24,7 @@ public class AddQuestionsQuizActivity extends AppCompatActivity {
         getWindow().setNavigationBarColor(getColor(R.color.main_bar));
         int numberOfQuestion=getIntent().getIntExtra("numberQuestion",0);
         int timeLimit=getIntent().getIntExtra("timeLimit",0);
-        int quizId=getIntent().getIntExtra("quizId",0);
+        int quizId=getIntent().getIntExtra(Constants.QUIZ_ID,0);
         int courseId=getIntent().getIntExtra("courseId",0);
         String courseName=getIntent().getStringExtra("courseName");
         for (int i = 0; i < numberOfQuestion; i++) {
