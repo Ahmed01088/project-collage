@@ -1,14 +1,19 @@
 package com.example.projectcollage.firebase;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,6 +23,8 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.example.projectcollage.R;
 import com.example.projectcollage.activities.NotificationActivity;
+import com.example.projectcollage.activities.QuizActivity;
+import com.example.projectcollage.activities.SplashActivity;
 import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Student;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
@@ -25,65 +32,62 @@ import com.example.projectcollage.utiltis.Constants;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Random;
+
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+    private static final String TAG = "FCM Service";
+    private static int count = 0;
     @Override
-    public void onMessageReceived(@NonNull RemoteMessage message) {
-        if (message.getNotification() != null) {
-            String title = message.getNotification().getTitle();
-            String body = message.getNotification().getBody();
-            String data=message.getData().get("contents");
-            sendNotification(title, body);
-            Log.d("TAG", "onMessageReceived: " + title + " " + body);
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {//Here notification is recieved from server
+        try {
+            sendNotification(remoteMessage.getData().get("title"), remoteMessage.getData().get("body"));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    }
 
+    }
+    private void sendNotification(String title, String messageBody) {
+        Intent intent = new Intent(getApplicationContext(), QuizActivity.class);  //you can use your launcher Activity insted of SplashActivity, But if the Activity you used here is not launcher Activty than its not work when App is in background.
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//Add Any key-value to pass extras to intent
+        intent.putExtra("pushnotification", "yes");
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT|PendingIntent.FLAG_UPDATE_CURRENT);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationManager mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);//For Android Version Orio and greater than orio.        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        int importance = NotificationManager.IMPORTANCE_LOW;
+        NotificationChannel mChannel = new NotificationChannel("Sesame", "Sesame", importance);
+        mChannel.setDescription(messageBody);
+        mChannel.enableLights(true);
+        mChannel.setLightColor(Color.RED);
+        mChannel.enableVibration(true);
+        mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+        mNotifyManager.createNotificationChannel(mChannel);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "Seasame");
+        mBuilder.setContentTitle(title)
+                .setContentText(messageBody)
+                .setSmallIcon(R.drawable.ic_notifications)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setColor(Color.parseColor("#FFD600"))
+                .setContentIntent(pendingIntent)
+                .setChannelId("Sesame")
+                .setPriority(NotificationCompat.PRIORITY_LOW);
+
+        mNotifyManager.notify(count, mBuilder.build());
+        count++;
+    }
     @Override
     public void onMessageSent(@NonNull String msgId) {
         super.onMessageSent(msgId);
-        Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
     }
-    private void sendNotification(String title, String body) {
-        RemoteViews notificationSmall = new RemoteViews(getPackageName(), R.layout.notification_small);
-        notificationSmall.setTextViewText(R.id.title, title);
-        notificationSmall.setTextViewText(R.id.body, body);
-        RemoteViews notificationLarge = new RemoteViews(getPackageName(), R.layout.notification_large);
-        Intent intent = new Intent(this, NotificationActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
-        String channelId = getString(R.string.default_notification_channel_id);
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channelId);
-        notificationBuilder.setSmallIcon(R.drawable.app_icon)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
-                .setTicker("Hearty365")
-                .setWhen(System.currentTimeMillis())
-                .setShowWhen(true)
-                .setOngoing(false)
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setCustomContentView(notificationSmall)
-                .setCustomBigContentView(notificationLarge)
-                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                .setContentIntent(pendingIntent);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        notificationManager.notify(0, notificationBuilder.build());
-    }
-    @Override
     public void onNewToken(@NonNull String token) {
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.DATA, MODE_PRIVATE);
         int uid = sharedPreferences.getInt(Constants.UID, 0);
-        Log.d("TAG", "onNewToken: "+uid);
+        Log.e(TAG, "onNewToken: " + token);
         storeToken(uid,token);
     }
     private void storeToken(int studentId, String token) {

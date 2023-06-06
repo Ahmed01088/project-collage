@@ -1,9 +1,4 @@
 package com.example.projectcollage.utiltis;
-
-import android.graphics.Bitmap;
-
-import com.example.projectcollage.firebase.MyFirebaseMessagingService;
-
 public class Constants {
     public static final String BASE_URL = "http://192.168.1.31:80/api/";
     public static final String BASE_URL_PATH_POSTS = "http://192.168.1.31:80/images/posts/";

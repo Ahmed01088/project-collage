@@ -47,8 +47,6 @@
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
-                <action android:name="com.google.firebase.c2dm.intent.RECEIVE" />
-
             </intent-filter>
         </service>
 
@@ -95,8 +93,15 @@
             android:name=".activities.ShowImageActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.NotificationActivity"
-            android:exported="false" />
+            android:name="com.example.projectcollage.activities.NotificationActivity"
+            android:launchMode="singleTop"
+            android:label="Notification Activity"
+            android:exported="false">
+                <intent-filter>
+                    <action android:name="OPEN_NOTIFICATION_ACTIVITY" />
+                    <category android:name="android.intent.category.DEFAULT" />
+                </intent-filter>
+            </activity>
         <activity
             android:name=".activities.ManagementDataOnAppActivity"
             android:exported="false" />
@@ -114,7 +119,6 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
                     android:host="www.example.com"
                     android:scheme="http" />
@@ -128,7 +132,13 @@
             android:exported="false" />
         <activity
             android:name=".activities.QuizActivity"
-            android:exported="false" />
+            android:launchMode="singleTop"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+           </intent-filter>
+        </activity>
         <activity
             android:name=".activities.LoginActivity"
             android:exported="false" />

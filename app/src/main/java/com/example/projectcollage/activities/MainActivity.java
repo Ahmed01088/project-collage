@@ -102,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tab.setText(nameOfFragments[position]);
         }).attach();
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_bar,menu);
@@ -116,7 +115,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ActivityOptions options= ActivityOptions.makeClipRevealAnimation(text,text.getWidth()/2,text.getHeight()/2,300,300);
             startActivity(intent,options.toBundle());
             binding.drawer.closeDrawer(GravityCompat.START);
+            menu.getItem(0).getActionView().setVisibility(View.GONE);
         });
+        // hide item in menu
         return true;
     }
      @Override
@@ -172,8 +173,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .error(R.drawable.avatar)
                 .into(image);
     }
-
-    private void subscribeToTopic(){
+private void subscribeToTopic(){
         FirebaseMessaging.getInstance().subscribeToTopic("news")
                 .addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
@@ -181,5 +181,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
     }
-
 }

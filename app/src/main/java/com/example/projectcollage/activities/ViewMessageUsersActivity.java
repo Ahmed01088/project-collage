@@ -217,6 +217,7 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
                      Notification notification=new Notification("رساله جديده من " + preferences.getString(Constants.FULL_NAME," "),message.getContent());
                      notification.setType("message");
                      sendNotification(notification);
+                     uriImage=null;
 
                  }
              }
@@ -282,13 +283,8 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
                 message.setSentAt(messageObject.getString("sentAt"));
                 message.setSender(messageObject.getInt("sender"));
                 message.setReceiver(messageObject.getInt("receiver"));
-                if (messageObject.getInt("classroom_id")!=0 && !messageObject.isNull("classroom_id")){
-                    message.setClassroomId(messageObject.getInt("classroom_id"));
-                }
                 message.setChatId(messageObject.getInt("chat_id"));
                 message.setImage(messageObject.getString("image"));
-                message.setSenderName(messageObject.getString("sender_name"));
-                message.setSenderImage(messageObject.getString("sender_image"));
                 runOnUiThread(
                         new Runnable() {
                             @Override

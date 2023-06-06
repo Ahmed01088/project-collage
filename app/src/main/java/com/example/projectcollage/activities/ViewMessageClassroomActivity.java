@@ -37,28 +37,21 @@ import android.widget.Toast;
 import com.example.projectcollage.R;
 import com.example.projectcollage.adapters.ChatClassroomAdapter;
 import com.example.projectcollage.databinding.ActivityViewMessageClassroomBinding;
-import com.example.projectcollage.firebase.MyFirebaseMessagingService;
 import com.example.projectcollage.model.Data;
-import com.example.projectcollage.model.Notification;
 import com.example.projectcollage.model.Quiz;
 import com.example.projectcollage.model.Message;
 import com.example.projectcollage.model.Student;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import com.pusher.client.channel.Channel;
-import com.pusher.client.channel.PusherEvent;
-import com.pusher.client.channel.SubscriptionEventListener;
 import com.pusher.client.connection.ConnectionEventListener;
 import com.pusher.client.connection.ConnectionState;
 import com.pusher.client.connection.ConnectionStateChange;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
@@ -69,7 +62,6 @@ import java.util.Locale;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -444,23 +436,17 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(event.getData());
                 Message message = new Message();
                 JSONObject messageObject = jsonObject.getJSONObject("message");
-//                message.setContent(messageObject.getString("content"));
-//                message.setSentAt(messageObject.getString("sentAt"));
-//                message.setSender(messageObject.getInt("sender"));
-//                message.setReceiver(messageObject.getInt("receiver"));
-//                message.setClassroomId(messageObject.getInt("classroom_id"));
-//                message.setChatId(messageObject.getInt("chat_id"));
-//                message.setImage(messageObject.getString("image"));
-//                message.setSenderName(messageObject.getString("sender_name"));
-//                message.setSenderImage(messageObject.getString("sender_image"));
+                message.setContent(messageObject.getString("content"));
+                message.setSentAt(messageObject.getString("sentAt"));
+                message.setSender(messageObject.getInt("sender"));
+                message.setReceiver(messageObject.getInt("receiver"));
+                message.setClassroomId(messageObject.getInt("classroom_id"));
+                message.setImage(messageObject.getString("image"));
                 runOnUiThread(
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                getMessagesByClassroomId(classroomId);
-                                binding.rvMessageClassroom.scrollToPosition(messages.size() - 1);
+                        () -> {
+                            getMessagesByClassroomId(classroomId);
+                            binding.rvMessageClassroom.scrollToPosition(messages.size() - 1);
 
-                            }
                         }
                 );
             } catch (JSONException e) {

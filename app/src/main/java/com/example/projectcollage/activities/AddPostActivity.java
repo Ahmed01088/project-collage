@@ -15,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -25,6 +26,16 @@ import com.example.projectcollage.model.Notification;
 import com.example.projectcollage.model.Post;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
+import com.pusher.client.Pusher;
+import com.pusher.client.PusherOptions;
+import com.pusher.client.channel.Channel;
+import com.pusher.client.channel.PusherEvent;
+import com.pusher.client.channel.SubscriptionEventListener;
+import com.pusher.client.connection.ConnectionEventListener;
+import com.pusher.client.connection.ConnectionState;
+import com.pusher.client.connection.ConnectionStateChange;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;

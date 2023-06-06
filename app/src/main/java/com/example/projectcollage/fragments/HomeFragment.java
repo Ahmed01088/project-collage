@@ -19,6 +19,15 @@ import com.example.projectcollage.databinding.FragmentHomeBinding;
 import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Post;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
+import com.example.projectcollage.utiltis.Constants;
+import com.pusher.client.Pusher;
+import com.pusher.client.PusherOptions;
+import com.pusher.client.channel.Channel;
+import com.pusher.client.channel.PusherEvent;
+import com.pusher.client.channel.SubscriptionEventListener;
+import com.pusher.client.connection.ConnectionEventListener;
+import com.pusher.client.connection.ConnectionState;
+import com.pusher.client.connection.ConnectionStateChange;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +50,11 @@ public class HomeFragment extends Fragment {
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
         });
         getPosts();
+        setupPusher();
+        binding.postsUpdated.setOnClickListener(view -> {
+            binding.postsUpdated.setVisibility(View.GONE);
+            getPosts();
+        });
 
     }
 
@@ -77,5 +91,32 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getContext(), "Error: "+t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
     }
+    private void setupPusher(){
+        PusherOptions options = new PusherOptions();
+        options.setCluster(Constants.PUSHER_APP_CLUSTER);
+        Pusher pusher = new Pusher(Constants.PUSHER_APP_KEY, options);
+        Channel channel = pusher.subscribe("add-post");
+        channel.bind("add-post",
+                event -> getActivity().runOnUiThread(() -> {
+                    binding.postsUpdated.setVisibility(View.VISIBLE);
+                    Toast.makeText(getContext(), "تم تحديث البيانات", Toast.LENGTH_SHORT).show();
+                })
+        );
+        pusher.connect(new ConnectionEventListener() {
+            @Override
+            public void onConnectionStateChange(ConnectionStateChange change) {
+                   getActivity().runOnUiThread(() -> {
+                       Toast.makeText(getContext(), "تم الاتصال بالسيرفر", Toast.LENGTH_SHORT).show();
+                   });
+            }
+
+            @Override
+            public void onError(String message, String code, Exception e) {
+
+            }
+        }, ConnectionState.ALL);
+    }
+
 }

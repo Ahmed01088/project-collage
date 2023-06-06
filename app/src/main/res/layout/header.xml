@@ -12,7 +12,6 @@
         android:layout_height="100dp"
         android:layout_gravity="center"
         android:src="@drawable/avatar" />
-
     <TextView
         android:id="@+id/student_name"
         android:layout_width="match_parent"
@@ -22,7 +21,6 @@
         android:textColor="@color/white"
         android:layout_margin="12dp"
         android:textSize="22sp"/>
-
     <TextView
         android:id="@+id/student_grade"
         android:layout_width="match_parent"
