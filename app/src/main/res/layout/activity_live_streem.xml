@@ -1,82 +1,75 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/main_color"
-    tools:context=".activities.LiveStreamActivity">
+    android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/remote_video_view_container"
+    <ScrollView
+        android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="-4dp"
-        android:background="@drawable/video"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rvAllUserVideo">
-
-    </FrameLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvAllUserVideo"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_marginTop="@dimen/_16sdp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout12"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="-16dp" />
+        tools:context=".activities.LiveStreamActivity">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <FrameLayout
+                android:id="@+id/remote_video_view_container"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rvLiveStreamStudents">
 
-    <ImageView
-        android:id="@+id/btnCross"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_close" />
+                <FrameLayout
+                    android:id="@+id/local_video_view_container"
+                    android:layout_width="111dp"
+                    android:layout_height="197dp"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginLeft="@dimen/_8sdp"
+                    android:layout_marginTop="-4dp"
+                    android:layout_marginBottom="6dp"
+                    android:background="@android:color/darker_gray" />
+            </FrameLayout>
+            <TextView
+                android:id="@+id/auto"
+                android:layout_width="51dp"
+                android:layout_height="27dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:background="@drawable/auto"
+                android:gravity="center"
+                android:text="@string/auto"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/auto"
-        android:layout_width="51dp"
-        android:layout_height="27dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/auto"
-        android:gravity="center"
-        android:text="@string/auto"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvLiveStreamStudents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/label_student_counter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/background_squire_blue"
-        android:gravity="center"
-        android:paddingStart="8dp"
-        android:paddingTop="2dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="2dp"
-        android:text="0 طالب حاضر"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/auto"
-        app:layout_constraintEnd_toStartOf="@+id/auto"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/linearLayout12"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:orientation="horizontal"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -84,14 +77,14 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
-            android:id="@+id/closeVideoLive"
+            android:id="@+id/shareScreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/circle_background_blue"
             android:padding="12dp"
-            app:srcCompat="@drawable/ic_local_phone" />
+            app:srcCompat="@drawable/baseline_screen_share_24" />
 
         <ImageView
             android:id="@+id/openCloseCameraVideoLive"
@@ -136,6 +129,4 @@
             android:padding="12dp"
             app:srcCompat="@drawable/ic_flip_camera_ios" />
     </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

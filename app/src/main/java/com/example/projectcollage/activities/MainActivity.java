@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +23,9 @@ import android.widget.Toast;
 import com.example.projectcollage.R;
 import com.example.projectcollage.adapters.ViewPagerAdapter;
 import com.example.projectcollage.databinding.ActivityMainBinding;
+import com.example.projectcollage.model.Data;
+import com.example.projectcollage.model.Student;
+import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -29,10 +33,17 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.pusher.pushnotifications.PushNotifications;
 import com.squareup.picasso.Picasso;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     ActivityMainBinding binding;
     ViewPagerAdapter adapter;
     SharedPreferences login;
+    int uid;
     SharedPreferences.Editor editor;
     String []nameOfFragments;
     View header;
@@ -72,6 +83,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             return false;
         });
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Log.w("TAG", "Fetching FCM registration token failed", task.getException());
+                return;
+            }
+            String token = task.getResult();
+            Log.d("TAG", "Token==== "+token);
+            uid = login.getInt(Constants.UID, 0);
+            storeToken(uid,token);
+        });
+
 
 
     }
@@ -181,4 +203,22 @@ private void subscribeToTopic(){
                     }
                 });
     }
+    private void storeToken(int studentId, String token) {
+        RequestBody body = RequestBody.create(token, MediaType.parse("text/plain"));
+        Call<Data<Student>> call = RetrofitClientLaravelData.getInstance().getApiInterface().updateFcmToken(studentId,body);
+        call.enqueue(new Callback<Data<Student>>() {
+            @Override
+            public void onResponse(@NonNull Call<Data<Student>> call, @NonNull Response<Data<Student>> response) {
+                if (!response.isSuccessful()){
+                    Toast.makeText(MainActivity.this, "Token stored failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<Data<Student>> call, @NonNull Throwable t) {
+                Toast.makeText(MainActivity.this, "Token stored failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
 }

@@ -60,7 +60,7 @@ dependencies {
     implementation 'com.github.lincollincol:compose-audiowaveform:1.1.1'
     //pusher
     implementation 'com.pusher:push-notifications-android:1.9.0'
-
+    implementation fileTree(dir: "libs", include: ["*.jar","*.aar"])
     implementation 'com.pusher:pusher-java-client:2.4.2'
     implementation "com.google.firebase:firebase-iid:21.1.0"
     //lottie

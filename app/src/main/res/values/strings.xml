@@ -187,5 +187,7 @@
     <string name="c">(C)</string>
     <string name="d">(D)</string>
     <string name="correct_ansore">الاجابة الصحيحة</string>
+    <string name="leave">خروخ</string>
+    <string name="join">دخول</string>
 
 </resources>

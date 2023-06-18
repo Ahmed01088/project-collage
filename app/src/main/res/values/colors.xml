@@ -23,4 +23,5 @@
 <!--    <color name="textColor">#1F2373</color>-->
     <color name="red">#FF0034</color>
     <color name="chatGPT">#FF0034</color>
+    <color name="gray">#1F1F1F</color>
 </resources>

@@ -106,15 +106,7 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
         preferences = getSharedPreferences(Constants.DATA, MODE_PRIVATE);
         binding.nameOfCourse.setText(nameOfCourse);
         uid = preferences.getInt(Constants.UID, 0);
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                Log.w("TAG", "Fetching FCM registration token failed", task.getException());
-                return;
-            }
-            String token = task.getResult();
-            Log.d("TAG", "Token==== "+token);
-            storeToken(uid,token);
-        });
+
         String lecturerName = getIntent().getStringExtra(Constants.LECTURER_NAME);
         classroomId = getIntent().getIntExtra(Constants.CLASSROOM_ID, 0);
         getMessagesByClassroomId(classroomId);
@@ -124,7 +116,7 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
         setupPusher();
         if (preferences.getString(Constants.USER_TYPE, "").equals(Constants.USER_TYPES[1])) {
             binding.addQuiz.setVisibility(View.VISIBLE);
-            binding.startVideo.setVisibility(View.VISIBLE);
+            binding.startVideo.setImageResource(R.drawable.live);
         } else {
             binding.addQuiz.setVisibility(View.GONE);
             binding.startVideo.setVisibility(View.GONE);
@@ -253,23 +245,6 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
 
     }
 
-    private void storeToken(int studentId, String token) {
-        RequestBody body = RequestBody.create(token,MediaType.parse("text/plain"));
-        Call<Data<Student>> call = RetrofitClientLaravelData.getInstance().getApiInterface().updateFcmToken(studentId,body);
-        call.enqueue(new Callback<Data<Student>>() {
-            @Override
-            public void onResponse(@NonNull Call<Data<Student>> call, @NonNull Response<Data<Student>> response) {
-                if (!response.isSuccessful()){
-                    Toast.makeText(ViewMessageClassroomActivity.this, "Token stored failed", Toast.LENGTH_SHORT).show();
-                }
-            }
-            @Override
-            public void onFailure(@NonNull Call<Data<Student>> call, @NonNull Throwable t) {
-                Toast.makeText(ViewMessageClassroomActivity.this, "Token stored failed", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
 
 
     ActivityResultLauncher<Intent> someActivityResultLauncher
