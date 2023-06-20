@@ -20,6 +20,9 @@ public class Department {
     @SerializedName("updated_at")
     private String updatedAt;
 
+    public Department() {
+    }
+
     public Department(String nameDepartment, String departmentCode, String level, String semester) {
         this.name = nameDepartment;
         this.departmentCode = departmentCode;

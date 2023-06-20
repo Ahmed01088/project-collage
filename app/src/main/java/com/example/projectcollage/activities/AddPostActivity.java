@@ -81,8 +81,8 @@ public class AddPostActivity extends AppCompatActivity {
                 post.setStudentId(null);
                 post.setStudentAffairsId(null);
             }
-            post.setLikes(104320);
-            post.setNumberOfComments(102430);
+            post.setLikes(0);
+            post.setNumberOfComments(3);
             if (binding.contentQuestionPost.getText().toString().isEmpty()){
                 binding.contentQuestionPost.setError("الرجاء كتابة المنشور");
                 return;

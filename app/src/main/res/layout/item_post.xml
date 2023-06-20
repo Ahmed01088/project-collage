@@ -93,7 +93,7 @@
             app:drawableRightCompat="@drawable/ic_comment" />
 
         <TextView
-            android:id="@+id/view_post2"
+            android:id="@+id/poststartchat"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_weight="1"

@@ -35,6 +35,8 @@ public class Lecturer {
     private String updatedAt;
 
 
+    public Lecturer() {
+    }
 
     public Lecturer(String firstName, String lastName, String email, String password, String phoneNumber, String nationalId, String code, int departmentId, int courseId) {
         this.fName = firstName;

@@ -68,7 +68,14 @@ public class QuizActivity extends AppCompatActivity {
         builder.setView(uid);
         builder.show();
         });
-        getQuestions();
+        int quizId=getIntent().getIntExtra(Constants.QUIZ_ID,0);
+        int lecturerId=getIntent().getIntExtra(Constants.LECTURER_ID,0);
+        int time=getIntent().getIntExtra(Constants.QUIT_TIME,0);
+        Toast.makeText(this, ""+quizId, Toast.LENGTH_SHORT).show();
+        timer(time);
+        Toast.makeText(this, ""+lecturerId, Toast.LENGTH_SHORT).show();
+
+        getQuestions(quizId,lecturerId);
     }
     private void timer(long timeByMints){
         long timeByMilliSeconds=timeByMints*60*1000;
@@ -107,9 +114,9 @@ public class QuizActivity extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
-    private void getQuestions(){
+    private void getQuestions(int quizId,int lecturerId){
         Call<Data<List<Question>>>call= RetrofitClientLaravelData.getInstance().getApiInterface()
-                .getQuestionsByQuizIdAndLecturerId(1,1);
+                .getQuestionsByQuizIdAndLecturerId(quizId,lecturerId);
         call.enqueue(new Callback<Data<List<Question>>>() {
             @Override
             public void onResponse(@NonNull Call<Data<List<Question>>> call, @NonNull Response<Data<List<Question>>> response) {
@@ -119,8 +126,6 @@ public class QuizActivity extends AppCompatActivity {
                             adapter=new QuestionAdapter(QuizActivity.this, (ArrayList<Question>) questions);
                             binding.recVQuestions.setLayoutManager(new LinearLayoutManager(QuizActivity.this));
                             binding.recVQuestions.setAdapter(adapter);
-                            int quizTimeByMuints=response.body().getQuiz_time();
-                            timer(quizTimeByMuints);
 
 
                     }

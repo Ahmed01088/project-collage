@@ -123,4 +123,17 @@ public class ChatsFragment extends Fragment {
             }
         });
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        data=getActivity().getSharedPreferences(Constants.DATA, Context.MODE_PRIVATE);
+        if (data.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[0])) {
+            getChatsByStudentId(data.getInt(Constants.UID, 0));
+        }else if (data.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[1])){
+            getChatsByLecturerId(data.getInt(Constants.UID, 0));
+        }else if (data.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[2])){
+            getChatsByStudentAffairsId(data.getInt(Constants.UID, 0));
+        }
+    }
 }

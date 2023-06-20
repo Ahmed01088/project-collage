@@ -39,9 +39,6 @@ public class LiveStreamActivity extends AppCompatActivity{
         return ContextCompat.checkSelfPermission(this, REQUESTED_PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(this, REQUESTED_PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED;
     }
-    private final String appId="5cc56522815f4f5794df128f72d50cae";
-    private final String channelName="collage";
-    private final String token="007eJxTYJj66MqPZ8krZ07fojw166Phfz/HGdfV1xrMZ2G8dO3dyffsCgymycmmZqZGRhaGpmkmaabmliYpaYZGFmnmRimmBsmJqY/tG1IaAhkZjDlXMDMyQCCIz86QnJ+Tk5ieysAAAJA4Iqc=";
     private int uid = 0;
     private boolean isJoined = false;
 
@@ -113,7 +110,7 @@ public class LiveStreamActivity extends AppCompatActivity{
         try {
             RtcEngineConfig config = new RtcEngineConfig();
             config.mContext = getBaseContext();
-            config.mAppId = appId;
+            config.mAppId = com.example.projectcollage.utiltis.Constants.AGORA_APP_ID;
             config.mEventHandler = mRtcEventHandler;
             agoraEngine = RtcEngine.create(config);
             // By default, the video module is disabled, call enableVideo to enable it.
@@ -174,7 +171,7 @@ public class LiveStreamActivity extends AppCompatActivity{
             agoraEngine.startPreview();
             // Join the channel with a temp token.
             // You need to specify the user ID yourself, and ensure that it is unique in the channel.
-            agoraEngine.joinChannel(token, channelName, uid, options);
+            agoraEngine.joinChannel(com.example.projectcollage.utiltis.Constants.AGORA_TOKEN, com.example.projectcollage.utiltis.Constants.AGORA_CHANNEL_NAME, uid, options);
         } else {
             Toast.makeText(getApplicationContext(), "Permissions was not granted", Toast.LENGTH_SHORT).show();
         }

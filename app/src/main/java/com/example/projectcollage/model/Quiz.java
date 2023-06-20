@@ -26,6 +26,8 @@ public class Quiz {
     @SerializedName("created_at")
     private String createdAt;
 
+    public Quiz() {
+    }
 
     public Quiz(String titleQuiz, String descriptionQuiz, int numberQuestionQuiz, int quizTimeQuiz, int courseId, int classroomId, int uid) {
         this.title = titleQuiz;

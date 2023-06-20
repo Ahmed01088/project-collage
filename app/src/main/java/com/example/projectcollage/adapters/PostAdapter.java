@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.text.method.LinkMovementMethod;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,24 +19,29 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.bumptech.glide.Glide;
 import com.example.projectcollage.R;
 import com.example.projectcollage.activities.DetailsActivity;
 import com.example.projectcollage.activities.PostCommentsActivity;
 import com.example.projectcollage.activities.ShowImageActivity;
 import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Post;
-import com.example.projectcollage.retrofit.RetrofitClient;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
+import com.pusher.client.Pusher;
+import com.pusher.client.PusherOptions;
+import com.pusher.client.channel.Channel;
+import com.pusher.client.connection.ConnectionEventListener;
+import com.pusher.client.connection.ConnectionState;
+import com.pusher.client.connection.ConnectionStateChange;
 import com.squareup.picasso.Picasso;
-
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,10 +50,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private final Context context;
     private final ArrayList<Post> posts;
     SharedPreferences sharedPreferences;
+    int counterOfReacts;
     public PostAdapter(Context context, ArrayList<Post> posts) {
         this.context = context;
         this.posts = posts;
         sharedPreferences=context.getSharedPreferences(Constants.DATA,Context.MODE_PRIVATE);
+        setupPusher();
     }
 
     @NonNull
@@ -138,16 +144,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,view.getWidth()/2,view.getHeight()/2,300,300);
             context.startActivity(intent,options.toBundle());
         });
-        int[] counterOfReacts = {100};
+        counterOfReacts = posts.get(position).getLikes();
         boolean[] check = {false};
         holder.counterReact.setVisibility(View.VISIBLE);
         holder.react.setOnClickListener(view -> {
             if (check[0]) {
                 check[0] =false;
-                counterOfReacts[0]--;
+                counterOfReacts--;
+                addRectOnPost(posts.get(position).getId(),counterOfReacts);
                 holder.react.setTextColor(Color.WHITE);
-                holder.counterReact.setText(String.format(Locale.ENGLISH,"%d مشاهده", counterOfReacts[0]));
-                if (counterOfReacts[0]!=0){
+                holder.counterReact.setText(String.format(Locale.ENGLISH,"%d مشاهده", counterOfReacts));
+                if (counterOfReacts!=0){
                     holder.counterReact.setVisibility(View.VISIBLE);
                 }else {
                     holder.counterReact.setVisibility(View.GONE);
@@ -155,10 +162,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 holder.react.setCompoundDrawableTintList(ColorStateList.valueOf(Color.WHITE));
             }else {
                 check[0]=true;
-                counterOfReacts[0]++;
+                counterOfReacts++;
+                addRectOnPost(posts.get(position).getId(),counterOfReacts);
                 holder.react.setTextColor(Color.BLUE);
-                holder.counterReact.setText(String.format(Locale.ENGLISH,"%d مشاهده", counterOfReacts[0]));
-                if (counterOfReacts[0]!=0){
+                holder.counterReact.setText(String.format(Locale.ENGLISH,"%d مشاهده", counterOfReacts));
+                if (counterOfReacts!=0){
                     holder.counterReact.setVisibility(View.VISIBLE);
                 }else {
                     holder.counterReact.setVisibility(View.GONE);
@@ -252,4 +260,52 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         holder.itemView.clearAnimation();
 
     }
+    private void setupPusher(){
+        PusherOptions options = new PusherOptions();
+        options.setCluster(Constants.PUSHER_APP_CLUSTER);
+        Pusher pusher = new Pusher(Constants.PUSHER_APP_KEY, options);
+        Channel channel = pusher.subscribe("react-post");
+        channel.bind("react-post", event -> {
+            try {
+                JSONObject jsonObject=new JSONObject(event.getData());
+                counterOfReacts= jsonObject.getInt("likes");
+
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+        });
+        pusher.connect(new ConnectionEventListener() {
+            @Override
+            public void onConnectionStateChange(ConnectionStateChange change) {
+
+            }
+
+            @Override
+            public void onError(String message, String code, Exception e) {
+
+            }
+        }, ConnectionState.ALL);
+    }
+    private void addRectOnPost(int id,int likes){
+        RequestBody likese = RequestBody.create(String.valueOf(likes), MediaType.parse("text/plain"));
+
+        Call<Data<Post>> addRectOnPost=RetrofitClientLaravelData.getInstance().getApiInterface().addRectOnPost(id,likese);
+        addRectOnPost.enqueue(new Callback<Data<Post>>() {
+            @Override
+            public void onResponse(@NonNull Call<Data<Post>> call, @NonNull Response<Data<Post>> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(context, "حدث خطأ ما", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Data<Post>> call, @NonNull Throwable t) {
+                Toast.makeText(context, "حدث خطأ ما", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }

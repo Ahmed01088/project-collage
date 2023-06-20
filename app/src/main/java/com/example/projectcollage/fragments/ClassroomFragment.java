@@ -115,4 +115,15 @@ public class ClassroomFragment extends Fragment {
         });
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (sharedPreferences.getString(Constants.USER_TYPE, "").equals(Constants.USER_TYPES[1])){
+            getClassroomByLecturerId(sharedPreferences.getInt(Constants.UID, 0));
+        }
+        else if (sharedPreferences.getString(Constants.USER_TYPE, "").equals(Constants.USER_TYPES[0])) {
+            getClassroomsByDepartmentId(sharedPreferences.getInt(Constants.DEPARTMENT_ID, 0));
+        }
+    }
 }

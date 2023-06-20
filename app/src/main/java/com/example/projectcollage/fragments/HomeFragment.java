@@ -37,7 +37,6 @@ import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
     FragmentHomeBinding binding;
-    Database database;
     ArrayList<Post>posts;
     public HomeFragment() {
     }
@@ -119,4 +118,9 @@ public class HomeFragment extends Fragment {
         }, ConnectionState.ALL);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getPosts();
+    }
 }

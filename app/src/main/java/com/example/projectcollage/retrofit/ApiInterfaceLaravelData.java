@@ -65,6 +65,11 @@ public interface ApiInterfaceLaravelData {
     @Multipart
     @POST("student/{student_id}/update-fcm-token")
     Call<Data<Student>> updateFcmToken(@Path("student_id") int student_id, @Part("fcm_token") RequestBody fcm_token);
+    @GET("student/all")
+    Call<Data<List<Student>>> getAllStudent();
+    @DELETE("student/delete/{id}")
+    Call<Data<Student>> deleteStudentById(@Path("id") int id);
+
 
     //=================================================================
     //=================================Admin===========================
@@ -96,6 +101,10 @@ public interface ApiInterfaceLaravelData {
     Call<Data<Lecturer>> getLecturer(@Path("id") int id);
     @GET("lecturer/getLecturerByCourseId/{course_id}")
     Call<Data<Lecturer>> getLecturerByCourseId(@Path("course_id") int course_id);
+    @GET("lecturer/all")
+    Call<Data<List<Lecturer>>> getAllLecturer();
+    @DELETE("lecturer/delete/{id}")
+    Call<Data<Lecturer>> deleteLecturerById(@Path("id") int id);
     //=================================================================
     //=================================Student Affairs=================
     //=================================================================
@@ -142,6 +151,8 @@ public interface ApiInterfaceLaravelData {
     Call<Data<Course>> addCourse(@Body Course course);
     @GET("course/getCoursesByDepartmentId/{department_id}")
     Call<Data<List<Course>>> getCourseByDepartmentId(@Path("department_id") int department_id);
+    @DELETE("course/delete/{id}")
+    Call<Data<Course>> deleteCourseById(@Path("id") int id);
 
     //=================================================================
     //=================================Classroom=======================
@@ -156,7 +167,8 @@ public interface ApiInterfaceLaravelData {
     Call<Data<List<Classroom>>> getClassroomsByDepartmentId(@Path("department_id") int department_id);
     @GET("classroom/getClassroomByLecturerId/{lecturer_id}")
     Call<Data<List<Classroom>>> getClassroomByLecturerId(@Path("lecturer_id") int lecturer_id);
-
+    @GET("classroom/livestrated/{classroom_id}")
+    Call<Data<Classroom>> getLivestratedClassroom(@Path("classroom_id") int classroom_id);
 
     //=================================================================
     //=================================Chat============================
@@ -175,8 +187,6 @@ public interface ApiInterfaceLaravelData {
     @GET("chat/getChatsByStudentAffairsId/{student_affairs_id}")
     Call<Data<List<Chat>>> getChatsByStudentAffairsId(@Path("student_affairs_id") int student_affairs_id);
 
-
-
     //=================================================================
     //=================================Quiz============================
     //=================================================================
@@ -184,6 +194,7 @@ public interface ApiInterfaceLaravelData {
     Call<Data<List<Chat>>> getAllQuizzes();
     @POST("quiz/add")
     Call<Data<Quiz>> addQuiz(@Body Quiz quiz);
+
 
 
 
@@ -196,7 +207,8 @@ public interface ApiInterfaceLaravelData {
     Call<Data<Question>> addQuestion(@Body Question question);
     @GET("question/getQuestionsByQuizIdAndLecturerId/{quiz_id}/{lecturer_id}")
     Call<Data<List<Question>>> getQuestionsByQuizIdAndLecturerId(@Path("quiz_id") int quiz_id, @Path("lecturer_id") int lecturer_id);
-
+    @GET("question/push-quiz/{quiz_id}")
+    Call<Data<List<Question>>> pushQuiz(@Path("quiz_id") int quiz_id);
     //=================================================================
     //==================================post===========================
     //=================================================================
@@ -223,6 +235,12 @@ public interface ApiInterfaceLaravelData {
     Call<Data<List<Post>>> getPostsByStudentAffairsId(@Path("student_affairs_id") int student_affairs_id);
     @GET("posts/getAll?sort=created_at,asc")
     Call<Data<List<Post>>> getAllPosts();
+
+
+    @Multipart
+    @POST("posts/{id}/react")
+    Call<Data<Post>> addRectOnPost(@Path("id") int id, @Part("likes") RequestBody react);
+
     @Multipart
     @PUT("user/photo")
     Call<User> updateUser(@Part("photo") RequestBody photo, @Part("description") RequestBody description);
@@ -234,6 +252,8 @@ public interface ApiInterfaceLaravelData {
     @DELETE("posts/deletebylecturerid/{id}/{lecturer_id}")
     Call<Data<Post>> deletePostByLecturerId(@Path("id") int id, @Path("lecturer_id") int lecturer_id);
 
+    @GET("posts/searchInPosts/{search}")
+    Call<Data<List<Post>>> searchInPosts(@Path("search") String search);
 
     //=================================================================
     //==================================comment========================

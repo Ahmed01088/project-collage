@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rvReplayComments"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,21 +11,28 @@
 
     android:orientation="horizontal">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
+        android:paddingLeft="@dimen/_8sdp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="1"
         >
 
         <LinearLayout
+            android:id="@+id/linearLayout14"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/_4sdp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
             android:background="@drawable/background_radius_12"
-            android:gravity="end"
+            android:gravity="right"
+
             android:orientation="vertical"
-            android:padding="@dimen/_2sdp">
+            android:padding="@dimen/_2sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/nameComment"
@@ -43,18 +51,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/_8sdp"
-                android:gravity="end"
                 android:paddingStart="@dimen/_8sdp"
                 android:paddingTop="@dimen/_4sdp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="@dimen/_4sdp"
-                android:text="The main task of the lexical analyzer is to read the input characters
-    of the source program, group them into lexemes, and produce as
-    output a sequence of tokens for each lexeme in the source program.
-    • Lexical analyzers are divided into a cascade of two processes:
-    – a) Scanning consists of the simple processes that do not require tokenization
-    of the input, such as deletion of comments and compaction of consecutive
-    whitespace characters into one."
+                android:text="The Now, when you send a GET request to the API endpoint /api/posts/search with the searchTerm query parameter, Laravel will invoke the search method in the PostController, perform the search based on the provided search term, and return the search results as a JSON response.."
                 android:textColor="#CCcccc"
                 android:textSize="@dimen/_11ssp" />
         </LinearLayout>
@@ -63,9 +64,9 @@
             android:id="@+id/linearLayout5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_4sdp"
             android:gravity="end"
-            android:padding="@dimen/_2sdp">
+            android:padding="@dimen/_2sdp"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout14">
 
             <TextView
                 android:id="@+id/time"
@@ -76,7 +77,7 @@
                 android:paddingRight="@dimen/_16sdp"
                 android:text="@string/time_comment"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_10ssp" />
+                android:textSize="@dimen/_9ssp" />
 
             <TextView
                 android:id="@+id/replay"
@@ -88,7 +89,7 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_10ssp" />
         </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/personComment"

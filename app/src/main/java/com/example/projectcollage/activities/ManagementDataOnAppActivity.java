@@ -43,6 +43,11 @@ public class ManagementDataOnAppActivity extends AppCompatActivity {
             ActivityOptions options=ActivityOptions.makeCustomAnimation(ManagementDataOnAppActivity.this, R.anim.slide_in_left, R.anim.slide_out_right);
             startActivity(intent, options.toBundle());
         });
+        binding.showdata.setOnClickListener(view -> {
+            Intent intent=new Intent(ManagementDataOnAppActivity.this, ShowAnyDataStudentAffairsAddedActivity.class);
+            ActivityOptions options=ActivityOptions.makeCustomAnimation(ManagementDataOnAppActivity.this, R.anim.slide_in_left, R.anim.slide_out_right);
+            startActivity(intent, options.toBundle());
+        });
         binding.spinnerData.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -86,6 +91,7 @@ public class ManagementDataOnAppActivity extends AppCompatActivity {
             builder.show();
         });
     }
+
 
     @Override
     public void onBackPressed() {

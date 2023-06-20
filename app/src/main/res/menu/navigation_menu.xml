@@ -2,10 +2,6 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/quiz"
-        android:icon="@drawable/ic_menu_book"
-        android:title="@string/quiz" />
-    <item
         android:icon="@drawable/ic_table_chart"
         android:id="@+id/study_table"
         android:title="@string/study_table" >

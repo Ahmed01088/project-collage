@@ -9,7 +9,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import android.Manifest;
 import android.app.Activity;
@@ -37,6 +39,7 @@ import android.widget.Toast;
 import com.example.projectcollage.R;
 import com.example.projectcollage.adapters.ChatClassroomAdapter;
 import com.example.projectcollage.databinding.ActivityViewMessageClassroomBinding;
+import com.example.projectcollage.model.Classroom;
 import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Quiz;
 import com.example.projectcollage.model.Message;
@@ -49,6 +52,8 @@ import com.pusher.client.PusherOptions;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.pusher.client.channel.Channel;
+import com.pusher.client.channel.PusherEvent;
+import com.pusher.client.channel.SubscriptionEventListener;
 import com.pusher.client.connection.ConnectionEventListener;
 import com.pusher.client.connection.ConnectionState;
 import com.pusher.client.connection.ConnectionStateChange;
@@ -59,6 +64,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -116,7 +123,6 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
         setupPusher();
         if (preferences.getString(Constants.USER_TYPE, "").equals(Constants.USER_TYPES[1])) {
             binding.addQuiz.setVisibility(View.VISIBLE);
-            binding.startVideo.setImageResource(R.drawable.live);
         } else {
             binding.addQuiz.setVisibility(View.GONE);
             binding.startVideo.setVisibility(View.GONE);
@@ -146,6 +152,11 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                                 classroomId,
                                 uid);
                         addQuiz(quiz);
+                        title.setText("");
+                        description.setText("");
+                        numberQuestion.setText("");
+                        quizTime.setText("");
+
                         dialogInterface.dismiss();
                     })
                     .setNegativeButton("الغاء", (dialogInterface, i) -> {
@@ -174,6 +185,8 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                         Intent intent = new Intent(ViewMessageClassroomActivity.this, LiveStreamActivity.class);
                         ActivityOptions options = ActivityOptions.makeClipRevealAnimation(binding.addQuiz, binding.addQuiz.getWidth(), binding.addQuiz.getHeight(), 300, 300);
                         startActivity(intent, options.toBundle());
+                        startLive(classroomId);
+
                     })
                     .setNegativeButton("الغاء", (dialogInterface, i) -> {
 
@@ -196,15 +209,14 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
         binding.iconSend.setOnClickListener(v -> {
             String content = binding.senderMessage.getText().toString();
             if (!content.isEmpty()) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss aa", Locale.getDefault());
-                String date = dateFormat.format(new Date());
+                SimpleDateFormat dateFormat=new SimpleDateFormat("HH:mm:ss aa", Locale.getDefault());
+                String date=dateFormat.format(new Date());
                 Message message = new Message();
                 message.setContent(content);
                 message.setSentAt(date);
                 message.setSender(uid);
                 message.setClassroomId(classroomId);
                 message.setReceiver(classroomId);
-                message.setSenderName(preferences.getString(Constants.FIRSTNAME, "") + " " + preferences.getString(Constants.LASTNAME, ""));
                 if (uriImage != null) {
                     adapter.notifyDataSetChanged();
                     createMessage(message, file);
@@ -244,7 +256,6 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
         });
 
     }
-
 
 
     ActivityResultLauncher<Intent> someActivityResultLauncher
@@ -291,7 +302,7 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                     intent = new Intent(ViewMessageClassroomActivity.this, AddQuestionsQuizActivity.class);
                     ActivityOptions options = ActivityOptions.makeClipRevealAnimation(binding.addQuiz, binding.addQuiz.getWidth(), binding.addQuiz.getHeight(), 300, 300);
                     intent.putExtra("classroomId", quizResponse.getClassroomId());
-                    intent.putExtra("quizId", quizResponse.getId());
+                    intent.putExtra(Constants.QUIZ_ID, quizResponse.getId());
                     intent.putExtra("courseId", quizResponse.getCourseId());
                     intent.putExtra("courseName", quizResponse.getTitle());
                     intent.putExtra("departmentId", departmentId);
@@ -320,18 +331,19 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
     }
 
     private void sendMessage(Message message) {
+
         Call<Data<Message>> call = RetrofitClientLaravelData.getInstance().getApiInterface().addMessage(message);
         call.enqueue(new Callback<Data<Message>>() {
             @Override
             public void onResponse(@NonNull Call<Data<Message>> call, @NonNull retrofit2.Response<Data<Message>> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(ViewMessageClassroomActivity.this, "لم يتم ارسال الرسالة ", Toast.LENGTH_SHORT).show();
-
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<Data<Message>> call, @NonNull Throwable t) {
+                Toast.makeText(ViewMessageClassroomActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -406,29 +418,79 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
         options.setCluster(Constants.PUSHER_APP_CLUSTER);
         Pusher pusher = new Pusher(Constants.PUSHER_APP_KEY, options);
         Channel channel = pusher.subscribe("chat");
+        Channel liveChannel = pusher.subscribe("live-added");
+        Channel quizChannel = pusher.subscribe("quiz-added");
+        quizChannel.bind("quiz-added", event -> {
+            try {
+            JSONObject object = new JSONObject(event.getData());
+            JSONObject quizObject = object.getJSONObject("quiz");
+            int quizId = quizObject.getInt("id");
+            int lecturerId = quizObject.getInt("lecturer_id");
+            int quitTime = quizObject.getInt("limit_time");
+            runOnUiThread(() -> {
+            if(preferences.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[0])){
+                binding.addQuiz.setVisibility(View.GONE);
+                binding.answorQuiz.setVisibility(View.VISIBLE);
+                binding.answorQuiz.setOnClickListener(
+                    v -> {
+                        Intent intent = new Intent(ViewMessageClassroomActivity.this, QuizActivity.class);
+                        intent.putExtra(Constants.QUIZ_ID, quizId);
+                        intent.putExtra(Constants.LECTURER_ID, lecturerId);
+                        intent.putExtra(Constants.QUIT_TIME, quitTime);
+                        startActivity(intent);
+                        binding.answorQuiz.setVisibility(View.GONE);
+                        finish();
+
+                    }
+                );
+
+                   }
+            });
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+        );
+
+
         channel.bind("message", event -> {
             try {
-                JSONObject jsonObject = new JSONObject(event.getData());
-                Message message = new Message();
-                JSONObject messageObject = jsonObject.getJSONObject("message");
-                message.setContent(messageObject.getString("content"));
-                message.setSentAt(messageObject.getString("sentAt"));
-                message.setSender(messageObject.getInt("sender"));
-                message.setReceiver(messageObject.getInt("receiver"));
-                message.setClassroomId(messageObject.getInt("classroom_id"));
-                message.setImage(messageObject.getString("image"));
-                runOnUiThread(
+                    runOnUiThread(
                         () -> {
                             getMessagesByClassroomId(classroomId);
                             binding.rvMessageClassroom.scrollToPosition(messages.size() - 1);
 
                         }
                 );
-            } catch (JSONException e) {
+} catch (Exception e) {
                 e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(ViewMessageClassroomActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
             }
         });
+        liveChannel.bind("live-added", event -> {
+
+                    runOnUiThread(
+                            () ->{
+                                if(preferences.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[0])){
+                                    binding.enter.playAnimation();
+                                    binding.enter.setVisibility(View.VISIBLE);
+                                    //set image padding
+                                    binding.enter.setOnClickListener(
+                                            v -> {
+                                                Intent intent = new Intent(ViewMessageClassroomActivity.this, LiveStreamActivity.class);
+                                                intent.putExtra(Constants.CLASSROOM_ID, classroomId);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                    );
+                                }
+                            }
+                    );
+
+            }
+        );
         pusher.connect(
                 new ConnectionEventListener() {
                     @Override
@@ -456,6 +518,24 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
         InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
+    }
+    private void startLive(int classroomId){
+        Call<Data<Classroom>> call = RetrofitClientLaravelData.getInstance().getApiInterface().getLivestratedClassroom(classroomId);
+        call.enqueue(
+                new Callback<Data<Classroom>>() {
+                    @Override
+                    public void onResponse(@NonNull Call<Data<Classroom>> call, @NonNull Response<Data<Classroom>> response) {
+                        if(response.isSuccessful()){
+                            Toast.makeText(ViewMessageClassroomActivity.this, "تم بدء البث", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<Data<Classroom>> call, @NonNull Throwable t) {
+                        Toast.makeText(ViewMessageClassroomActivity.this, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
     }
 
 }

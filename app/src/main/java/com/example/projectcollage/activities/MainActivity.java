@@ -94,8 +94,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             storeToken(uid,token);
         });
 
-
-
     }
 
     private void initViewPager() {
@@ -104,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 header= LayoutInflater.from(this).inflate(R.layout.header_student_affairse, null);
                 adapter=new ViewPagerAdapter(this,false);
                 nameOfFragments= new String[]{"الصفحة الرئيسية", "الدرداشات"};
-                binding.navBar.getMenu().removeItem(R.id.quiz);
                 binding.navBar.getMenu().removeItem(R.id.study_table);
             }else {
                 header= LayoutInflater.from(this).inflate(R.layout.header, null);
@@ -145,14 +142,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
          int itemId = item.getItemId();
-         if (itemId == R.id.quiz) {
-             Intent intent = new Intent(this, QuizActivity.class);
-             ActivityOptions optionsIntent = ActivityOptions.makeClipRevealAnimation(binding.drawer,
-                     binding.drawer.getWidth() / 2, binding.drawer.getHeight() / 2, 100, 100);
-             startActivity(intent, optionsIntent.toBundle());
-             binding.drawer.closeDrawer(GravityCompat.START);
-             return true;
-         } else if (itemId == R.id.study_table) {
+         if (itemId == R.id.study_table) {
              Intent pdf = new Intent(this, ViewPDFActivity.class);
              ActivityOptions optionsPdf = ActivityOptions.makeClipRevealAnimation(binding.drawer,
                      binding.drawer.getWidth() / 2, binding.drawer.getHeight() / 2, 100, 100);

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 import com.example.projectcollage.R;
 import com.example.projectcollage.adapters.CommentsAdapter;
@@ -13,6 +14,13 @@ import com.example.projectcollage.model.Comment;
 import com.example.projectcollage.model.Data;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
+import com.pusher.client.Pusher;
+import com.pusher.client.PusherOptions;
+import com.pusher.client.channel.Channel;
+import com.pusher.client.connection.ConnectionEventListener;
+import com.pusher.client.connection.ConnectionState;
+import com.pusher.client.connection.ConnectionStateChange;
+
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +36,7 @@ public class PostCommentsActivity extends AppCompatActivity {
     SharedPreferences preferences;
     CommentsAdapter adapter;
     List<Comment> comments;
+    int postId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,9 +44,10 @@ public class PostCommentsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().setNavigationBarColor(getColor(R.color.main_bar));
         preferences=getSharedPreferences(Constants.DATA,MODE_PRIVATE);
-        int postId=getIntent().getIntExtra(Constants.POST_ID,0);
+        postId=getIntent().getIntExtra(Constants.POST_ID,0);
         getCommentsByPostId(postId);
         comments=new ArrayList<>();
+        setupPusher();
         binding.iconSend.setOnClickListener(view -> {
             Comment comment=new Comment();
             comment.setPostId(postId);
@@ -120,5 +130,29 @@ public class PostCommentsActivity extends AppCompatActivity {
 
             }
         });
+    }
+    private void setupPusher(){
+        PusherOptions options = new PusherOptions();
+        options.setCluster(Constants.PUSHER_APP_CLUSTER);
+        Pusher pusher = new Pusher(Constants.PUSHER_APP_KEY, options);
+        Channel channel = pusher.subscribe("comment-posted");
+        channel.bind("comment-posted", event -> {
+            runOnUiThread(() -> {
+                getCommentsByPostId(postId);
+            });
+        }
+        );
+        pusher.connect(new ConnectionEventListener() {
+            @Override
+            public void onConnectionStateChange(ConnectionStateChange change) {
+
+
+            }
+
+            @Override
+            public void onError(String message, String code, Exception e) {
+
+            }
+        }, ConnectionState.ALL);
     }
 }

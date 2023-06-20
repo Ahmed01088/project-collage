@@ -113,7 +113,7 @@ public class AddDataQuizAdapter extends RecyclerView.Adapter<AddDataQuizAdapter.
             }
             @Override
             public void onFailure(@NonNull Call<Data<Question>> call, @NonNull Throwable t) {
-                Toast.makeText(context, "حدث خطأ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "حدث خطأ" + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

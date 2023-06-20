@@ -9,7 +9,7 @@ public class Constants {
     public static final String TOKEN="f1rzRAsrRkewnpxmSsMVfG:APA91bHE0u7pTqUW4ZLoldrno31zmt6H8NDB3wX_Jqm1_tvDxEMs-e-tC_omWVLFmTtozcHXaQwV3GUyvg7LSH2xzetmafEyJvTL0ZuXfSOengiI7p2MRakk51wipDm7G3rq6zX4CkJq";
     public static final String SERVER_KEY="key=AAAAjfF8Wec:APA91bEWxNWtrsJ99bucIsqsA_QCpga1OFNOBoOMRwiFZpkGE1F0oLO84hZNEYxWj3KuMcjlaO6_icPysdIeIBFjpAkxNns70u8focMYTzcrnNxfPqaNdd2i3rZRJOr_eMY5hOGE_K0T";
     public static final String AGORA_APP_ID="5cc56522815f4f5794df128f72d50cae";
-    public static final String AGORA_TOKEN="007eJxTYJj66MqPZ8krZ07fojw166Phfz/HGdfV1xrMZ2G8dO3dyffsCgymycmmZqZGRhaGpmkmaabmliYpaYZGFmnmRimmBsmJqY/tG1IaAhkZjDlXMDMyQCCIz86QnJ+Tk5ieysAAAJA4Iqc=";
+    public static final String AGORA_TOKEN="007eJxTYGiRDwvUWLNmb0dQw9a/LjP0/xz3mbjK6F9OS7X3XfsL0k0KDKbJyaZmpkZGFoamaSZppuaWJilphkYWaeZGKaYGyYmp+u4TUhoCGRkuznnJwsgAgSA+O0Nyfk5OYnoqAwMA3R0hfg==";
     public static final String AGORA_CHANNEL_NAME="collage";
     public static final String CONTENT_TYPE="application/json";
     public static final String TITLE="title";
@@ -57,4 +57,6 @@ public class Constants {
     public static final String QUIZ_ID = "quiz_id";
     public static final String LECTURER_NAME = "lecturer_name";
     public static final String IS_LOGIN = "is_login";
+    public static final String LECTURER_ID = "lecturer_id";
+    public static final String QUIT_TIME = "quit_time";
 }

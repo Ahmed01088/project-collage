@@ -37,14 +37,17 @@ public class Message {
     public Message() {
     }
 
-    public Message(String content, String date, int chatId, int sender, int receiver) {
+    public Message(String content, String date, Integer chatId, int sender, int receiver) {
         this.content = content;
         this.sentAt = date;
         this.chatId = chatId;
         this.sender = sender;
         this.receiver = receiver;
 
+
+
     }
+
 
     public Bitmap getImageBitmap() {
         return imageBitmap;

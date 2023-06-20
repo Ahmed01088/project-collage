@@ -1,4 +1,5 @@
 package com.example.projectcollage.activities;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,10 +9,16 @@ import android.widget.Toast;
 import com.example.projectcollage.R;
 import com.example.projectcollage.adapters.AddDataQuizAdapter;
 import com.example.projectcollage.databinding.ActivityAddQuestionsQuizBinding;
+import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Question;
+import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+
 public class AddQuestionsQuizActivity extends AppCompatActivity {
     ActivityAddQuestionsQuizBinding binding;
     ArrayList<Question>questions;
@@ -56,10 +63,26 @@ public class AddQuestionsQuizActivity extends AppCompatActivity {
                             .show();
                 }
            }
-
+          pushQuiz(quizId);
 
         });
     }
+private void pushQuiz(int quiz_id){
+    Call<Data<List<Question>>>call= RetrofitClientLaravelData.getInstance().getApiInterface().pushQuiz(quiz_id);
+    call.enqueue(new retrofit2.Callback<Data<List<Question>>>() {
+        @Override
+        public void onResponse(@NonNull Call<Data<List<Question>>> call, retrofit2.Response<Data<List<Question>>> response) {
+            if (response.isSuccessful()){
+                    Toast.makeText(AddQuestionsQuizActivity.this, "تم ارسال الاختبار بنجاح", Toast.LENGTH_SHORT).show();
 
+            }
+        }
+
+        @Override
+        public void onFailure(@NonNull Call<Data<List<Question>>> call, @NonNull Throwable t) {
+
+        }
+    });
+}
 
 }

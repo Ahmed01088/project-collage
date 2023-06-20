@@ -78,6 +78,9 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
         //Chat Id
         chatId=getIntent().getIntExtra(Constants.CHAT_ID,0);
         getMessages(chatId);
+        binding.btnBack.setOnClickListener(v -> {
+            onBackPressed();
+        });
         //Name
         String fullname=getIntent().getStringExtra(Constants.FULL_NAME);
         int senderId=preferences.getInt(Constants.UID,0);
