@@ -1,9 +1,11 @@
 package com.example.projectcollage.activities;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.display.VirtualDisplay;
 import android.os.Build;
@@ -15,12 +17,19 @@ import android.widget.CheckBox;
 import android.widget.Toast;
 import com.example.projectcollage.R;
 import com.example.projectcollage.databinding.ActivityLiveStreemBinding;
+import com.example.projectcollage.model.Data;
+import com.example.projectcollage.model.Realtime;
+import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
+
 import io.agora.rtc2.ChannelMediaOptions;
 import io.agora.rtc2.Constants;
 import io.agora.rtc2.IRtcEngineEventHandler;
 import io.agora.rtc2.RtcEngine;
 import io.agora.rtc2.RtcEngineConfig;
 import io.agora.rtc2.video.VideoCanvas;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LiveStreamActivity extends AppCompatActivity{
     ActivityLiveStreemBinding binding;
@@ -47,6 +56,7 @@ public class LiveStreamActivity extends AppCompatActivity{
     private SurfaceView localSurfaceView;
     //SurfaceView to render Remote video in a Container.
     private SurfaceView remoteSurfaceView;
+    private SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +64,7 @@ public class LiveStreamActivity extends AppCompatActivity{
         setContentView(binding.getRoot());
         getWindow().setNavigationBarColor(getColor(R.color.main_bar));
         getWindow().setStatusBarColor(getColor(R.color.statesBar));
+        sharedPreferences=getSharedPreferences(com.example.projectcollage.utiltis.Constants.DATA,MODE_PRIVATE);
         if (!checkSelfPermission()) {
             ActivityCompat.requestPermissions(this, REQUESTED_PERMISSIONS, PERMISSION_REQ_ID);
         }
@@ -194,6 +205,10 @@ public class LiveStreamActivity extends AppCompatActivity{
         super.onDestroy();
         agoraEngine.stopPreview();
         agoraEngine.leaveChannel();
+        if (sharedPreferences.getString(com.example.projectcollage.utiltis.Constants.USER_TYPE, "").equals(com.example.projectcollage.utiltis.Constants.USER_TYPES[1])){
+            int classroomId=getIntent().getIntExtra(com.example.projectcollage.utiltis.Constants.CLASSROOM_ID,0);
+           closeLive(classroomId);
+        }
 
         // Destroy the engine in a sub-thread to avoid congestion
         new Thread(() -> {
@@ -269,5 +284,24 @@ public class LiveStreamActivity extends AppCompatActivity{
         mediaOptions.publishScreenCaptureAudio = publishScreen;
         agoraEngine.updateChannelMediaOptions(mediaOptions);
     }*/
+    private void closeLive(int classroomId){
+        Call<Data<Realtime>>call= RetrofitClientLaravelData.getInstance().getApiInterface().getFinishLive(classroomId);
+        call.enqueue(new Callback<Data<Realtime>>() {
+            @Override
+            public void onResponse(@NonNull Call<Data<Realtime>> call, @NonNull Response<Data<Realtime>> response) {
+                if (response.isSuccessful()){
+                        Toast.makeText(getApplicationContext(), "تم اغلاق البث", Toast.LENGTH_SHORT).show();
+
+                }else {
+                    Toast.makeText(getApplicationContext(), "حدث خطأ ما", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Data<Realtime>> call, @NonNull Throwable t) {
+                Toast.makeText(getApplicationContext(), "حدث خطأ ما", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 }

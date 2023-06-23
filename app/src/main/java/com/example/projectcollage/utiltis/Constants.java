@@ -1,5 +1,9 @@
 package com.example.projectcollage.utiltis;
 public class Constants {
+//public static final String BASE_URL_PATH_POSTS = "http://192.168.1.5:80/api/images/posts/";
+//    public static final String BASE_URL_PATH_USERS = "http://192.168.1.5:80/api/images/users/";
+//    public static final String BASE_URL_PATH_MESSAGES = "http://192.168.1.5:80/api/images/messages/";
+//    public static final String BASE_URL = "http://192.168.1.5:80/api/";
     public static final String BASE_URL = "http://192.168.1.31:80/api/";
     public static final String BASE_URL_PATH_POSTS = "http://192.168.1.31:80/images/posts/";
     public static final String BASE_URL_PATH_USERS = "http://192.168.1.31:80/images/users/";
@@ -59,4 +63,5 @@ public class Constants {
     public static final String IS_LOGIN = "is_login";
     public static final String LECTURER_ID = "lecturer_id";
     public static final String QUIT_TIME = "quit_time";
+    public static final String IS_LIVE = "is_live";
 }

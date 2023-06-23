@@ -91,7 +91,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String token = task.getResult();
             Log.d("TAG", "Token==== "+token);
             uid = login.getInt(Constants.UID, 0);
-            storeToken(uid,token);
+            if (login.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[0]))
+                storeToken(uid,token);
+            else if (login.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[2]))
+                storeToken(uid,token);
         });
 
     }
@@ -177,8 +180,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ImageView image=header.findViewById(R.id.student_pic);
         name.setText(String.format("%s %s", login.getString(Constants.FIRSTNAME, ""), login.getString(Constants.LASTNAME, "")));
         email.setText(String.format(" البريد الالكتروني : %s", login.getString(Constants.EMAIL, "")));
-        level.setText(String.format("المستوى : %s", login.getString(Constants.STUDENT_LEVEL, "")));
-        department.setText(String.format("القسم : %s", login.getString(Constants.STUDENT_DEPARTMENT, "")));
+        level.setText(String.format("الفرقة : %s", login.getString(Constants.STUDENT_LEVEL, "")));
+        department.setText(String.format("الشعبة : %s", login.getString(Constants.STUDENT_DEPARTMENT, "")));
         Picasso.get()
                 .load(Constants.BASE_URL_PATH_USERS+login.getString(Constants.IMAGE,""))
                 .placeholder(R.drawable.avatar)

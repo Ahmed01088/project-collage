@@ -21,6 +21,7 @@ import com.example.projectcollage.adapters.QuestionAdapter;
 import com.example.projectcollage.databinding.ActivityQuizBinding;
 import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Question;
+import com.example.projectcollage.model.Realtime;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
 
@@ -38,6 +39,7 @@ public class QuizActivity extends AppCompatActivity {
     final int count=1000;
     CountDownTimer timer;
     QuestionAdapter adapter;
+    int quizId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +63,7 @@ public class QuizActivity extends AppCompatActivity {
             AlertDialog.Builder builder=new AlertDialog.Builder(QuizActivity.this,R.style.AlertDialogStyle)
                     .setMessage("درجتك في هذا الكويز هي"+ QuestionAdapter.getScore())
                     .setPositiveButton("ارسال", (dialogInterface, i) -> {
+                        endQuiz(quizId);
                         finish();
                     })
                     .setNegativeButton("الغاء", (dialogInterface, i) -> {
@@ -68,7 +71,7 @@ public class QuizActivity extends AppCompatActivity {
         builder.setView(uid);
         builder.show();
         });
-        int quizId=getIntent().getIntExtra(Constants.QUIZ_ID,0);
+        quizId=getIntent().getIntExtra(Constants.QUIZ_ID,0);
         int lecturerId=getIntent().getIntExtra(Constants.LECTURER_ID,0);
         int time=getIntent().getIntExtra(Constants.QUIT_TIME,0);
         Toast.makeText(this, ""+quizId, Toast.LENGTH_SHORT).show();
@@ -90,6 +93,7 @@ public class QuizActivity extends AppCompatActivity {
                     binding.timer.setTextColor(Color.RED);
                     counterSeconds--;
                     if (counterSeconds ==0){
+                        endQuiz(quizId);
                         Toast.makeText(QuizActivity.this, "تم انتهاء الوقت ", Toast.LENGTH_SHORT).show();
                         AlertDialog.Builder builder=new AlertDialog.Builder(QuizActivity.this,R.style.AlertDialogStyle)
                                 .setMessage("درجتك في هذا الكويز هي "+QuestionAdapter.getScore())
@@ -135,6 +139,25 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<Data<List<Question>>> call, @NonNull Throwable t) {
                                 Toast.makeText(QuizActivity.this, "حدث خطأ ما", Toast.LENGTH_SHORT).show();
+            }
+        });
+        }
+        private void endQuiz(int quizId){
+        Call<Data<Realtime>>call=RetrofitClientLaravelData.getInstance().getApiInterface()
+                .endQuiz(quizId);
+        call.enqueue(new Callback<Data<Realtime>>() {
+            @Override
+            public void onResponse(@NonNull Call<Data<Realtime>> call, @NonNull Response<Data<Realtime>> response) {
+                if (response.isSuccessful()){
+                    if (response.body()!=null){
+                        Toast.makeText(QuizActivity.this, "تم انتهاء الكويز", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Data<Realtime>> call, @NonNull Throwable t) {
+                Toast.makeText(QuizActivity.this, "حدث خطأ ما", Toast.LENGTH_SHORT).show();
             }
         });
         }

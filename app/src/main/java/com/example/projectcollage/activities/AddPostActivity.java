@@ -185,7 +185,7 @@ public class AddPostActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Data<Post> data = response.body();
                     if (data != null) {
-                            Toast.makeText(AddPostActivity.this, "تم اضافة المنشور بنجاح 1", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddPostActivity.this, "تم اضافة المنشور ", Toast.LENGTH_SHORT).show();
                             Intent intent=new Intent(AddPostActivity.this,MainActivity.class);
                             ActivityOptions options= ActivityOptions.makeClipRevealAnimation(binding.showImage,
                                     binding.showImage.getWidth()/2,binding.showImage.getHeight()/2,300,300);
@@ -194,18 +194,16 @@ public class AddPostActivity extends AppCompatActivity {
                             finish();
                             progressBar.setVisibility(View.GONE);
                         } else {
-                            Toast.makeText(AddPostActivity.this, "حدث خطأ ما 1", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddPostActivity.this, "حدث خطأ ما", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(AddPostActivity.this, response.errorBody()+"", Toast.LENGTH_SHORT).show();
-                    binding.contentQuestionPost.setText(response.errorBody()+"");
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<Data<Post>> call, @NonNull Throwable t) {
                 Toast.makeText(AddPostActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-                binding.contentQuestionPost.setText(t.getMessage());
             }
         });
 
@@ -227,18 +225,17 @@ public class AddPostActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Data<Post> data = response.body();
                     if (data != null) {
-                            Toast.makeText(AddPostActivity.this, "تم اضافة المنشور بنجاح", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddPostActivity.this, "تم اضافة المنشور ", Toast.LENGTH_SHORT).show();
                             Intent intent=new Intent(AddPostActivity.this,MainActivity.class);
                             sendNotificationsForAllStudents(new Notification(post.getPersonName() + "تم اضافة منشور جديد بواسطة",post.getContent()));
                             startActivity(intent);
                             finish();
                         } else {
-                            Toast.makeText(AddPostActivity.this, "حدث خطأ ما 1", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddPostActivity.this, "حدث خطأ ما", Toast.LENGTH_SHORT).show();
                         }
 
                 } else {
                     Toast.makeText(AddPostActivity.this, response.errorBody()+"", Toast.LENGTH_SHORT).show();
-                    binding.contentQuestionPost.setText(response.errorBody()+"");
                 }
             }
 
@@ -247,7 +244,6 @@ public class AddPostActivity extends AppCompatActivity {
                 // handle network failure
                 // ...
                 Toast.makeText(AddPostActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-                binding.contentQuestionPost.setText(t.getMessage());
             }
         });
     }
@@ -257,10 +253,8 @@ public class AddPostActivity extends AppCompatActivity {
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(AddPostActivity.this, "تم ارسال الاشعارات بنجاح", Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(AddPostActivity.this, "حدث خطأ ما 1" +response.errorBody(), Toast.LENGTH_SHORT).show();
+                if (!response.isSuccessful()) {
+                    Toast.makeText(AddPostActivity.this, "حدث خطأ ما " + response.errorBody(), Toast.LENGTH_SHORT).show();
                 }
             }
 

@@ -40,7 +40,7 @@ public class StudentOfCourseActivity extends AppCompatActivity {
         sharedPreferences=getSharedPreferences(Constants.DATA, Context.MODE_PRIVATE);
         getWindow().setNavigationBarColor(getColor(R.color.main_bar));
         Window window=this.getWindow();
-        String lecturerName=getIntent().getStringExtra("lecturerName");
+        String lecturerName=getIntent().getStringExtra(Constants.LECTURER_NAME);
         Drawable drawable= AppCompatResources.getDrawable(this,R.drawable.background_gradient);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(getColor(android.R.color.transparent));

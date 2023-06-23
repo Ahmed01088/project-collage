@@ -32,7 +32,6 @@ public class LoginActivity extends AppCompatActivity {
     ActivityLoginBinding binding;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
-    ProgressDialog progressDialog;
 
 
     @Override
@@ -200,7 +199,6 @@ public class LoginActivity extends AppCompatActivity {
     private void loginStudent(final String nationalId, final String password) {
         binding.progress.setVisibility(View.VISIBLE);
         binding.login.setVisibility(View.INVISIBLE);
-        showAlertDialog().show();
         Call<Data<Student>> login = RetrofitClientLaravelData.getInstance().getApiInterface()
                 .loginStudent(nationalId, password);
         login.enqueue(new Callback<Data<Student>>() {
@@ -231,7 +229,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 binding.login.setVisibility(View.VISIBLE);
                 binding.progress.setVisibility(View.GONE);
-                showAlertDialog().dismiss();
             }
 
             @Override
@@ -243,7 +240,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 binding.login.setVisibility(View.VISIBLE);
                 binding.progress.setVisibility(View.GONE);
-                showAlertDialog().dismiss();
             }
         });
 
@@ -301,12 +297,12 @@ public class LoginActivity extends AppCompatActivity {
     public void showProgressDialog() {
         ProgressHelper.showDialog(this, "جاري تسجيل الدخول ...");
     }
-    private AlertDialog showAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View progressView = getLayoutInflater().inflate(R.layout.progress_diloge, null);
-        builder.setView(progressView);
-        return builder.show();
-    }
+//    private AlertDialog showAlertDialog() {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        View progressView = getLayoutInflater().inflate(R.layout.progress_diloge, null);
+//        builder.setView(progressView);
+//        return builder.show();
+//    }
 
     @Override
     protected void onDestroy() {

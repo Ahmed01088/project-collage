@@ -9,9 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import android.Manifest;
 import android.app.Activity;
@@ -38,22 +36,20 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.example.projectcollage.R;
 import com.example.projectcollage.adapters.ChatClassroomAdapter;
+import com.example.projectcollage.brodcast.ScreenOnReceiver;
 import com.example.projectcollage.databinding.ActivityViewMessageClassroomBinding;
 import com.example.projectcollage.model.Classroom;
 import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Quiz;
 import com.example.projectcollage.model.Message;
-import com.example.projectcollage.model.Student;
+import com.example.projectcollage.model.Realtime;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.pusher.client.channel.Channel;
-import com.pusher.client.channel.PusherEvent;
-import com.pusher.client.channel.SubscriptionEventListener;
 import com.pusher.client.connection.ConnectionEventListener;
 import com.pusher.client.connection.ConnectionState;
 import com.pusher.client.connection.ConnectionStateChange;
@@ -64,8 +60,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -97,6 +91,8 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+    private int lecturerId;
+    private int quitTime;
 
     private boolean checkSelfPermission() {
         return ContextCompat.checkSelfPermission(this, REQUESTED_PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED
@@ -113,7 +109,6 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
         preferences = getSharedPreferences(Constants.DATA, MODE_PRIVATE);
         binding.nameOfCourse.setText(nameOfCourse);
         uid = preferences.getInt(Constants.UID, 0);
-
         String lecturerName = getIntent().getStringExtra(Constants.LECTURER_NAME);
         classroomId = getIntent().getIntExtra(Constants.CLASSROOM_ID, 0);
         getMessagesByClassroomId(classroomId);
@@ -121,9 +116,20 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
         manager = new LinearLayoutManager(this);
         initDialog();
         setupPusher();
+        if (preferences.getString(Constants.USER_TYPE, "").equals(Constants.USER_TYPES[0]))
+        {
+            int userId = preferences.getInt(Constants.UID, 0);
+            isLive(userId);
+            startQuiz(userId);
+
+        }
+
+
+
         if (preferences.getString(Constants.USER_TYPE, "").equals(Constants.USER_TYPES[1])) {
             binding.addQuiz.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else {
             binding.addQuiz.setVisibility(View.GONE);
             binding.startVideo.setVisibility(View.GONE);
         }
@@ -184,6 +190,7 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                     .setPositiveButton("نعم", (dialogInterface, i) -> {
                         Intent intent = new Intent(ViewMessageClassroomActivity.this, LiveStreamActivity.class);
                         ActivityOptions options = ActivityOptions.makeClipRevealAnimation(binding.addQuiz, binding.addQuiz.getWidth(), binding.addQuiz.getHeight(), 300, 300);
+                        intent.putExtra(Constants.CLASSROOM_ID, classroomId);
                         startActivity(intent, options.toBundle());
                         startLive(classroomId);
 
@@ -224,11 +231,9 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                     sendMessage(message);
                 }
                 adapter = new ChatClassroomAdapter(ViewMessageClassroomActivity.this, messages);
-                messages.add(message);
                 binding.rvMessageClassroom.setLayoutManager(manager);
                 binding.rvMessageClassroom.setAdapter(adapter);
                 binding.rvMessageClassroom.scrollToPosition(messages.size() - 1);
-                adapter.notifyItemInserted(messages.size() - 1);
                 binding.rvMessageClassroom.setHasFixedSize(true);
                 binding.senderMessage.setText("");
 
@@ -298,7 +303,6 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<Data<Quiz>> call, @NonNull Response<Data<Quiz>> response) {
                 if (response.isSuccessful()) {
                     Quiz quizResponse = response.body().getData();
-                    binding.progressBar3.setVisibility(View.VISIBLE);
                     intent = new Intent(ViewMessageClassroomActivity.this, AddQuestionsQuizActivity.class);
                     ActivityOptions options = ActivityOptions.makeClipRevealAnimation(binding.addQuiz, binding.addQuiz.getWidth(), binding.addQuiz.getHeight(), 300, 300);
                     intent.putExtra("classroomId", quizResponse.getClassroomId());
@@ -309,7 +313,6 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                     intent.putExtra("numberQuestion", quizResponse.getNumberQuestions());
                     intent.putExtra("timeLimit", quizResponse.getLimitTime());
                     intent.putExtra("uid", uid);
-                    binding.progressBar3.setVisibility(View.GONE);
                     startActivity(intent, options.toBundle());
 
                 }
@@ -390,6 +393,12 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                     binding.rvMessageClassroom.scrollToPosition(messages.size() - 1);
                     binding.rvMessageClassroom.setLayoutManager(manager);
                     manager.setStackFromEnd(true);
+                    binding.loadmessage.setVisibility(View.GONE);
+                    if (messages.size() == 0) {
+                        binding.noMessage.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.noMessage.setVisibility(View.GONE);
+                    }
 
                 }
             }
@@ -424,9 +433,9 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
             try {
             JSONObject object = new JSONObject(event.getData());
             JSONObject quizObject = object.getJSONObject("quiz");
-            int quizId = quizObject.getInt("id");
-            int lecturerId = quizObject.getInt("lecturer_id");
-            int quitTime = quizObject.getInt("limit_time");
+             quizId = quizObject.getInt("id");
+             lecturerId = quizObject.getInt("lecturer_id");
+             quitTime = quizObject.getInt("limit_time");
             runOnUiThread(() -> {
             if(preferences.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[0])){
                 binding.addQuiz.setVisibility(View.GONE);
@@ -470,10 +479,18 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
             }
         });
         liveChannel.bind("live-added", event -> {
+            int classroomLive;
+            try {
+                JSONObject object = new JSONObject(event.getData());
+                JSONObject classroom = object.getJSONObject("classroom");
+               classroomLive = classroom.getInt("id");
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
 
-                    runOnUiThread(
+            runOnUiThread(
                             () ->{
-                                if(preferences.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[0])){
+                                if(preferences.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[0])&&classroomId==classroomLive){
                                     binding.enter.playAnimation();
                                     binding.enter.setVisibility(View.VISIBLE);
                                     //set image padding
@@ -481,7 +498,8 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                                             v -> {
                                                 Intent intent = new Intent(ViewMessageClassroomActivity.this, LiveStreamActivity.class);
                                                 intent.putExtra(Constants.CLASSROOM_ID, classroomId);
-                                                startActivity(intent);
+                                                ActivityOptions activityOptions = ActivityOptions.makeClipRevealAnimation(v, v.getWidth(), v.getHeight(), 50, 50);
+                                                startActivity(intent, activityOptions.toBundle());
                                                 finish();
                                             }
                                     );
@@ -537,5 +555,70 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                 }
         );
     }
+    private void isLive(int id){
+        Call<Data<Realtime>> call = RetrofitClientLaravelData.getInstance().getApiInterface().getIsLive(id);
+           call.enqueue(
+                    new Callback<Data<Realtime>>() {
+                        @Override
+                        public void onResponse(@NonNull Call<Data<Realtime>> call, @NonNull Response<Data<Realtime>> response) {
+                            if(response.isSuccessful()&&response.body().getData()!=null){
+                                if(response.body().getData().getIsLive()){
+                                    binding.enter.setVisibility(View.VISIBLE);
+                                    binding.enter.playAnimation();
+                                    binding.enter.setOnClickListener(
+                                            v -> {
+                                                Intent intent = new Intent(ViewMessageClassroomActivity.this, LiveStreamActivity.class);
+                                                intent.putExtra(Constants.CLASSROOM_ID, classroomId);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                    );
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<Data<Realtime>> call, @NonNull Throwable t) {
+                            Toast.makeText(ViewMessageClassroomActivity.this, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+            );
+    }
+    private void startQuiz(int studentId){
+        Call<Data<Realtime>> call = RetrofitClientLaravelData.getInstance().getApiInterface().getIsQuizStarted(studentId);
+        call.enqueue(
+                new Callback<Data<Realtime>>() {
+                    @Override
+                    public void onResponse(@NonNull Call<Data<Realtime>> call, @NonNull Response<Data<Realtime>> response) {
+                        if(response.isSuccessful()&&response.body().getData().getIsQuizStarted()&&response.body().getData().getQuiz()!=null){
+                            if(response.body().getData().getIsQuizStarted()){
+                                binding.addQuiz.setVisibility(View.GONE);
+                                binding.answorQuiz.setVisibility(View.VISIBLE);
+                                binding.answorQuiz.setOnClickListener(
+                                        v -> {
+                                            Intent intent = new Intent(ViewMessageClassroomActivity.this, QuizActivity.class);
+                                            intent.putExtra(Constants.LECTURER_ID, response.body().getData().getLecturerId());
+                                            intent.putExtra(Constants.QUIZ_ID, response.body().getData().getQuiz().getId());
+                                            intent.putExtra(Constants.QUIT_TIME, response.body().getData().getQuiz().getLimitTime());
+                                            ActivityOptions options = ActivityOptions.makeClipRevealAnimation(v, v.getWidth(), v.getHeight(), 50, 50);
+                                            startActivity(intent, options.toBundle());
+                                            binding.answorQuiz.setVisibility(View.GONE);
+                                            finish();
+
+                                        }
+                                );
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<Data<Realtime>> call, @NonNull Throwable t) {
+                        Toast.makeText(ViewMessageClassroomActivity.this, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+    }
+
 
 }

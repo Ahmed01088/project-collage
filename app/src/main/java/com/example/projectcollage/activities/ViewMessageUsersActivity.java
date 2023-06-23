@@ -19,6 +19,7 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.projectcollage.R;
@@ -111,6 +112,7 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
 
             }
         });
+
         setupPusher();
         binding.iconSend.setOnClickListener(v -> {
             String content=binding.senderMessage.getText().toString();
@@ -124,11 +126,9 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
                     sendMessage(message);
                 }
                 adapter=new ChatUserAdapter(ViewMessageUsersActivity.this,messages);
-                messages.add(message);
                 binding.rvMessageUsers.setLayoutManager(manager);
                 binding.rvMessageUsers.setAdapter(adapter);
                 binding.rvMessageUsers.scrollToPosition(messages.size()-1);
-                adapter.notifyItemInserted(messages.size()-1);
                 binding.rvMessageUsers.setHasFixedSize(true);
                 binding.senderMessage.setText("");
 
@@ -138,6 +138,7 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
         binding.iconSelectImage.setOnClickListener(v -> {
             Intent intent=new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
+
             someActivityResultLauncher.launch(intent);
         });
      }
@@ -254,6 +255,10 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
                      binding.rvMessageUsers.setLayoutManager(manager);
                      binding.rvMessageUsers.scrollToPosition(messages.size()-1);
                      manager.setStackFromEnd(true);
+                     binding.loadmessage.setVisibility(View.GONE);
+                     if (messages.size()==0) {
+                         binding.noMessage.setVisibility(View.VISIBLE);
+                     }
                  }
              }
 

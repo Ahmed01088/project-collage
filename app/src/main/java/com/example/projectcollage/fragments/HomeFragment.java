@@ -107,7 +107,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onConnectionStateChange(ConnectionStateChange change) {
                    getActivity().runOnUiThread(() -> {
-                       Toast.makeText(getContext(), "تم الاتصال بالسيرفر", Toast.LENGTH_SHORT).show();
+                       Toast.makeText(getContext(), "تم الاتصال ", Toast.LENGTH_SHORT).show();
                    });
             }
 
@@ -118,9 +118,4 @@ public class HomeFragment extends Fragment {
         }, ConnectionState.ALL);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getPosts();
-    }
 }
