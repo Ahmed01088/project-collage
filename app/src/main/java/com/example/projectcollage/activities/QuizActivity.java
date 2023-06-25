@@ -34,12 +34,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class QuizActivity extends AppCompatActivity {
+    private static final long TIMER_DURATION_MILLISECONDS = 60000;
     ActivityQuizBinding binding;
     int counterSeconds = 60;
     final int count=1000;
-    CountDownTimer timer;
     QuestionAdapter adapter;
+    int id;
     int quizId;
+    private CountDownTimer countDownTimer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,41 +50,38 @@ public class QuizActivity extends AppCompatActivity {
         getWindow().setNavigationBarColor(getColor(R.color.main_bar));
         getWindow().setStatusBarColor(getColor(R.color.statesBar));
         SharedPreferences settings = getSharedPreferences(Constants.DATA, MODE_PRIVATE);
+        id = settings.getInt(Constants.UID, 0);
+        quizId=getIntent().getIntExtra(Constants.QUIZ_ID,0);
+        int lecturerId=getIntent().getIntExtra(Constants.LECTURER_ID,0);
+        int time=getIntent().getIntExtra(Constants.QUIZ_TIME,0);
         binding.submit.setOnClickListener(view -> {
-            AppCompatEditText uid=new AppCompatEditText(this);
-            uid.setHint("ادخل الرقم القومي للتاكيد");
-            uid.setHintTextColor(Color.GRAY);
-            uid.setTextSize(16);
-            uid.setTextColor(Color.WHITE);
-            uid.setBackground(AppCompatResources.getDrawable(this,R.drawable.background_raduis_16));
-            uid.setSingleLine();
-            uid.setPadding(10,10,10,10);
-            uid.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
-            uid.setImeOptions(EditorInfo.IME_ACTION_DONE);
-            uid.setFilters(new InputFilter[] { new InputFilter.LengthFilter(16) });
-            AlertDialog.Builder builder=new AlertDialog.Builder(QuizActivity.this,R.style.AlertDialogStyle)
+//            AppCompatEditText uid=new AppCompatEditText(this);
+//            uid.setHint("ادخل الرقم القومي للتاكيد");
+//            uid.setHintTextColor(Color.GRAY);
+//            uid.setTextSize(16);
+//            uid.setTextColor(Color.WHITE);
+//            uid.setBackground(AppCompatResources.getDrawable(this,R.drawable.background_raduis_16));
+//            uid.setSingleLine();
+//            uid.setPadding(10,10,10,10);
+//            uid.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
+//            uid.setImeOptions(EditorInfo.IME_ACTION_DONE);
+//            uid.setFilters(new InputFilter[] { new InputFilter.LengthFilter(16) });
+       AlertDialog.Builder builder=new AlertDialog.Builder(QuizActivity.this,R.style.AlertDialogStyle)
                     .setMessage("درجتك في هذا الكويز هي"+ QuestionAdapter.getScore())
                     .setPositiveButton("ارسال", (dialogInterface, i) -> {
-                        endQuiz(quizId);
+                        endQuizForStudent(id);
                         finish();
                     })
                     .setNegativeButton("الغاء", (dialogInterface, i) -> {
                     });
-        builder.setView(uid);
         builder.show();
         });
-        quizId=getIntent().getIntExtra(Constants.QUIZ_ID,0);
-        int lecturerId=getIntent().getIntExtra(Constants.LECTURER_ID,0);
-        int time=getIntent().getIntExtra(Constants.QUIT_TIME,0);
-        Toast.makeText(this, ""+quizId, Toast.LENGTH_SHORT).show();
-        timer(time);
-        Toast.makeText(this, ""+lecturerId, Toast.LENGTH_SHORT).show();
-
+          timer(time);
         getQuestions(quizId,lecturerId);
     }
-    private void timer(long timeByMints){
-        long timeByMilliSeconds=timeByMints*60*1000;
-       timer=new CountDownTimer(timeByMilliSeconds, count) {
+    private void timer(int timeByMints){
+        long timeByMilliSeconds= (long) timeByMints *60*1000;
+       countDownTimer=new CountDownTimer(timeByMilliSeconds, count) {
             @Override
             public void onTick(long l) {
                 if (counterSeconds >30){
@@ -93,14 +92,15 @@ public class QuizActivity extends AppCompatActivity {
                     binding.timer.setTextColor(Color.RED);
                     counterSeconds--;
                     if (counterSeconds ==0){
-                        endQuiz(quizId);
+                        endQuizForStudent(id);
                         Toast.makeText(QuizActivity.this, "تم انتهاء الوقت ", Toast.LENGTH_SHORT).show();
                         AlertDialog.Builder builder=new AlertDialog.Builder(QuizActivity.this,R.style.AlertDialogStyle)
                                 .setMessage("درجتك في هذا الكويز هي "+QuestionAdapter.getScore())
-                                .setPositiveButton("ارسال", (dialogInterface, i) -> timer.cancel())
+                                .setPositiveButton("ارسال", (dialogInterface, i) -> countDownTimer.cancel())
                                 .setNegativeButton("الغاء", (dialogInterface, i) -> {
                                 });
                         builder.show();
+                        countDownTimer.cancel();
                     }
                 }
             }
@@ -110,7 +110,7 @@ public class QuizActivity extends AppCompatActivity {
 
             }
         };
-       timer.start();
+       countDownTimer.start();
 
     }
     @Override
@@ -142,23 +142,32 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
         }
-        private void endQuiz(int quizId){
-        Call<Data<Realtime>>call=RetrofitClientLaravelData.getInstance().getApiInterface()
-                .endQuiz(quizId);
-        call.enqueue(new Callback<Data<Realtime>>() {
-            @Override
-            public void onResponse(@NonNull Call<Data<Realtime>> call, @NonNull Response<Data<Realtime>> response) {
-                if (response.isSuccessful()){
-                    if (response.body()!=null){
+        private void endQuizForStudent(int studentId) {
+            Call<Data<Realtime>> call = RetrofitClientLaravelData.getInstance().getApiInterface()
+                    .endQuizForStudent(studentId);
+            call.enqueue(new Callback<Data<Realtime>>() {
+                @Override
+                public void onResponse(@NonNull Call<Data<Realtime>> call, @NonNull Response<Data<Realtime>> response) {
+                    if (!response.isSuccessful()) {
                         Toast.makeText(QuizActivity.this, "تم انتهاء الكويز", Toast.LENGTH_SHORT).show();
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<Data<Realtime>> call, @NonNull Throwable t) {
-                Toast.makeText(QuizActivity.this, "حدث خطأ ما", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(@NonNull Call<Data<Realtime>> call, @NonNull Throwable t) {
+                    Toast.makeText(QuizActivity.this, "حدث خطأ ما", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        endQuizForStudent(id);
+
     }
+
+}

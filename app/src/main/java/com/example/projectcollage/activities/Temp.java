@@ -312,4 +312,130 @@ public class Temp {
 //            if (localSurfaceView != null) localSurfaceView.setVisibility(View.GONE);
 //            isJoinChannel = false;
 //        }
+    /*    void updateMediaPublishOptions(boolean publishScreen) {
+        ChannelMediaOptions mediaOptions = new ChannelMediaOptions();
+        mediaOptions.publishCameraTrack = !publishScreen;
+        mediaOptions.publishMicrophoneTrack = !publishScreen;
+        mediaOptions.publishScreenCaptureVideo = publishScreen;
+        mediaOptions.publishScreenCaptureAudio = publishScreen;
+        agoraEngine.updateChannelMediaOptions(mediaOptions);
+    }
+    private void fetchToken(int uid, String channelName, int tokenRole) {
+        // Prepare the Url
+        String URLString = com.example.projectcollage.utiltis.Constants.BASE_URL + "/rtc/" + channelName + "/" + tokenRole + "/"
+                + "uid" + "/" + uid + "/?expiry=" + com.example.projectcollage.utiltis.Constants.TOKEN_EXPIRY;
+
+        OkHttpClient client = new OkHttpClient();
+
+        // Instantiate the RequestQueue.
+        Request request = new Request.Builder()
+                .url(URLString)
+                .header("Content-Type", "application/json; charset=UTF-8")
+                .get()
+                .build();
+        okhttp3.Call call = client.newCall(request);
+        call.enqueue(new okhttp3.Callback() {
+
+
+            @Override
+            public void onResponse(@NonNull okhttp3.Call call, @NonNull okhttp3.Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    Log.i("Token Received", token);
+                    Gson gson = new Gson();
+                    String result = response.body().toString();
+                    Map map = gson.fromJson(result, Map.class);
+                    String _token = map.get("rtcToken").toString();
+                    // Use the token to join a channel or to renew an expiring token
+                    setToken(_token);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull okhttp3.Call call, @NonNull IOException e) {
+                Log.e("Token Fetching Failed", e.getMessage());
+            }
+        });
+    }
+    void setToken(String newValue) {
+        token = newValue;
+        if (!isJoined) { // Join a channel
+            ChannelMediaOptions options = new ChannelMediaOptions();
+            // For a Video call, set the channel profile as COMMUNICATION.
+            options.channelProfile = Constants.CHANNEL_PROFILE_COMMUNICATION;
+            // Set the client role as BROADCASTER or AUDIENCE according to the scenario.
+            options.clientRoleType = Constants.CLIENT_ROLE_BROADCASTER;
+            // Start local preview.
+            agoraEngine.startPreview();
+            Toast.makeText(getApplicationContext(), "تم البدء في البث", Toast.LENGTH_SHORT).show();
+
+            // Join the channel with a token.
+            agoraEngine.joinChannel(token, channelName, uid, options);
+        } else { // Already joined, renew the token by calling renewToken
+            agoraEngine.renewToken(token);
+            showMessage("Token renewed");
+        }
+    }
+        public void shareScreen(View view) {
+        Button sharingButton = (Button) view;
+
+        if (!isSharingScreen) { // Start sharing
+            // Ensure that your Android version is Lollipop or higher.
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    fgServiceIntent = new Intent(this, MainActivity.class);
+                    startForegroundService(fgServiceIntent);
+                }
+                // Get the screen metrics
+                DisplayMetrics metrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+                // Set screen capture parameters
+                ScreenCaptureParameters screenCaptureParameters = new ScreenCaptureParameters();
+                screenCaptureParameters.captureVideo = true;
+                screenCaptureParameters.videoCaptureParameters.width = metrics.widthPixels;
+                screenCaptureParameters.videoCaptureParameters.height = metrics.heightPixels;
+                screenCaptureParameters.videoCaptureParameters.framerate = DEFAULT_SHARE_FRAME_RATE;
+                screenCaptureParameters.captureAudio = true;
+                screenCaptureParameters.audioCaptureParameters.captureSignalVolume = 50;
+
+                // Start screen sharing
+                agoraEngine.startScreenCapture(screenCaptureParameters);
+                isSharingScreen = true;
+                startScreenSharePreview();
+                // Update channel media options to publish the screen sharing video stream
+                updateMediaPublishOptions(true);
+                sharingButton.setText("Stop Screen Sharing");
+            }
+        } else { // Stop sharing
+            agoraEngine.stopScreenCapture();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (fgServiceIntent!=null) stopService(fgServiceIntent);
+            }
+            isSharingScreen = false;
+            sharingButton.setText("Start Screen Sharing");
+
+            // Restore camera and microphone publishing
+            updateMediaPublishOptions(false);
+            setupLocalVideo();
+        }
+    }
+    private void startScreenSharePreview() {
+        // Create render view by RtcEngine
+        FrameLayout container = findViewById(R.id.local_video_view_container);
+        SurfaceView surfaceView = new SurfaceView(getBaseContext());
+        if (container.getChildCount() > 0) {
+            container.removeAllViews();
+        }
+        // Add SurfaceView to the local FrameLayout
+        container.addView(surfaceView,
+                new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+
+        // Setup local video to render your local camera preview
+        agoraEngine.setupLocalVideo(new VideoCanvas(surfaceView, Constants.RENDER_MODE_FIT, 0));
+
+        agoraEngine.startPreview(Constants.VideoSourceType.VIDEO_SOURCE_SCREEN_PRIMARY);
+    }
+
+*/
 }

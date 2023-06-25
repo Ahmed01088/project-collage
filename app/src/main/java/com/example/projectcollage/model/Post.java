@@ -2,6 +2,8 @@ package com.example.projectcollage.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 import retrofit2.http.Part;
 
 public class Post {
@@ -33,11 +35,21 @@ public class Post {
         private int likes;
         @SerializedName("number_of_comments")
         private int numberOfComments;
+        @SerializedName("reaction")
+        private List<Reaction> reactions;
 
     public Post(String title, String content, String posted_at) {
         this.title = title;
         this.content = content;
         this.posted_at = posted_at;
+    }
+
+    public List<Reaction> getReactions() {
+        return reactions;
+    }
+
+    public void setReactions(List<Reaction> reactions) {
+        this.reactions = reactions;
     }
 
     public int getLikes() {

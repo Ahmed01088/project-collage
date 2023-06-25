@@ -56,6 +56,7 @@ public class AddQuestionsQuizActivity extends AppCompatActivity {
                     AlertDialog.Builder builder=new AlertDialog.Builder(this, R.style.AlertDialogStyle);
                     builder.setMessage("هل انت متأكد من انك تريد بدا الاختبار ؟")
                             .setPositiveButton("نعم", (dialogInterface, j) -> {
+                                pushQuiz(quizId);
                                 dialogInterface.dismiss();
                                 finish();
                             })
@@ -63,7 +64,6 @@ public class AddQuestionsQuizActivity extends AppCompatActivity {
                             .show();
                 }
            }
-          pushQuiz(quizId);
 
         });
     }

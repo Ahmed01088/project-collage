@@ -10,28 +10,42 @@ import android.content.pm.PackageManager;
 import android.hardware.display.VirtualDisplay;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 import com.example.projectcollage.R;
 import com.example.projectcollage.databinding.ActivityLiveStreemBinding;
 import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Realtime;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.util.Map;
 
 import io.agora.rtc2.ChannelMediaOptions;
 import io.agora.rtc2.Constants;
 import io.agora.rtc2.IRtcEngineEventHandler;
 import io.agora.rtc2.RtcEngine;
 import io.agora.rtc2.RtcEngineConfig;
+import io.agora.rtc2.ScreenCaptureParameters;
 import io.agora.rtc2.video.VideoCanvas;
+import io.agora.rtc2.video.VideoEncoderConfiguration;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LiveStreamActivity extends AppCompatActivity{
+    private static final int DEFAULT_SHARE_FRAME_RATE = 15;
     ActivityLiveStreemBinding binding;
     public static final int PERMISSION_REQ_ID=22;
     private int remoteUid = 0; // Stores the uid of the remote user
@@ -43,6 +57,8 @@ public class LiveStreamActivity extends AppCompatActivity{
     private boolean isAudioMute=true;
     private VirtualDisplay mVirtualDisplay;
     private Surface mSurfaceView;
+    private boolean isSharingScreen=false;
+    private Intent fgServiceIntent;
 
     private boolean checkSelfPermission(){
         return ContextCompat.checkSelfPermission(this, REQUESTED_PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED
@@ -57,6 +73,9 @@ public class LiveStreamActivity extends AppCompatActivity{
     //SurfaceView to render Remote video in a Container.
     private SurfaceView remoteSurfaceView;
     private SharedPreferences sharedPreferences;
+    private String token;
+    private String channelName;
+    private int tokenRole;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,9 +92,11 @@ public class LiveStreamActivity extends AppCompatActivity{
             if (isJoined) {
                 leaveChannel();
                 binding.joinButton.setText(R.string.join);
+                isJoined = false;
             } else {
                 joinChannel();
                 binding.joinButton.setText(R.string.leave);
+                isJoined = true;
             }
         });
         binding.openCloseCameraVideoLive.setOnClickListener(view -> {
@@ -124,6 +145,12 @@ public class LiveStreamActivity extends AppCompatActivity{
             config.mAppId = com.example.projectcollage.utiltis.Constants.AGORA_APP_ID;
             config.mEventHandler = mRtcEventHandler;
             agoraEngine = RtcEngine.create(config);
+            agoraEngine.setVideoEncoderConfiguration(new VideoEncoderConfiguration(
+                    VideoEncoderConfiguration.VD_640x360,
+                    VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_15,
+                    VideoEncoderConfiguration.STANDARD_BITRATE,
+                    VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT
+            ));
             // By default, the video module is disabled, call enableVideo to enable it.
             agoraEngine.enableVideo();
         } catch (Exception e) {
@@ -131,6 +158,7 @@ public class LiveStreamActivity extends AppCompatActivity{
         }
     }
     private final IRtcEngineEventHandler mRtcEventHandler = new IRtcEngineEventHandler() {
+
         @Override
         // Listen for the remote host joining the channel to get the uid of the host.
         public void onUserJoined(int uid, int elapsed) {
@@ -139,6 +167,7 @@ public class LiveStreamActivity extends AppCompatActivity{
             // Set the remote video view
             runOnUiThread(() -> setupRemoteVideo(uid));
         }
+
 
         @Override
         public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
@@ -151,6 +180,8 @@ public class LiveStreamActivity extends AppCompatActivity{
             showMessage("Remote user offline " + uid + " " + reason);
             runOnUiThread(() -> remoteSurfaceView.setVisibility(View.GONE));
         }
+        // Listen for the event that the token is about to expire
+
     };
     private void setupRemoteVideo(int uid) {
         remoteSurfaceView = new SurfaceView(getBaseContext());
@@ -217,73 +248,8 @@ public class LiveStreamActivity extends AppCompatActivity{
         }).start();
     }
     //share screen
-   /* public void shareScreen(View view) {
-        if (!isSharingScreen) { // Start sharing
-            // Ensure that your Android version is Lollipop or higher.
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    fgServiceIntent = new Intent(this, MainActivity.class);
-                    startForegroundService(fgServiceIntent);
-                }
-                // Get the screen metrics
-                DisplayMetrics metrics = new DisplayMetrics();
-                getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-                // Set screen capture parameters
-                ScreenCaptureParameters screenCaptureParameters = new ScreenCaptureParameters();
-                screenCaptureParameters.captureVideo = true;
-                screenCaptureParameters.videoCaptureParameters.width = metrics.widthPixels;
-                screenCaptureParameters.videoCaptureParameters.height = metrics.heightPixels;
-                screenCaptureParameters.videoCaptureParameters.framerate = DEFAULT_SHARE_FRAME_RATE;
-                screenCaptureParameters.captureAudio = true;
-                screenCaptureParameters.audioCaptureParameters.captureSignalVolume = 50;
 
-                // Start screen sharing
-                agoraEngine.startScreenCapture(screenCaptureParameters);
-                isSharingScreen = true;
-                startScreenSharePreview();
-                // Update channel media options to publish the screen sharing video stream
-                updateMediaPublishOptions(true);
-                binding.ShareScreenButton.setText("Stop Screen Sharing");
-            }
-        } else { // Stop sharing
-            agoraEngine.stopScreenCapture();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (fgServiceIntent!=null) stopService(fgServiceIntent);
-            }
-            isSharingScreen = false;
-            binding.ShareScreenButton.setText("Start Screen Sharing");
-
-            // Restore camera and microphone publishing
-            updateMediaPublishOptions(false);
-            setupLocalVideo();
-        }
-    }
-
-    private void startScreenSharePreview() {
-        // Create render view by RtcEngine
-        SurfaceView surfaceView = new SurfaceView(getBaseContext());
-        if (binding.localVideoViewContainer.getChildCount() > 0) {
-            binding.localVideoViewContainer.removeAllViews();
-        }
-        // Add SurfaceView to the local FrameLayout
-        binding.localVideoViewContainer.addView(surfaceView,
-                new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT));
-
-        // Setup local video to render your local camera preview
-        agoraEngine.setupLocalVideo(new VideoCanvas(surfaceView, Constants.RENDER_MODE_FIT, 0));
-
-        agoraEngine.startPreview(Constants.VideoSourceType.VIDEO_SOURCE_SCREEN_PRIMARY);
-    }
-    void updateMediaPublishOptions(boolean publishScreen) {
-        ChannelMediaOptions mediaOptions = new ChannelMediaOptions();
-        mediaOptions.publishCameraTrack = !publishScreen;
-        mediaOptions.publishMicrophoneTrack = !publishScreen;
-        mediaOptions.publishScreenCaptureVideo = publishScreen;
-        mediaOptions.publishScreenCaptureAudio = publishScreen;
-        agoraEngine.updateChannelMediaOptions(mediaOptions);
-    }*/
     private void closeLive(int classroomId){
         Call<Data<Realtime>>call= RetrofitClientLaravelData.getInstance().getApiInterface().getFinishLive(classroomId);
         call.enqueue(new Callback<Data<Realtime>>() {
@@ -303,5 +269,6 @@ public class LiveStreamActivity extends AppCompatActivity{
             }
         });
     }
+
 
 }

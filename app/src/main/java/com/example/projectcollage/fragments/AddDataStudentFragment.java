@@ -173,7 +173,7 @@ public class AddDataStudentFragment extends Fragment {
             RequestBody departmentCode=RequestBody.create(student.getDepartmentCode(), MediaType.parse("text/plain"));
             RequestBody imageBody = RequestBody.create(file,MediaType.parse("image/*"));
             MultipartBody.Part imagePart = MultipartBody.Part.createFormData("image", file.getName(), imageBody);
-       Call<Data<Student>> call = RetrofitClientLaravelData.getInstance().getApiInterface().createStudent(
+             Call<Data<Student>> call = RetrofitClientLaravelData.getInstance().getApiInterface().createStudent(
                 firstname,
                 lastname,
                 nationalId,
@@ -190,8 +190,7 @@ public class AddDataStudentFragment extends Fragment {
            @Override
            public void onResponse(@NonNull Call<Data<Student>> call, @NonNull Response<Data<Student>> response) {
                 if (response.isSuccessful()){
-                     Toast.makeText(getActivity(), "تم اضافة الطالب بنجاح 1", Toast.LENGTH_SHORT).show();
-                     Toast.makeText(getActivity(), ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                     Toast.makeText(getActivity(), "تم اضافة الطالب بنجاح", Toast.LENGTH_SHORT).show();
                         binding.firstname.setText("");
                         binding.email.setText("");
                         binding.password.setText("");
@@ -201,7 +200,7 @@ public class AddDataStudentFragment extends Fragment {
 
                 }else {
                     binding.firstname.setText(response.errorBody().toString());
-                    Toast.makeText(getActivity(), "تم اضافة الطالب بنجاح 2", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "تم اضافة الطالب بنجاح ", Toast.LENGTH_SHORT).show();
                 }
            }
 

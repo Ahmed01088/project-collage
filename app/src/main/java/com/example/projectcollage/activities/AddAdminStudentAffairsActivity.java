@@ -87,7 +87,7 @@ public class AddAdminStudentAffairsActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         String dateAdded = sdf.format(currentDate);
         boolean validateEmail = email.matches(Constants.EMAIL_PATTERN);
-        boolean validatePhone = phoneNumber.matches("^(?:\\+20|0)[17][0125][\\d]{7}$\n");
+        boolean validatePhone = phoneNumber.matches("^(?:\\+20|0)[17][0125]\\d{7}$\n");
         binding.email.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

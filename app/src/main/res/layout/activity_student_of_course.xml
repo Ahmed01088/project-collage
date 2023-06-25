@@ -44,18 +44,39 @@
         app:layout_constraintStart_toStartOf="@+id/icon_group"
         app:layout_constraintTop_toBottomOf="@+id/icon_group" />
 
-    <TextView
-        android:id="@+id/lecturerName"
+
+    <LinearLayout
+        android:id="@+id/linName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="@string/name_of_course"
-        android:textColor="#033B67"
-        android:textSize="@dimen/_14ssp"
         app:layout_constraintEnd_toEndOf="@+id/courseName"
         app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="@+id/courseName"
-        app:layout_constraintTop_toBottomOf="@+id/courseName" />
+        app:layout_constraintTop_toBottomOf="@+id/courseName" >
+
+
+        <ImageView
+            android:id="@+id/startchatlecturer"
+            android:layout_width="0dp"
+            android:padding="@dimen/_4sdp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            app:srcCompat="@android:drawable/stat_notify_chat" />
+
+
+        <TextView
+            android:id="@+id/lecturerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/name_of_course"
+            android:textColor="#033B67"
+            android:padding="@dimen/_4sdp"
+            android:textSize="@dimen/_14ssp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/level_of_course"
@@ -66,9 +87,9 @@
         android:textColor="#CCCCCC"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/lecturerName"
-        app:layout_constraintStart_toStartOf="@+id/lecturerName"
-        app:layout_constraintTop_toBottomOf="@+id/lecturerName" />
+        app:layout_constraintEnd_toEndOf="@+id/linName"
+        app:layout_constraintStart_toStartOf="@+id/linName"
+        app:layout_constraintTop_toBottomOf="@+id/linName" />
 
     <TextView
         android:id="@+id/number_of_student_in_coures"

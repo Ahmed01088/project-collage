@@ -36,7 +36,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.example.projectcollage.R;
 import com.example.projectcollage.adapters.ChatClassroomAdapter;
-import com.example.projectcollage.brodcast.ScreenOnReceiver;
 import com.example.projectcollage.databinding.ActivityViewMessageClassroomBinding;
 import com.example.projectcollage.model.Classroom;
 import com.example.projectcollage.model.Data;
@@ -70,7 +69,6 @@ import retrofit2.Response;
 public class ViewMessageClassroomActivity extends AppCompatActivity {
     ActivityViewMessageClassroomBinding binding;
     ArrayList<Message> messages;
-    public static final String NAME_OF_COURSE = "courseName";
     Bitmap bitmap;
     Uri uriImage;
     LinearLayoutManager manager;
@@ -82,7 +80,6 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
     private int departmentId;
     private Call<Data<Quiz>> call;
     SharedPreferences preferences;
-    SharedPreferences.Editor editor;
     private Intent intent;
     int classroomId;
     private EditText title, description, numberQuestion, quizTime;
@@ -105,22 +102,23 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityViewMessageClassroomBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        String nameOfCourse = getIntent().getStringExtra("courseName");
+        String nameOfCourse = getIntent().getStringExtra(Constants.COURSE_NAME);
         preferences = getSharedPreferences(Constants.DATA, MODE_PRIVATE);
         binding.nameOfCourse.setText(nameOfCourse);
         uid = preferences.getInt(Constants.UID, 0);
         String lecturerName = getIntent().getStringExtra(Constants.LECTURER_NAME);
+        int lecturerId = getIntent().getIntExtra(Constants.LECTURER_ID, 0);
         classroomId = getIntent().getIntExtra(Constants.CLASSROOM_ID, 0);
         getMessagesByClassroomId(classroomId);
         departmentId = preferences.getInt(Constants.DEPARTMENT_ID, 0);
         manager = new LinearLayoutManager(this);
         initDialog();
         setupPusher();
+        int userId = preferences.getInt(Constants.UID, 0);
         if (preferences.getString(Constants.USER_TYPE, "").equals(Constants.USER_TYPES[0]))
         {
-            int userId = preferences.getInt(Constants.UID, 0);
-            isLive(userId);
             startQuiz(userId);
+            isLive(userId);
 
         }
 
@@ -138,17 +136,19 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
             ActivityOptions options = ActivityOptions.makeClipRevealAnimation(view, view.getWidth(), view.getHeight(), 50, 50);
             Intent intent = new Intent(this, StudentOfCourseActivity.class);
             intent.putExtra(Constants.LECTURER_NAME, lecturerName);
-            intent.putExtra(NAME_OF_COURSE, nameOfCourse);
+            intent.putExtra(Constants.COURSE_NAME, nameOfCourse);
+            intent.putExtra(Constants.LECTURER_ID, lecturerId);
             startActivity(intent, options.toBundle());
         });
         binding.addQuiz.setOnClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(ViewMessageClassroomActivity.this, R.style.AlertDialogStyle)
                     .setPositiveButton("ارسال", (dialogInterface, i) -> {
+                        binding.loadmessage.setVisibility(View.VISIBLE);
                         String titleQuiz = title.getText().toString();
                         String descriptionQuiz = description.getText().toString();
                         int numberQuestionQuiz = Integer.parseInt(numberQuestion.getText().toString());
                         int quizTimeQuiz = Integer.parseInt(quizTime.getText().toString());
-                        int courseId = getIntent().getIntExtra("courseId", 0);
+                        int courseId = getIntent().getIntExtra(Constants.QUIZ_ID, 0);
                         Quiz quiz = new Quiz(
                                 titleQuiz,
                                 descriptionQuiz,
@@ -162,7 +162,6 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                         description.setText("");
                         numberQuestion.setText("");
                         quizTime.setText("");
-
                         dialogInterface.dismiss();
                     })
                     .setNegativeButton("الغاء", (dialogInterface, i) -> {
@@ -177,16 +176,17 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
 
         });
         binding.startVideo.setOnClickListener(view -> {
-            AppCompatEditText videoId = new AppCompatEditText(this);
-            videoId.setHint("ادخل رابط الفيديو");
-            videoId.setHintTextColor(Color.GRAY);
-            videoId.setTextSize(16);
-            videoId.setTextColor(Color.WHITE);
-            videoId.setBackground(AppCompatResources.getDrawable(this, R.drawable.background_raduis_16));
-            videoId.setSingleLine();
-            videoId.setPadding(10, 10, 10, 10);
-            videoId.setImeOptions(EditorInfo.IME_ACTION_DONE);
+//            AppCompatEditText videoId = new AppCompatEditText(this);
+//            videoId.setHint("ادخل رابط الفيديو");
+//            videoId.setHintTextColor(Color.GRAY);
+//            videoId.setTextSize(16);
+//            videoId.setTextColor(Color.WHITE);
+//            videoId.setBackground(AppCompatResources.getDrawable(this, R.drawable.background_raduis_16));
+//            videoId.setSingleLine();
+//            videoId.setPadding(10, 10, 10, 10);
+//            videoId.setImeOptions(EditorInfo.IME_ACTION_DONE);
             AlertDialog.Builder builder = new AlertDialog.Builder(ViewMessageClassroomActivity.this, R.style.AlertDialogStyle)
+                    .setTitle(" هل تريد بداء فيديو لايف ؟")
                     .setPositiveButton("نعم", (dialogInterface, i) -> {
                         Intent intent = new Intent(ViewMessageClassroomActivity.this, LiveStreamActivity.class);
                         ActivityOptions options = ActivityOptions.makeClipRevealAnimation(binding.addQuiz, binding.addQuiz.getWidth(), binding.addQuiz.getHeight(), 300, 300);
@@ -197,9 +197,7 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                     })
                     .setNegativeButton("الغاء", (dialogInterface, i) -> {
 
-                    })
-                    .setMessage("هل تريد بداء فيديو لايف ؟");
-            builder.setView(videoId);
+                    });
             builder.show();
         });
         binding.senderMessage.setImeOptions(EditorInfo.IME_ACTION_SEND);
@@ -314,6 +312,7 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                     intent.putExtra("timeLimit", quizResponse.getLimitTime());
                     intent.putExtra("uid", uid);
                     startActivity(intent, options.toBundle());
+                    binding.loadmessage.setVisibility(View.GONE);
 
                 }
             }
@@ -440,15 +439,15 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
             if(preferences.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[0])){
                 binding.addQuiz.setVisibility(View.GONE);
                 binding.answorQuiz.setVisibility(View.VISIBLE);
+                Intent intent = new Intent(ViewMessageClassroomActivity.this, QuizActivity.class);
+                intent.putExtra(Constants.QUIZ_ID, quizId);
+                intent.putExtra(Constants.LECTURER_ID, lecturerId);
+                intent.putExtra(Constants.QUIZ_TIME, quitTime);
+
                 binding.answorQuiz.setOnClickListener(
                     v -> {
-                        Intent intent = new Intent(ViewMessageClassroomActivity.this, QuizActivity.class);
-                        intent.putExtra(Constants.QUIZ_ID, quizId);
-                        intent.putExtra(Constants.LECTURER_ID, lecturerId);
-                        intent.putExtra(Constants.QUIT_TIME, quitTime);
                         startActivity(intent);
                         binding.answorQuiz.setVisibility(View.GONE);
-                        finish();
 
                     }
                 );
@@ -500,7 +499,6 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                                                 intent.putExtra(Constants.CLASSROOM_ID, classroomId);
                                                 ActivityOptions activityOptions = ActivityOptions.makeClipRevealAnimation(v, v.getWidth(), v.getHeight(), 50, 50);
                                                 startActivity(intent, activityOptions.toBundle());
-                                                finish();
                                             }
                                     );
                                 }
@@ -562,7 +560,7 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(@NonNull Call<Data<Realtime>> call, @NonNull Response<Data<Realtime>> response) {
                             if(response.isSuccessful()&&response.body().getData()!=null){
-                                if(response.body().getData().getIsLive()){
+                                if(response.body().getData().getIsLive()&&response.body().getData().getClassroomId()==classroomId){
                                     binding.enter.setVisibility(View.VISIBLE);
                                     binding.enter.playAnimation();
                                     binding.enter.setOnClickListener(
@@ -590,20 +588,21 @@ public class ViewMessageClassroomActivity extends AppCompatActivity {
                 new Callback<Data<Realtime>>() {
                     @Override
                     public void onResponse(@NonNull Call<Data<Realtime>> call, @NonNull Response<Data<Realtime>> response) {
-                        if(response.isSuccessful()&&response.body().getData().getIsQuizStarted()&&response.body().getData().getQuiz()!=null){
-                            if(response.body().getData().getIsQuizStarted()){
-                                binding.addQuiz.setVisibility(View.GONE);
+                        if(response.isSuccessful()&&response.body().getData().getIsQuizStarted()){
+                            if(response.body().getData().getIsQuizStarted()&&response.body().getData().getClassroomId()==classroomId){
                                 binding.answorQuiz.setVisibility(View.VISIBLE);
                                 binding.answorQuiz.setOnClickListener(
                                         v -> {
                                             Intent intent = new Intent(ViewMessageClassroomActivity.this, QuizActivity.class);
                                             intent.putExtra(Constants.LECTURER_ID, response.body().getData().getLecturerId());
-                                            intent.putExtra(Constants.QUIZ_ID, response.body().getData().getQuiz().getId());
-                                            intent.putExtra(Constants.QUIT_TIME, response.body().getData().getQuiz().getLimitTime());
+                                            intent.putExtra(Constants.QUIZ_ID, response.body().getData().getQuizId());
+                                            intent.putExtra(Constants.QUIZ_TIME, response.body().getData().getQuiz().getLimitTime());
+                                            Toast.makeText(ViewMessageClassroomActivity.this, ""+response.body().getData().getQuiz().getLimitTime(), Toast.LENGTH_SHORT).show();
                                             ActivityOptions options = ActivityOptions.makeClipRevealAnimation(v, v.getWidth(), v.getHeight(), 50, 50);
                                             startActivity(intent, options.toBundle());
                                             binding.answorQuiz.setVisibility(View.GONE);
-                                            finish();
+
+                                            Toast.makeText(ViewMessageClassroomActivity.this, "تم بدء الاختبار", Toast.LENGTH_SHORT).show();
 
                                         }
                                 );

@@ -24,6 +24,7 @@ import com.example.projectcollage.R;
 import com.example.projectcollage.adapters.ViewPagerAdapter;
 import com.example.projectcollage.databinding.ActivityMainBinding;
 import com.example.projectcollage.model.Data;
+import com.example.projectcollage.model.Lecturer;
 import com.example.projectcollage.model.Student;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getWindow().setNavigationBarColor(getColor(R.color.main_bar));
         Window window=this.getWindow();
         subscribeToTopic();
+
         login=getSharedPreferences(Constants.DATA,MODE_PRIVATE);
         USER_TYPE=login.getString(Constants.USER_TYPE,"");
         Drawable drawable= AppCompatResources.getDrawable(this,R.drawable.background_gradient);
@@ -65,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         window.setBackgroundDrawable(drawable);
         setSupportActionBar(binding.toolbar);
                 initViewPager();
-        setHeader();
         binding.navBar.setNavigationItemSelectedListener(this);
         binding.toolbar.setNavigationOnClickListener(view -> binding.drawer.openDrawer(GravityCompat.START));
         binding.toolbar.setOnMenuItemClickListener(item -> {
@@ -92,9 +93,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.d("TAG", "Token==== "+token);
             uid = login.getInt(Constants.UID, 0);
             if (login.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[0]))
-                storeToken(uid,token);
-            else if (login.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[2]))
-                storeToken(uid,token);
+            {storeToken(uid,token);
+                setHeaderStudent();
+            }
+
+            else if (login.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[1]))
+            { storeLecturerTokenFcm(uid,token);
+                setHeaderLecturer();
+
+            }else if (login.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[2]))
+            { storeToken(uid,token);
+                setHeaderStudentAffairs();
+            }
         });
 
     }
@@ -171,17 +181,57 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
          }
         return false;
     }
-    private void setHeader(){
+    private void setHeaderStudent(){
         View header=binding.navBar.getHeaderView(0);
         TextView name=header.findViewById(R.id.student_name);
         TextView email=header.findViewById(R.id.student_email);
         TextView level=header.findViewById(R.id.student_grade);
+        TextView state=header.findViewById(R.id.student_state);
         TextView department=header.findViewById(R.id.student_department);
         ImageView image=header.findViewById(R.id.student_pic);
         name.setText(String.format("%s %s", login.getString(Constants.FIRSTNAME, ""), login.getString(Constants.LASTNAME, "")));
         email.setText(String.format(" البريد الالكتروني : %s", login.getString(Constants.EMAIL, "")));
         level.setText(String.format("الفرقة : %s", login.getString(Constants.STUDENT_LEVEL, "")));
         department.setText(String.format("الشعبة : %s", login.getString(Constants.STUDENT_DEPARTMENT, "")));
+        state.setText(String.format("الحالة : %s", login.getString(Constants.STUDENT_STAT, "")));
+        Picasso.get()
+                .load(Constants.BASE_URL_PATH_USERS+login.getString(Constants.IMAGE,""))
+                .placeholder(R.drawable.avatar)
+                .error(R.drawable.avatar)
+                .into(image);
+    }
+    private void setHeaderLecturer(){
+        View header=binding.navBar.getHeaderView(0);
+        TextView name=header.findViewById(R.id.student_name);
+        TextView email=header.findViewById(R.id.student_email);
+        TextView department=header.findViewById(R.id.student_department);
+        ImageView image=header.findViewById(R.id.student_pic);
+        TextView state=header.findViewById(R.id.student_state);
+        TextView grade=header.findViewById(R.id.student_grade);
+        state.setVisibility(View.GONE);
+        name.setText("الدكتور : "+login.getString(Constants.FULL_NAME, ""));
+        email.setText(String.format(" البريد الالكتروني : %s", login.getString(Constants.EMAIL, "")));
+        department.setText(String.format("رقم الهاتف : %s", login.getString(Constants.PHONE, "")));
+        grade.setText(String.format("الرقم القومي : %s", login.getString(Constants.NATIONAL_ID, "")));
+        Picasso.get()
+                .load(Constants.BASE_URL_PATH_USERS+login.getString(Constants.IMAGE,""))
+                .placeholder(R.drawable.avatar)
+                .error(R.drawable.avatar)
+                .into(image);
+    }
+    private void  setHeaderStudentAffairs(){
+        View header=binding.navBar.getHeaderView(0);
+        TextView name=header.findViewById(R.id.student_name);
+        TextView email=header.findViewById(R.id.student_email);
+        TextView department=header.findViewById(R.id.student_department);
+        ImageView image=header.findViewById(R.id.student_pic);
+        TextView state=header.findViewById(R.id.student_state);
+        TextView grade=header.findViewById(R.id.student_grade);
+        state.setVisibility(View.GONE);
+        name.setText(String.format("شئون الطلاب : %s", login.getString(Constants.FULL_NAME, "")));
+        email.setText(String.format(" البريد الالكتروني : %s", login.getString(Constants.EMAIL, "")));
+        department.setText(String.format("رقم الهاتف : %s", login.getString(Constants.PHONE, "")));
+        grade.setText(String.format("الرقم القومي : %s", login.getString(Constants.NATIONAL_ID, "")));
         Picasso.get()
                 .load(Constants.BASE_URL_PATH_USERS+login.getString(Constants.IMAGE,""))
                 .placeholder(R.drawable.avatar)
@@ -208,6 +258,23 @@ private void subscribeToTopic(){
             }
             @Override
             public void onFailure(@NonNull Call<Data<Student>> call, @NonNull Throwable t) {
+                Toast.makeText(MainActivity.this, "Token stored failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+    private void storeLecturerTokenFcm(int lecturerId, String token) {
+        RequestBody body = RequestBody.create(token, MediaType.parse("text/plain"));
+        Call<Data<Lecturer>> call = RetrofitClientLaravelData.getInstance().getApiInterface().updateFcmTokenLecturer(lecturerId,body);
+        call.enqueue(new Callback<Data<Lecturer>>() {
+            @Override
+            public void onResponse(@NonNull Call<Data<Lecturer>> call, @NonNull Response<Data<Lecturer>> response) {
+                if (!response.isSuccessful()){
+                    Toast.makeText(MainActivity.this, "Token stored failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<Data<Lecturer>> call, @NonNull Throwable t) {
                 Toast.makeText(MainActivity.this, "Token stored failed", Toast.LENGTH_SHORT).show();
             }
         });

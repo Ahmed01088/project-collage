@@ -118,4 +118,9 @@ public class HomeFragment extends Fragment {
         }, ConnectionState.ALL);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getPosts();
+    }
 }

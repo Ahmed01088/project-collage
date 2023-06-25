@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +33,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Notification notification=notifications.get(position);
+        holder.tvTitle.setText(notification.getTitle());
+        holder.tvBody.setText(notification.getBody());
+        holder.tvDate.setText(notification.getDate());
 
     }
 
@@ -41,8 +46,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
+        TextView tvTitle,tvBody,tvDate;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            tvDate=itemView.findViewById(R.id.notification_time);
+            tvTitle=itemView.findViewById(R.id.title);
+            tvBody=itemView.findViewById(R.id.body);
         }
     }
 }

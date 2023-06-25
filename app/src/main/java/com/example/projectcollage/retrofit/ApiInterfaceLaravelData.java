@@ -14,10 +14,10 @@ import com.example.projectcollage.model.Post;
 import com.example.projectcollage.model.Question;
 import com.example.projectcollage.model.Quiz;
 import com.example.projectcollage.model.Rating;
+import com.example.projectcollage.model.Reaction;
 import com.example.projectcollage.model.Realtime;
 import com.example.projectcollage.model.Student;
 import com.example.projectcollage.model.StudentAffairs;
-import com.example.projectcollage.model.User;
 
 import java.util.List;
 
@@ -88,6 +88,9 @@ public interface ApiInterfaceLaravelData {
     //=================================================================
     @POST("lecturer/add")
     Call<Data<Lecturer>> addLecturer(@Body Lecturer lecturer);
+    @Multipart
+    @POST("lecturer/{lecturer_id}/update-fcm-token")
+    Call<Data<Lecturer>> updateFcmTokenLecturer(@Path("lecturer_id") int student_id, @Part("fcm_token") RequestBody fcm_token);
 
     @Multipart
     @POST("lecturer/add")
@@ -271,13 +274,12 @@ public interface ApiInterfaceLaravelData {
     Call<Data<List<Post>>> getAllPosts();
 
 
-    @Multipart
-    @POST("posts/{id}/react")
-    Call<Data<Post>> addRectOnPost(@Path("id") int id, @Part("likes") RequestBody react);
+    @POST("posts/{post_id}/react")
+    Call<Data<Post>> reactToPost(@Path("post_id") int post_id, @Body Reaction reaction);
+
 
     @Multipart
     @PUT("user/photo")
-    Call<User> updateUser(@Part("photo") RequestBody photo, @Part("description") RequestBody description);
 
     @DELETE("posts/deletebystudentid/{id}/{student_id}")
     Call<Data<Post>> deletePostByStudentId(@Path("id") int id, @Path("student_id") int student_id);
@@ -380,4 +382,12 @@ public interface ApiInterfaceLaravelData {
 
     @GET("realtime/end-quiz/{quiz_id}")
     Call<Data<Realtime>> endQuiz(@Path("quiz_id") int quiz_id);
+    @GET("realtime/end-quiz-for-student/{student_id}")
+    Call<Data<Realtime>> endQuizForStudent(@Path("student_id") int student_id);
+
+
+    @GET("notification/getNotificationByStudentId/{student_id}")
+    Call<Data<List<Notification>>> getNotificationByStudentId(@Path("student_id") int student_id);
+    @GET("notification/getNotificationByLecturerId/{lecturer_id}")
+    Call<Data<List<Notification>>> getNotificationByLecturerId(@Path("lecturer_id") int lecturer_id);
 }

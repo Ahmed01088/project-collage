@@ -73,7 +73,6 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
             }
 
         });
-        holder.itemView.setTag(this);
 
     }
 

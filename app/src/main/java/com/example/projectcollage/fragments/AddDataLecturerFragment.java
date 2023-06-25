@@ -153,7 +153,7 @@ public class AddDataLecturerFragment extends Fragment {
         call.enqueue(new Callback<Data<Classroom>>() {
             @Override
             public void onResponse(@NonNull Call<Data<Classroom>> call, @NonNull Response<Data<Classroom>> response) {
-                if(response.isSuccessful()){
+                if(!response.isSuccessful()){
                     Toast.makeText(getActivity(), ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -171,7 +171,7 @@ public class AddDataLecturerFragment extends Fragment {
         call.enqueue(new Callback<Data<Chat>>() {
             @Override
             public void onResponse(@NonNull Call<Data<Chat>> call, @NonNull Response<Data<Chat>> response) {
-                if(response.isSuccessful()){
+                if(!response.isSuccessful()){
                     Toast.makeText(getActivity(), ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }

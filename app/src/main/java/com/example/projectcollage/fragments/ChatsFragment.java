@@ -12,17 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
-import com.example.projectcollage.adapters.ChatUserAdapter;
 import com.example.projectcollage.adapters.UserAdapter;
-import com.example.projectcollage.database.Database;
 import com.example.projectcollage.databinding.FragmentChatsBinding;
 import com.example.projectcollage.model.Chat;
 import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Lecturer;
 import com.example.projectcollage.model.Student;
 import com.example.projectcollage.model.StudentAffairs;
-import com.example.projectcollage.model.User;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
 

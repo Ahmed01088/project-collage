@@ -100,6 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putString(Constants.FIRSTNAME, response.body().getData().getFirstName());
                                 editor.putString(Constants.LASTNAME, response.body().getData().getLastName());
                                 editor.putString(Constants.PHONE, response.body().getData().getPhoneNumber());
+                                editor.putString(Constants.FULL_NAME, response.body().getData().getFirstName() + " " + response.body().getData().getLastName());
                                 editor.putString(Constants.EMAIL, response.body().getData().getEmail());
                                 editor.putInt(Constants.UID, response.body().getData().getSaid());
                                 editor.putString(Constants.IMAGE, response.body().getData().getImage());
@@ -116,6 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putString(Constants.LASTNAME, response.body().getData().getLastName());
                                 editor.putString(Constants.EMAIL, response.body().getData().getEmail());
                                 editor.putInt(Constants.UID, response.body().getData().getSaid());
+                                editor.putString(Constants.FULL_NAME, response.body().getData().getFirstName() + " " + response.body().getData().getLastName());
                                 editor.putString(Constants.PHONE, response.body().getData().getPhoneNumber());
                                 editor.putString(Constants.STUDENT_AFFAIRS, "User");
                                 editor.putString(Constants.STUDENT_DEPARTMENT,Constants.STUDENT_AFFAIRS);
@@ -167,6 +169,7 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString(Constants.FIRSTNAME, response.body().getData().getFirstName());
                     editor.putString(Constants.LASTNAME, response.body().getData().getLastName());
                     editor.putString(Constants.PHONE, response.body().getData().getPhoneNumber());
+                    editor.putString(Constants.FULL_NAME, response.body().getData().getFirstName() + " " + response.body().getData().getLastName());
                     editor.putString(Constants.EMAIL, response.body().getData().getEmail());
                     editor.putString(Constants.USER_TYPE, Constants.USER_TYPES[3]);
                     editor.putInt(Constants.UID, response.body().getData().getAid());
@@ -197,6 +200,9 @@ public class LoginActivity extends AppCompatActivity {
 
     }
     private void loginStudent(final String nationalId, final String password) {
+
+
+
         binding.progress.setVisibility(View.VISIBLE);
         binding.login.setVisibility(View.INVISIBLE);
         Call<Data<Student>> login = RetrofitClientLaravelData.getInstance().getApiInterface()
@@ -209,6 +215,7 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString(Constants.NATIONAL_ID, response.body().getData().getNationalId());
                     editor.putString(Constants.FIRSTNAME, response.body().getData().getfName());
                     editor.putString(Constants.LASTNAME, response.body().getData().getlName());
+                    editor.putString(Constants.FULL_NAME, response.body().getData().getfName() + " " + response.body().getData().getlName());
                     editor.putString(Constants.EMAIL, response.body().getData().getEmail());
                     editor.putInt(Constants.UID, response.body().getData().getUid());
                     editor.putString(Constants.PHONE, response.body().getData().getPhoneNumber());
@@ -257,13 +264,15 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString(Constants.NATIONAL_ID, response.body().getData().getNationalId());
                     editor.putString(Constants.FIRSTNAME, response.body().getData().getfName());
                     editor.putString(Constants.LASTNAME, response.body().getData().getlName());
+                    editor.putString(Constants.FULL_NAME, response.body().getData().getfName() + " " + response.body().getData().getlName());
                     editor.putString(Constants.EMAIL, response.body().getData().getEmail());
+
                     editor.putString(Constants.PHONE, response.body().getData().getPhoneNumber());
                     editor.putInt(Constants.UID, response.body().getData().getLid());
                     editor.putInt(Constants.DEPARTMENT_ID, response.body().getData().getDepartmentId());
                     editor.putString(Constants.IMAGE, response.body().getData().getImage());
-                    editor.putString(Constants.STUDENT_LEVEL, response.body().getData().getDepartmentLevel());
-                    editor.putString(Constants.STUDENT_DEPARTMENT, response.body().getData().getDepartmentName());
+                    editor.putString(Constants.DEPARTMENT_LEVEL, response.body().getData().getDepartmentLevel());
+                    editor.putString(Constants.LECTURER_DEPARTMENT, response.body().getData().getDepartmentName());
                     editor.putString(Constants.USER_TYPE, Constants.USER_TYPES[1]);
                     editor.apply();
                     ActivityOptions options = ActivityOptions.makeClipRevealAnimation(binding.login, binding.login.getWidth() / 2,

@@ -8,11 +8,13 @@ public class Realtime {
     @SerializedName("lecturer_id")
     private Integer lecturerId;
     @SerializedName("is_online")
-    private String isOnline;
+    private Integer isOnline;
     @SerializedName("is_quiz_started")
-    private String isQuizStarted;
+    private Integer isQuizStarted;
     @SerializedName("is_live")
-    private String isLive;
+    private Integer isLive;
+    @SerializedName("classroom_id")
+    private Integer classroomId;
     @SerializedName("quiz")
     private Quiz quiz;
     @SerializedName("quiz_id")
@@ -50,33 +52,35 @@ public class Realtime {
         this.lecturerId = lecturerId;
     }
 
-    public String getIsOnline() {
+    public Integer getIsOnline() {
         return isOnline;
     }
 
-    public void setIsOnline(String isOnline) {
+    public void setIsOnline(Integer isOnline) {
         this.isOnline = isOnline;
     }
 
     public boolean getIsQuizStarted() {
-        if (isQuizStarted == null) {
-            return false;
-        }
-        return isQuizStarted.equals("1");
+        return isQuizStarted != 0;
     }
 
-    public void setIsQuizStarted(String isQuizStarted) {
+    public void setIsQuizStarted(Integer isQuizStarted) {
         this.isQuizStarted = isQuizStarted;
     }
 
     public boolean getIsLive() {
-        if (isLive == null) {
-            return false;
-        }
-        return isLive.equals("1");
+        return isLive != 0;
     }
 
-    public void setIsLive(String isLive) {
+    public Integer getClassroomId() {
+        return classroomId;
+    }
+
+    public void setClassroomId(Integer classroomId) {
+        this.classroomId = classroomId;
+    }
+
+    public void setIsLive(Integer isLive) {
         this.isLive = isLive;
     }
 

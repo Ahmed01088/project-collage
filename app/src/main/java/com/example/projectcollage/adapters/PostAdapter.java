@@ -1,5 +1,6 @@
 package com.example.projectcollage.adapters;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -25,6 +26,7 @@ import com.example.projectcollage.activities.PostCommentsActivity;
 import com.example.projectcollage.activities.ShowImageActivity;
 import com.example.projectcollage.model.Data;
 import com.example.projectcollage.model.Post;
+import com.example.projectcollage.model.Reaction;
 import com.example.projectcollage.retrofit.RetrofitClientLaravelData;
 import com.example.projectcollage.utiltis.Constants;
 import com.pusher.client.Pusher;
@@ -51,82 +53,118 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private final ArrayList<Post> posts;
     SharedPreferences sharedPreferences;
     int counterOfReacts;
+
     public PostAdapter(Context context, ArrayList<Post> posts) {
         this.context = context;
         this.posts = posts;
-        sharedPreferences=context.getSharedPreferences(Constants.DATA,Context.MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(Constants.DATA, Context.MODE_PRIVATE);
         setupPusher();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(context).inflate(R.layout.item_post,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_post, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        final boolean[] isLiked = {false};
         if (posts.get(position).getLecturerId() != null) {
             holder.ic_verified_account.setVisibility(View.VISIBLE);
             holder.levelPost.setVisibility(View.GONE);
             holder.name.setText(String.format(" الدكتور %s", posts.get(position).getPersonName()));
-        } else if (posts.get(position).getStudentAffairsId() != null){
+        } else if (posts.get(position).getStudentAffairsId() != null) {
             holder.ic_verified_account.setVisibility(View.VISIBLE);
             holder.levelPost.setVisibility(View.GONE);
             holder.name.setText(String.format("شئوان طلاب %s", posts.get(position).getPersonName()));
-        }
-        else {
+        } else {
             holder.name.setText(String.format("الطالب %s", posts.get(position).getPersonName()));
             holder.ic_verified_account.setVisibility(View.GONE);
         }
-        holder.counterReact.setText(String.format(Locale.ENGLISH,"%d مشاهدة ", posts.get(position).getLikes()));
+        holder.counterReact.setText(String.format(Locale.ENGLISH, "%d مشاهدة ", posts.get(position).getLikes()));
         holder.number_of_comments.setText(String.format("%d تعليق", posts.get(position).getNumberOfComments()));
-       if (posts.get(position).getPersonImage()!=null){
-           Picasso.get()
-                   .load(Constants.BASE_URL_PATH_USERS+posts.get(position).getPersonImage())
-                   .placeholder(R.drawable.avatar)
-                   .error(R.drawable.ic_image)
-                   .into(holder.profilePic);
-       }else {
-           holder.profilePic.setImageResource(R.drawable.avatar);
-       }
+        if (posts.get(position).getPersonImage() != null) {
+            Picasso.get()
+                    .load(Constants.BASE_URL_PATH_USERS + posts.get(position).getPersonImage())
+                    .placeholder(R.drawable.avatar)
+                    .error(R.drawable.ic_image)
+                    .into(holder.profilePic);
+        } else {
+            holder.profilePic.setImageResource(R.drawable.avatar);
+        }
         holder.time.setText(posts.get(position).getPosted_at());
-        if(posts.get(position).getImage()!=null) {
-             Picasso.get()
-                    .load(Constants.BASE_URL_PATH_POSTS+posts.get(position).getImage())
+        if (posts.get(position).getImage() != null) {
+            Picasso.get()
+                    .load(Constants.BASE_URL_PATH_POSTS + posts.get(position).getImage())
                     .placeholder(R.drawable.ic_image)
                     .error(R.drawable.ic_image)
                     .into(holder.post_image);
-        }else {
+        } else {
             holder.post_image.setVisibility(View.GONE);
         }
+        for (Reaction reaction:posts.get(position).getReactions()){
+            if(reaction!=null){
+                if (sharedPreferences.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[0])&&reaction.getStudentId()!=null){
+                    if (reaction.getStudentId().equals(sharedPreferences.getInt(Constants.UID,0))){
+                        holder.react.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor("#FF0000")));
+                        holder.react.setTextColor(Color.parseColor("#FF0000"));
+                        isLiked[0] =true;
+                    }else {
+                        holder.react.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
+                        holder.react.setTextColor(Color.parseColor("#FFFFFF"));
+                        isLiked[0] =false;
+                    }
+                }else if (sharedPreferences.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[1])&&reaction.getLecturerId()!=null){
+                    if (reaction.getLecturerId().equals(sharedPreferences.getInt(Constants.UID,0))){
+                        holder.react.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor("#FF0000")));
+                        holder.react.setTextColor(Color.parseColor("#FF0000"));
+                           isLiked[0] =true;
+                    }else{
+                        holder.react.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
+                        holder.react.setTextColor(Color.parseColor("#FFFFFF"));
+                        isLiked[0] =false;
+                    }
+                }else if (sharedPreferences.getString(Constants.USER_TYPE,"").equals(Constants.USER_TYPES[2])&&reaction.getStudentAffairId()!=null){
+                    if (reaction.getStudentAffairId().equals(sharedPreferences.getInt(Constants.UID,0))){
+                        holder.react.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor("#FF0000")));
+                        holder.react.setTextColor(Color.parseColor("#FF0000"));
+                        isLiked[0] =true;
+                    }else {
+                        holder.react.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
+                        holder.react.setTextColor(Color.parseColor("#FFFFFF"));
+                        isLiked[0] =false;
+                    }
+                }
+            }
+        }
         String string = posts.get(position).getContent();
-        if (!(string.isEmpty())){
+        if (!(string.isEmpty())) {
             holder.question.setText(string);
             holder.question.setVisibility(View.VISIBLE);
-            String text=holder.question.getText().toString();
-            Pattern pattern=Pattern.compile(Constants.REGEX_LINKS);
-            Matcher matcher=pattern.matcher(text);
-            while (matcher.find()){
-                String match=matcher.group();
-                String newTeat=text.replaceAll(match, "");
-                holder.question.setText(HtmlCompat.fromHtml(newTeat+" "+"<br><a href=\""+match+"\">"+match+"</a>",HtmlCompat.FROM_HTML_MODE_LEGACY));
+            String text = holder.question.getText().toString();
+            Pattern pattern = Pattern.compile(Constants.REGEX_LINKS);
+            Matcher matcher = pattern.matcher(text);
+            while (matcher.find()) {
+                String match = matcher.group();
+                String newTeat = text.replaceAll(match, "");
+                holder.question.setText(HtmlCompat.fromHtml(newTeat + " " + "<br><a href=\"" + match + "\">" + match + "</a>", HtmlCompat.FROM_HTML_MODE_LEGACY));
                 holder.question.setMovementMethod(LinkMovementMethod.getInstance());
             }
-        }else {
+        } else {
             holder.question.setVisibility(View.GONE);
         }
         holder.manage_post.setOnClickListener(view -> {
-            Call<Data<Post>> call= RetrofitClientLaravelData.getInstance().getApiInterface().deletePostByStudentId(posts.get(position).getId(),sharedPreferences.getInt(Constants.UID,0));
+            Call<Data<Post>> call = RetrofitClientLaravelData.getInstance().getApiInterface().deletePostByStudentId(posts.get(position).getId(), sharedPreferences.getInt(Constants.UID, 0));
             call.enqueue(new Callback<Data<Post>>() {
                 @Override
                 public void onResponse(@NonNull Call<Data<Post>> call, @NonNull Response<Data<Post>> response) {
-                    if (response.isSuccessful()){
-                        if (response.body().getData()!=null){
-                            showMenu(context,holder.manage_post,position).show();
-                        }else {
-                            showMenu(context,holder.manage_post,position).dismiss();
+                    if (response.isSuccessful()) {
+                        if (response.body().getData() != null) {
+                            showMenu(context, holder.manage_post, position).show();
+                        } else {
+                            showMenu(context, holder.manage_post, position).dismiss();
 
                         }
                     }
@@ -139,68 +177,70 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             });
         });
         holder.comment.setOnClickListener(view -> {
-            Intent intent=new Intent(context, PostCommentsActivity.class);
-            intent.putExtra(Constants.POST_ID,posts.get(position).getId());
-            ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,view.getWidth()/2,view.getHeight()/2,300,300);
-            context.startActivity(intent,options.toBundle());
+            Intent intent = new Intent(context, PostCommentsActivity.class);
+            intent.putExtra(Constants.POST_ID, posts.get(position).getId());
+            ActivityOptions options = ActivityOptions.makeClipRevealAnimation(view, view.getWidth() / 2, view.getHeight() / 2, 300, 300);
+            context.startActivity(intent, options.toBundle());
         });
         counterOfReacts = posts.get(position).getLikes();
-        boolean[] check = {false};
+        if (counterOfReacts==0) {
+            holder.counterReact.setVisibility(View.GONE);
+        } else {
+            holder.counterReact.setVisibility(View.VISIBLE);
+        }
         holder.counterReact.setVisibility(View.VISIBLE);
-        holder.react.setOnClickListener(view -> {
-            if (check[0]) {
-                check[0] =false;
-                counterOfReacts--;
-                addRectOnPost(posts.get(position).getId(),counterOfReacts);
-                holder.react.setTextColor(Color.WHITE);
-                holder.counterReact.setText(String.format(Locale.ENGLISH,"%d مشاهده", counterOfReacts));
-                if (counterOfReacts!=0){
-                    holder.counterReact.setVisibility(View.VISIBLE);
-                }else {
-                    holder.counterReact.setVisibility(View.GONE);
-                }
-                holder.react.setCompoundDrawableTintList(ColorStateList.valueOf(Color.WHITE));
-            }else {
-                check[0]=true;
-                counterOfReacts++;
-                addRectOnPost(posts.get(position).getId(),counterOfReacts);
-                holder.react.setTextColor(Color.BLUE);
-                holder.counterReact.setText(String.format(Locale.ENGLISH,"%d مشاهده", counterOfReacts));
-                if (counterOfReacts!=0){
-                    holder.counterReact.setVisibility(View.VISIBLE);
-                }else {
-                    holder.counterReact.setVisibility(View.GONE);
+        final boolean[] finalIsLiked = {isLiked[0]};
+        Reaction reaction = new Reaction();
+        reaction.setPostId(posts.get(position).getId());
+        if (sharedPreferences.getString(Constants.USER_TYPE, "").equals(Constants.USER_TYPES[0])) {
+            reaction.setStudentId(sharedPreferences.getInt(Constants.UID, 0));
+        } else if (sharedPreferences.getString(Constants.USER_TYPE, "").equals(Constants.USER_TYPES[1])) {
+            reaction.setLecturerId(sharedPreferences.getInt(Constants.UID, 0));
+        } else if (sharedPreferences.getString(Constants.USER_TYPE, "").equals(Constants.USER_TYPES[2])) {
+            reaction.setStudentAffairId(sharedPreferences.getInt(Constants.UID, 0));
 
-                }
-                holder.react.setCompoundDrawableTintList(ColorStateList.valueOf(context.getColor(R.color.statesBar)));
-                holder.react.setTextColor(context.getColor(R.color.statesBar));
+        }
+        holder.react.setOnClickListener(v -> {
+            addRectOnPost(posts.get(position).getId(), reaction);
+            if (finalIsLiked[0]){
+                holder.react.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
+                holder.react.setTextColor(Color.parseColor("#FFFFFF"));
+                finalIsLiked[0] =false;
+             }else
+            {
+                holder.react.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor("#FF0000")));
+                holder.react.setTextColor(Color.parseColor("#FF0000"));
+                finalIsLiked[0] =true;
             }
+
         });
+
+
         holder.post_image.setOnClickListener(view -> {
-            Intent intent=new Intent(context, ShowImageActivity.class);
-                        ActivityOptions options= ActivityOptions.makeClipRevealAnimation(view,view.getWidth()/2,view.getHeight()/2,300,300);
-                        intent.putExtra(Constants.PATH,Constants.BASE_URL_PATH_POSTS+posts.get(position).getImage());
-            context.startActivity(intent,options.toBundle());
+            Intent intent = new Intent(context, ShowImageActivity.class);
+            ActivityOptions options = ActivityOptions.makeClipRevealAnimation(view, view.getWidth() / 2, view.getHeight() / 2, 300, 300);
+            intent.putExtra(Constants.PATH, Constants.BASE_URL_PATH_POSTS + posts.get(position).getImage());
+            context.startActivity(intent, options.toBundle());
         });
         holder.question.setOnLongClickListener(view -> {
-            ClipboardManager clipboardManager=(ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clipData=ClipData.newPlainText("text",holder.question.getText().toString());
+            ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clipData = ClipData.newPlainText("text", holder.question.getText().toString());
             clipboardManager.setPrimaryClip(clipData);
             Toast.makeText(context, "تم نسخ ...", Toast.LENGTH_SHORT).show();
             return true;
         });
         holder.name.setOnClickListener(view -> {
-            Intent intent=new Intent(context, DetailsActivity.class);
-            ActivityOptions options= ActivityOptions.makeClipRevealAnimation(holder.itemView,holder.itemView.getWidth()/2,holder.itemView.getHeight()/2,300,300);
-            intent.putExtra(Constants.IMAGE,Constants.BASE_URL_PATH_USERS+posts.get(position).getPersonImage());
-            context.startActivity(intent,options.toBundle());
+            Intent intent = new Intent(context, DetailsActivity.class);
+            ActivityOptions options = ActivityOptions.makeClipRevealAnimation(holder.itemView, holder.itemView.getWidth() / 2, holder.itemView.getHeight() / 2, 300, 300);
+            intent.putExtra(Constants.IMAGE, Constants.BASE_URL_PATH_USERS + posts.get(position).getPersonImage());
+            context.startActivity(intent, options.toBundle());
 
         });
         holder.profilePic.setOnClickListener(view -> {
-            Intent intent=new Intent(context, DetailsActivity.class);
-            ActivityOptions options= ActivityOptions.makeClipRevealAnimation(holder.itemView,holder.itemView.getWidth()/2,holder.itemView.getHeight()/2,300,300);
-            intent.putExtra(Constants.IMAGE,Constants.BASE_URL_PATH_USERS+posts.get(position).getPersonImage());
-            context.startActivity(intent,options.toBundle());
+            Intent intent = new Intent(context, DetailsActivity.class);
+            ActivityOptions options = ActivityOptions.makeClipRevealAnimation(holder.itemView, holder.itemView.getWidth() / 2, holder.itemView.getHeight() / 2, 300, 300);
+            intent.putExtra(Constants.IMAGE, Constants.BASE_URL_PATH_USERS + posts.get(position).getPersonImage());
+            context.startActivity(intent, options.toBundle());
 
         });
 
@@ -212,34 +252,37 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         return posts.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
-        TextView name,question,time,comment,react,counterReact,number_of_comments,levelPost;
-        ImageView manage_post,post_image,profilePic,ic_verified_account;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView name, question, time, comment, react, counterReact, number_of_comments, levelPost;
+        ImageView manage_post, post_image, profilePic, ic_verified_account;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            name=itemView.findViewById(R.id.nameOfPostPerson);
-            profilePic=itemView.findViewById(R.id.profile_pic);
-            question=itemView.findViewById(R.id.question_post);
-            comment=itemView.findViewById(R.id.comment);
-            time=itemView.findViewById(R.id.time_post);
-            react=itemView.findViewById(R.id.view_post);
-            counterReact=itemView.findViewById(R.id.counterReact);
-            manage_post=itemView.findViewById(R.id.manage_post);
-            post_image=itemView.findViewById(R.id.post_image);
-            number_of_comments=itemView.findViewById(R.id.numberOfComments);
-            ic_verified_account=itemView.findViewById(R.id.ic_verified_account);
-            levelPost=itemView.findViewById(R.id.levelPost);
+            name = itemView.findViewById(R.id.nameOfPostPerson);
+            profilePic = itemView.findViewById(R.id.profile_pic);
+            question = itemView.findViewById(R.id.question_post);
+            comment = itemView.findViewById(R.id.comment);
+            time = itemView.findViewById(R.id.time_post);
+            react = itemView.findViewById(R.id.view_post);
+            counterReact = itemView.findViewById(R.id.counterReact);
+            manage_post = itemView.findViewById(R.id.manage_post);
+            post_image = itemView.findViewById(R.id.post_image);
+            number_of_comments = itemView.findViewById(R.id.numberOfComments);
+            ic_verified_account = itemView.findViewById(R.id.ic_verified_account);
+            levelPost = itemView.findViewById(R.id.levelPost);
         }
     }
-    public  void removeItem(int position){
+
+    public void removeItem(int position) {
         posts.remove(position);
         notifyItemRemoved(position);
     }
-    private PopupMenu showMenu(Context context, View view, int position){
-        PopupMenu menu=new PopupMenu(context, view);
+
+    private PopupMenu showMenu(Context context, View view, int position) {
+        PopupMenu menu = new PopupMenu(context, view);
         menu.getMenuInflater().inflate(R.menu.popup_menu_post, menu.getMenu());
         menu.setOnMenuItemClickListener(menuItem -> {
-            switch (menuItem.getItemId()){
+            switch (menuItem.getItemId()) {
                 case R.id.delete:
                     Toast.makeText(context, "تم ازاله المنشور... ", Toast.LENGTH_SHORT).show();
                     removeItem(position);
@@ -251,7 +294,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             }
             return false;
         });
-       return menu;
+        return menu;
     }
 
     @Override
@@ -260,15 +303,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         holder.itemView.clearAnimation();
 
     }
-    private void setupPusher(){
+
+    private void setupPusher() {
         PusherOptions options = new PusherOptions();
         options.setCluster(Constants.PUSHER_APP_CLUSTER);
         Pusher pusher = new Pusher(Constants.PUSHER_APP_KEY, options);
         Channel channel = pusher.subscribe("react-post");
         channel.bind("react-post", event -> {
             try {
-                JSONObject jsonObject=new JSONObject(event.getData());
-                counterOfReacts= jsonObject.getInt("likes");
+                JSONObject jsonObject = new JSONObject(event.getData());
+                counterOfReacts = jsonObject.getInt("likes");
+                //run on ui thread
+
 
 
             } catch (JSONException e) {
@@ -288,15 +334,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             }
         }, ConnectionState.ALL);
     }
-    private void addRectOnPost(int id,int likes){
-        RequestBody likese = RequestBody.create(String.valueOf(likes), MediaType.parse("text/plain"));
 
-        Call<Data<Post>> addRectOnPost=RetrofitClientLaravelData.getInstance().getApiInterface().addRectOnPost(id,likese);
+    private void addRectOnPost(int postId, Reaction reaction) {
+        Call<Data<Post>> addRectOnPost = RetrofitClientLaravelData.getInstance().getApiInterface().reactToPost(postId, reaction);
         addRectOnPost.enqueue(new Callback<Data<Post>>() {
             @Override
             public void onResponse(@NonNull Call<Data<Post>> call, @NonNull Response<Data<Post>> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(context, "حدث خطأ ما", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, response.errorBody()+" ", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -304,8 +350,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             @Override
             public void onFailure(@NonNull Call<Data<Post>> call, @NonNull Throwable t) {
                 Toast.makeText(context, "حدث خطأ ما", Toast.LENGTH_SHORT).show();
+               Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
-
 }

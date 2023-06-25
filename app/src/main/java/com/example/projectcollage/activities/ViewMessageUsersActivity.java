@@ -255,11 +255,13 @@ public class ViewMessageUsersActivity extends AppCompatActivity {
                      binding.rvMessageUsers.setLayoutManager(manager);
                      binding.rvMessageUsers.scrollToPosition(messages.size()-1);
                      manager.setStackFromEnd(true);
-                     binding.loadmessage.setVisibility(View.GONE);
-                     if (messages.size()==0) {
-                         binding.noMessage.setVisibility(View.VISIBLE);
+                     if (messages.size() == 0) {
+                         binding.noMessage.setVisibility(View.GONE);
+                         binding.loadmessage.setVisibility(View.GONE);
+
                      }
                  }
+                 binding.loadmessage.setVisibility(View.GONE);
              }
 
              @Override
